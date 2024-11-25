@@ -58,3 +58,20 @@ def AvailablePositions(hex_map, turn):
                     result.append((element[0], element[1]))
 
     return result
+    
+# Queen available positions
+# to be modified when will_break_the_hive() is implemented
+def Available_Positions_Queen(hex_map, q, r):
+    result = []
+    empty_neighbours = hex_map.get_Empty_neighbors(q, r)
+    print(empty_neighbours)
+    for element in empty_neighbours:
+        neighbors = hex_map.get_neighbors(element[0], element[1])
+        neighbors.remove((q, r))
+        if len(neighbors) != 0:
+            result.append((element[0], element[1]))
+        print(neighbors)
+
+    return result
+    
+    

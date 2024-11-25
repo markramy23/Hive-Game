@@ -190,6 +190,20 @@ def pixel_to_hex(x, y):
     r = (-1 / 3 * x + math.sqrt(3) / 3 * y) / HEX_SIZE
     return hex_round(q, r)
 
+def FreedomToMove(Empty_Neighbours):
+    s = set() ;
+    directions = [(+1, 0), (-1, 0), (0, +1), (0, -1), (+1, -1), (-1, +1)]
+    for Neighbour in Empty_Neighbours:
+        for direction in directions:
+            x=Neighbour[0]+direction[0]
+            y=Neighbour[1]+direction[1]
+            for AnotherNeighbour in Empty_Neighbours:
+                if x== AnotherNeighbour[0] and y== AnotherNeighbour[1] :
+                    s.add(Neighbour)
+                    s.add(AnotherNeighbour)
+    return s
+
+
 
 def main():
     pygame.init()

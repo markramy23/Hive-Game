@@ -58,22 +58,31 @@ def AvailablePositions(hex_map, turn):
                     result.append((element[0], element[1]))
 
     return result
-    
+
 # Queen available positions
 # to be modified when will_break_the_hive() is implemented
 def Available_Positions_Queen(hex_map, q, r):
     result = []
     empty_neighbours = hex_map.get_Empty_neighbors(q, r)
+    if not empty_neighbours:
+        return result
+    non_empty_neighbours = hex_map.get_neighbors(q, r)
     print(empty_neighbours)
     for element in empty_neighbours:
         neighbors = hex_map.get_neighbors(element[0], element[1])
         neighbors.remove((q, r))
         if len(neighbors) != 0:
-            result.append((element[0], element[1]))
+            flag = False
+            for neighbor2 in neighbors:
+                if neighbor2 in non_empty_neighbours:
+                    flag = True
+                    break
+            if flag:
+                result.append((element[0], element[1]))
         print(neighbors)
 
     return result
-    
+
 # HexMap class to store pieces on the hex map
 class HexMap:
     def __init__(self):
@@ -114,22 +123,22 @@ class HexMap:
 
 
 def hex_round(q, r):
-"""Round fractional hex coordinates to the nearest hexagonal integer coordinates."""
-s = -q - r
-q_round = round(q)
-r_round = round(r)
-s_round = round(s)
+    """Round fractional hex coordinates to the nearest hexagonal integer coordinates."""
+    s = -q - r
+    q_round = round(q)
+    r_round = round(r)
+    s_round = round(s)
 
-q_diff = abs(q_round - q)
-r_diff = abs(r_round - r)
-s_diff = abs(s_round - s)
+    q_diff = abs(q_round - q)
+    r_diff = abs(r_round - r)
+    s_diff = abs(s_round - s)
 
-if q_diff > r_diff and q_diff > s_diff:
-    q_round = -r_round - s_round
-elif r_diff > s_diff:
-    r_round = -q_round - s_round
+    if q_diff > r_diff and q_diff > s_diff:
+        q_round = -r_round - s_round
+    elif r_diff > s_diff:
+        r_round = -q_round - s_round
 
-return int(q_round), int(r_round)
+    return int(q_round), int(r_round)
 
 
 # display available positions on the screen
@@ -190,9 +199,14 @@ def main():
 
     hex_map = HexMap()
 
-    hex_map.add_piece(0, 0, "Queen", "W")
+    hex_map.add_piece(0, 0, "Ant", "W")
+    hex_map.add_piece(1, 0, "Ant", "W")
+    hex_map.add_piece(-1, 0, "Ant", "W")
+    hex_map.add_piece(1, -1, "Ant", "W")
+    hex_map.add_piece(1, -2, "Queen", "W")
+    hex_map.add_piece(-1,-1, "Ant", "B")
+    hex_map.add_piece(0,-2, "Ant", "B")
 
-    print(AvailablePositions(hex_map, "B"))
 
     selected_hex = None
 
@@ -236,7 +250,6 @@ def main():
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 selected_hex = pixel_to_hex(mouse_x, mouse_y)  # Get Q,r of the Selected Hex
                 print(f"Selected Hex: {selected_hex}")
-        display_avail(AvailablePositions(hex_map, "B"), screen)
 
         pygame.display.flip()
         clock.tick(30)  # Limit the frame rate to 30 FPS

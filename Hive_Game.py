@@ -113,6 +113,32 @@ class HexMap:
         return [(q + dq, r + dr, self.map[(q, r)][1]) for dq, dr in directions if (q + dq, r + dr) not in self.map]
 
 
+def hex_round(q, r):
+"""Round fractional hex coordinates to the nearest hexagonal integer coordinates."""
+s = -q - r
+q_round = round(q)
+r_round = round(r)
+s_round = round(s)
+
+q_diff = abs(q_round - q)
+r_diff = abs(r_round - r)
+s_diff = abs(s_round - s)
+
+if q_diff > r_diff and q_diff > s_diff:
+    q_round = -r_round - s_round
+elif r_diff > s_diff:
+    r_round = -q_round - s_round
+
+return int(q_round), int(r_round)
+
+
+# display available positions on the screen
+def display_avail(list, screen):
+    for element in list:
+        x, y = hex_to_pixel(element[0], element[1])
+        x += WIDTH // 2
+        y += HEIGHT // 2
+        draw_hexagon(screen, x, y, (255, 0, 255), BORDER_COLOR)
 
 
 

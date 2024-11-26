@@ -147,6 +147,24 @@ def AvailablePositions_SoldierAnt(hex_map, q, r):
 
     return
 
+def AmazingGrassHopper(hex_map, q, r,dq,dr):
+
+    children=hex_map.get_neighbors(q,r)
+    for child in children:
+        if child[0] == (q+dq) and child[1]==(r+dr) :
+            return AmazingGrassHopper(hex_map,(q+dq),(r+dr) ,dq,dr)
+        else:
+            return ((q+dq),(r+dr))
+
+
+
+def AvailablePositions_GrassHopper (hex_map, q, r ):
+    children= hex_map.get_neighbors(q,r)
+    result =[]
+    for child in children :
+        result.append(AmazingGrassHopper(hex_map, child[0], child[1],child[0]-q,child[1]-r) )
+
+    return result
 
 
 # HexMap class to store pieces on the hex map

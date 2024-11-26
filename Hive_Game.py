@@ -88,6 +88,7 @@ def Available_Positions_Queen(hex_map, q, r):
 #Working (for now) (bugs may be found later) :(
 def Available_Positions_Spider(hex_map, q, r):
     visited = set() #set to add all visited positions
+    result = set()
     visited.add((q, r)) #consider the current position as visited to avoid backtracking to the same position
     temp = Available_Positions_Queen(hex_map, q, r)   #get all available positions as queen movement
 
@@ -105,11 +106,15 @@ def Available_Positions_Spider(hex_map, q, r):
             new_r2 = pos2[1]
             hex_map.move_piece(new_q, new_r, new_q2, new_r2)
             visited.add((new_q2, new_r2))
-            visited.update(Available_Positions_Queen(hex_map, new_q2, new_r2))
+            temp3 = Available_Positions_Queen(hex_map, new_q2, new_r2)
+            visited.update(temp)
+            for pos3 in temp3:
+                if pos3 in visited:
+                    continue
+                result.add(pos3)
             hex_map.move_piece(new_q2, new_r2, new_q, new_r)
         hex_map.move_piece(new_q, new_r, q, r)
-    visited.remove((q, r))
-    return list(visited)
+    return list(result)
 # HexMap class to store pieces on the hex map
 class HexMap:
     def __init__(self):
@@ -295,20 +300,21 @@ def main():
 
     hex_map = HexMap()
 
-    # hex_map.add_piece(0, 0, "Queen", "W")
-    # hex_map.add_piece(1, 0, "Ant", "W")
-    # hex_map.add_piece(-1, 0, "Ant", "W")
-    # hex_map.add_piece(-1,-1, "Ant", "B")
-    # hex_map.add_piece(0,-2, "Ant", "B")
-    # hex_map.add_piece(2,-1, "Ant", "B")
-    # hex_map.add_piece(3,-2, "Ant", "B")
-    # hex_map.add_piece(3,-3, "Ant", "B")
-    # hex_map.add_piece(3,-4, "Spider", "B")
-    # hex_map.add_piece(0,-2, "Ant", "B")
-    # hex_map.add_piece(1,-3, "Ant", "B")
     hex_map.add_piece(0, 0, "Queen", "W")
-    hex_map.add_piece(1, 0, "Beetle", "B")
-    hex_map.add_piece(-1, 1, "Grasshopper", "W")
+    hex_map.add_piece(1, 0, "Ant", "W")
+    hex_map.add_piece(-1, 0, "Ant", "W")
+    hex_map.add_piece(-1,-1, "Ant", "B")
+    hex_map.add_piece(0,-2, "Ant", "B")
+    hex_map.add_piece(2,-1, "Ant", "B")
+    hex_map.add_piece(3,-2, "Ant", "B")
+    hex_map.add_piece(3,-3, "Ant", "B")
+    hex_map.add_piece(3,-4, "Spider", "B")
+    hex_map.add_piece(0,-2, "Ant", "B")
+    hex_map.add_piece(1,-3, "Ant", "B")
+    hex_map.add_piece(1,-2, "Ant", "B")
+    # hex_map.add_piece(0, 0, "Queen", "W")
+    # hex_map.add_piece(1, 0, "Beetle", "B")
+    # hex_map.add_piece(-1, 1, "Grasshopper", "W")
     # print(Available_Positions_Spider(hex_map, 3, 4))
 
     selected_hex = None
@@ -353,7 +359,7 @@ def main():
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 selected_hex = pixel_to_hex(mouse_x, mouse_y)  # Get Q,r of the Selected Hex
                 print(f"Selected Hex: {selected_hex}")
-        display_avail(Available_Positions_Queen(hex_map, 0, 0), screen)
+        display_avail(Available_Positions_Spider(hex_map, 3, -4), screen)
         pygame.display.flip()
         clock.tick(30)  # Limit the frame rate to 30 FPS
 

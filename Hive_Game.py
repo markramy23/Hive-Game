@@ -156,7 +156,12 @@ class HexMap:
         directions = [(+1, 0), (-1, 0), (0, +1), (0, -1), (+1, -1), (-1, +1)]
         return [(q + dq, r + dr, self.map[(q, r)][1]) for dq, dr in directions if (q + dq, r + dr) not in self.map]
 
-
+def get_neighbors(pos, grid):
+    """Get neighbors of a given position (q, r)."""
+    directions = [(+1, 0), (-1, 0), (0, +1), (0, -1), (+1, -1), (-1, +1)]
+    q, r = pos
+    return [(q + dq, r + dr) for dq, dr in directions if (q + dq, r + dr) in grid]
+    
 def hex_round(q, r):
     """Round fractional hex coordinates to the nearest hexagonal integer coordinates."""
     s = -q - r

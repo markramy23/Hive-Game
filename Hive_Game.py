@@ -232,6 +232,49 @@ def FreedomToMove(Empty_Neighbours):
                     s.add(AnotherNeighbour)
     return s
 
+def dfs(grid, current, visited):
+    """Perform DFS to traverse the hive."""
+    visited.add(current)
+    for neighbor in get_neighbors(current, grid):
+        if neighbor not in visited:
+            dfs(grid, neighbor, visited)
+
+
+def does_removal_break_hive(grid, removed_piece):
+    """
+    Determines if removing a piece breaks the hive.
+
+    Args:
+    - grid: A dictionary representing the hive { (q, r): piece }
+    - removed_piece: The (q, r) coordinates of the piece to be removed.
+
+    Returns:
+    - True if removing the piece breaks the hive, False otherwise.
+    """
+    # Step 1: Identify neighbors of the removed piece
+    neighbors = get_neighbors(removed_piece, grid)
+    if len(neighbors) < 2:
+        # Hive cannot break if the piece has less than 2 neighbors
+        return False
+
+    # Step 2: Temporarily remove the piece from the grid
+    del grid[removed_piece]
+
+    # Step 3: Start DFS from one neighbor
+    start = neighbors[0]
+    visited = set()
+    dfs(grid, start, visited)
+
+    # Step 4: Check if all other neighbors are reachable
+    for neighbor in neighbors[1:]:
+        if neighbor not in visited:
+            # Not all neighbors are connected; hive is broken
+            grid[removed_piece] = "Piece"  # Restore the piece
+            return True
+
+    # Step 5: Restore the removed piece and return the result
+    grid[removed_piece] = "Piece"
+    return False
 
 
 def main():

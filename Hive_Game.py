@@ -67,7 +67,7 @@ def Available_Positions_Queen(hex_map, q, r):
     if not empty_neighbours:
         return result
     non_empty_neighbours = hex_map.get_neighbors(q, r)
-    print(empty_neighbours)
+    # print(empty_neighbours)
     for element in empty_neighbours:
         neighbors = hex_map.get_neighbors(element[0], element[1])
         neighbors.remove((q, r))
@@ -79,8 +79,9 @@ def Available_Positions_Queen(hex_map, q, r):
                     break
             if flag:
                 result.append((element[0], element[1]))
-        print(neighbors)
-
+    print(result)
+    result = list(FreedomToMove(hex_map, empty_neighbours, result))
+    print(result)
     return result
 
 #Spider Available Positions
@@ -219,17 +220,35 @@ def pixel_to_hex(x, y):
     r = (-1 / 3 * x + math.sqrt(3) / 3 * y) / HEX_SIZE
     return hex_round(q, r)
 
-def FreedomToMove(Empty_Neighbours):
+
+def FreedomToMove(hex_map,Empty_Neighbours, AvailablePOSs):
     s = set() ;
     directions = [(+1, 0), (-1, 0), (0, +1), (0, -1), (+1, -1), (-1, +1)]
-    for Neighbour in Empty_Neighbours:
-        for direction in directions:
-            x=Neighbour[0]+direction[0]
-            y=Neighbour[1]+direction[1]
-            for AnotherNeighbour in Empty_Neighbours:
-                if x== AnotherNeighbour[0] and y== AnotherNeighbour[1] :
-                    s.add(Neighbour)
-                    s.add(AnotherNeighbour)
+    for AvailablePOS in AvailablePOSs :
+        Empty_Neighbours_ForAvailablePOS =[]
+        for  direction in directions:
+            Empty_Neighbours_ForAvailablePOS.append((AvailablePOS[0]+direction[0] , AvailablePOS[1]+direction[1]) )
+        for Empty_Neighbour_ForAvailablePOS in Empty_Neighbours_ForAvailablePOS :
+            flag =0 ;
+            for Empty_Neighbour in Empty_Neighbours :
+                if Empty_Neighbour == Empty_Neighbour_ForAvailablePOS :
+                    s.add( AvailablePOS) ;
+                    flag=1 ;
+                    break ;
+
+            if flag ==1 :
+                break ;
+
+
+    # for Neighbour in Empty_Neighbours:
+    #     for direction in directions:
+    #         x=Neighbour[0]+direction[0]
+    #         y=Neighbour[1]+direction[1]
+    #         for AnotherNeighbour in Empty_Neighbours:
+    #             if x== AnotherNeighbour[0] and y== AnotherNeighbour[1] :
+    #                 s.add(Neighbour)
+    #                 s.add(AnotherNeighbour)
+
     return s
 
 def dfs(grid, current, visited):
@@ -285,17 +304,20 @@ def main():
 
     hex_map = HexMap()
 
+    # hex_map.add_piece(0, 0, "Queen", "W")
+    # hex_map.add_piece(1, 0, "Ant", "W")
+    # hex_map.add_piece(-1, 0, "Ant", "W")
+    # hex_map.add_piece(-1,-1, "Ant", "B")
+    # hex_map.add_piece(0,-2, "Ant", "B")
+    # hex_map.add_piece(2,-1, "Ant", "B")
+    # hex_map.add_piece(3,-2, "Ant", "B")
+    # hex_map.add_piece(3,-3, "Ant", "B")
+    # hex_map.add_piece(3,-4, "Spider", "B")
+    # hex_map.add_piece(0,-2, "Ant", "B")
+    # hex_map.add_piece(1,-3, "Ant", "B")
     hex_map.add_piece(0, 0, "Queen", "W")
-    hex_map.add_piece(1, 0, "Ant", "W")
-    hex_map.add_piece(-1, 0, "Ant", "W")
-    hex_map.add_piece(-1,-1, "Ant", "B")
-    hex_map.add_piece(0,-2, "Ant", "B")
-    hex_map.add_piece(2,-1, "Ant", "B")
-    hex_map.add_piece(3,-2, "Ant", "B")
-    hex_map.add_piece(3,-3, "Ant", "B")
-    hex_map.add_piece(3,-4, "Spider", "B")
-    hex_map.add_piece(0,-2, "Ant", "B")
-    hex_map.add_piece(1,-3, "Ant", "B")
+    hex_map.add_piece(1, 0, "Beetle", "B")
+    hex_map.add_piece(-1, 1, "Grasshopper", "W")
     # print(Available_Positions_Spider(hex_map, 3, 4))
 
     selected_hex = None
@@ -340,8 +362,7 @@ def main():
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 selected_hex = pixel_to_hex(mouse_x, mouse_y)  # Get Q,r of the Selected Hex
                 print(f"Selected Hex: {selected_hex}")
-
-        display_avail(Available_Positions_Spider(hex_map, 3, -4), screen)
+        display_avail(Available_Positions_Queen(hex_map, 0, 0), screen)
         pygame.display.flip()
         clock.tick(30)  # Limit the frame rate to 30 FPS
 

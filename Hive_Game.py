@@ -231,7 +231,7 @@ def FreedomToMove(hex_map,Empty_Neighbours, AvailablePOSs):
         for Empty_Neighbour_ForAvailablePOS in Empty_Neighbours_ForAvailablePOS :
             flag =0 ;
             for Empty_Neighbour in Empty_Neighbours :
-                if Empty_Neighbour == Empty_Neighbour_ForAvailablePOS :
+                if Empty_Neighbour[0] == Empty_Neighbour_ForAvailablePOS[0] and  Empty_Neighbour[1] == Empty_Neighbour_ForAvailablePOS[1] :
                     s.add( AvailablePOS) ;
                     flag=1 ;
                     break ;
@@ -239,15 +239,6 @@ def FreedomToMove(hex_map,Empty_Neighbours, AvailablePOSs):
             if flag ==1 :
                 break ;
 
-
-    # for Neighbour in Empty_Neighbours:
-    #     for direction in directions:
-    #         x=Neighbour[0]+direction[0]
-    #         y=Neighbour[1]+direction[1]
-    #         for AnotherNeighbour in Empty_Neighbours:
-    #             if x== AnotherNeighbour[0] and y== AnotherNeighbour[1] :
-    #                 s.add(Neighbour)
-    #                 s.add(AnotherNeighbour)
 
     return s
 

@@ -128,7 +128,7 @@ def AvailablePositions_Ant (hex_map, q, r):
     SoldierAntVisited.clear();
 
 
-    return result
+    return list(result)
 
 
 def AvailablePositions_SoldierAnt(hex_map, q, r):

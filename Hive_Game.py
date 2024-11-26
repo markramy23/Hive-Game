@@ -1,6 +1,6 @@
 import pygame
 import math
-
+import copy 
 # Constants
 WIDTH = 800
 HEIGHT = 600
@@ -115,6 +115,40 @@ def Available_Positions_Spider(hex_map, q, r):
             hex_map.move_piece(new_q2, new_r2, new_q, new_r)
         hex_map.move_piece(new_q, new_r, q, r)
     return list(result)
+
+
+
+SoldierAntVisited= set()
+SoldierAntResult=set()
+def AvailablePositions_Ant (hex_map, q, r):
+    AvailablePositions_SoldierAnt(hex_map, q, r)
+    SoldierAntResult.remove((q,r))
+    result = copy.deepcopy(SoldierAntResult) ;
+    SoldierAntResult.clear();
+    SoldierAntVisited.clear();
+
+
+    return result
+
+
+def AvailablePositions_SoldierAnt(hex_map, q, r):
+    SoldierAntVisited.add((q,r)) ;
+    children =Available_Positions_Queen(hex_map, q, r)
+    if not children :
+        return
+
+    for child in children :
+        SoldierAntResult.add(child)
+        if child not in SoldierAntVisited :
+            hex_map.move_piece(q, r, child[0], child[1])
+            AvailablePositions_SoldierAnt(hex_map,child[0],child[1])
+            hex_map.move_piece(child[0], child[1], q, r)
+
+
+    return
+
+
+
 # HexMap class to store pieces on the hex map
 class HexMap:
     def __init__(self):

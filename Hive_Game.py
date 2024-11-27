@@ -405,6 +405,23 @@ def does_removal_break_hive(grid, removed_piece):
     grid[removed_piece] = "Piece"
     return False
 
+# Function to draw a single hexagon with its content (duplicated)
+def draw_single_hex(q, r, camera_x, camera_y, screen, hex_map, selected_hex):
+    """Draws a single hexagon at the specified (q, r) position."""
+    x, y = hex_to_pixel(q, r,HEX_SIZE_Board)
+    x += screen_width // 2 + camera_x  # Apply camera position
+    y += screen_height // 2 + camera_y
+
+    # Determine the fill color
+    fill_color = SELECTED_COLOR if (q, r) == selected_hex else HEX_COLOR
+
+    # Draw the hexagon
+    draw_hexagon(screen, x, y, fill_color, BORDER_COLOR,HEX_SIZE_Board)
+
+    # Draw the piece, if it exists
+    piece = hex_map.get_piece(q, r)
+    if piece:
+        draw_text_centered(screen, piece, x, y)
 
 def main():
     pygame.init()

@@ -215,8 +215,14 @@ class HexMap:
         for OutCast in self.OutCasts :
             if OutCast[0] == (q,r) :
                 self.map[OutCast[0]]=OutCast[1]
-
-
+    
+    def find_piece(self, name):
+        """Find the coordinates of a piece by its name."""
+        for (q, r), piece_name in self.map.items():
+            if piece_name == name:
+                return q, r
+        return None  # If the piece is not found
+    
     def get_Empty_neighbors(self, q, r):
         """Returns a list of neighboring hexes for the given hex."""
         directions = [(+1, 0), (-1, 0), (0, +1), (0, -1), (+1, -1), (-1, +1)]

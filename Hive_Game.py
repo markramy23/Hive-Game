@@ -281,10 +281,12 @@ def draw_text_centered(surface, text, x, y, font_size=20, color=(255, 255, 255))
     surface.blit(text_surface, text_rect)
 
 
-def hex_to_pixel(q, r):
+def hex_to_pixel(q, r,hex_size):
     """Convert hexagonal (q, r) coordinates to pixel coordinates (x, y)."""
-    x = HEX_SIZE * (3 / 2 * q)
-    y = HEX_SIZE * (math.sqrt(3) * (r + q / 2))
+    x = hex_size * (3/2 * q)
+    y = hex_size * (math.sqrt(3) * (r + q / 2))
+    x += screen_width // 2
+    y +=screen_height // 2
     return x, y
 
 

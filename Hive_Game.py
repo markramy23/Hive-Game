@@ -166,6 +166,10 @@ def AvailablePositions_GrassHopper (hex_map, q, r ):
 
     return result
 
+def AvailablePositions_Beetle (hex_map, q, r ):
+    results=Available_Positions_Queen(hex_map,q,r)
+    results+=hex_map.get_neighbors(q,r)
+    return results
 
 # HexMap class to store pieces on the hex map
 class HexMap:

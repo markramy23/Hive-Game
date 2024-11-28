@@ -1,6 +1,20 @@
 # Function to draw a single hexagon with its content (duplicated)
 from Utilities import  *
 import pygame
+font = pygame.font.Font('freesansbold.ttf', 20)
+# Screen dimensions
+screen_width, screen_height = 1550, 790
+HEX_SIZE_Board = 25  # Size of the hexagon
+HEX_SIZE_MENU = 25 #Size of Menu Player
+HEX_COLOR = (255, 255, 255)  # White (Fill Color)
+BLACK =(0,0,0) # Black
+BORDER_COLOR = BLACK  # Black (Border Color)
+SELECTED_COLOR = (255, 0, 0)  # Red
+NEIGHBOR_COLOR = (0, 255, 0)  # Green
+BACKGROUND_COLOR = (0, 0, 0)  # Black
+WHITE_PLAYER = (255, 255, 255)  # White
+BLACK_PLAYER = (0, 255, 255)  # Black
+
 def draw_single_hex(q, r, camera_x, camera_y, screen, hex_map, selected_hex):
     """Draws a single hexagon at the specified (q, r) position."""
     x, y = hex_to_pixel(q, r, HEX_SIZE_Board)

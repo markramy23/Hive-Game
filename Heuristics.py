@@ -153,4 +153,15 @@ def undoMove (hex_map:HexMap , move):
     hex_map.move_piece(move[2], move[3], move[0], move[1])
 
 
+def nextMove(hex_map, depth, player):
+    moves = generateMoves(hex_map, player)
+    bestValue = INTMIN
+    for move in moves:
+        applyMove(hex_map, move)
+        value = minimax(hex_map, depth - 1, False, player)
+        if(value > bestValue or value == bestValue and random.choice([True,False])):
+            bestValue = value
+            bestMove = move
+        undoMove(hex_map, move)
 
+    return bestMove

@@ -1,6 +1,8 @@
 # HexMap class to store pieces on the hex map
 class HexMap:
-    def __init__(self):
+    def __init__(self , x=0 , y=0):
+        self.x=0
+        self.y=0
         self.map = {}
         self.queen_placed = {"W": False, "B": False}
         self.White_turn_count = 0

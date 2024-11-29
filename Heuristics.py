@@ -85,3 +85,23 @@ def calculateValue(hex_map:HexMap,player):
     else:
         return -vlaue
 
+def minimax(hex_map:HexMap , depth , maximizingPlayer,player):
+    # if max depth was reached or game was over calculate the heuristics and return the value based on the player
+    if GameOver(hex_map) or depth==0:
+        return calculateValue(hex_map,player)
+    else:
+        moves = generateMoves(hex_map,player)
+        if maximizingPlayer:
+            bestValue = INTMIN
+        else:
+            bestValue = INTMAX
+        for move in moves:
+            applyMove(move)
+            value = minimax(hex_map,depth-1,not maximizingPlayer,player)
+            if maximizingPlayer:
+                bestValue = max(bestValue,value)
+            else:
+                bestValue = min(bestValue,value)
+            undoMove(move)
+        return bestValue
+

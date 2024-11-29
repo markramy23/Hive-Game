@@ -1,10 +1,10 @@
 from rules import *
 def AvailablePositions(hex_map, turn):
     result = []
-    s = set();
+    s = set()
     if turn == "W":
         if hex_map.Length == 0:
-            return True
+            return [(0,0,None)] #was return TRUE
         elif hex_map.Length ==1 :
             keys = list(hex_map.map.keys())
             return  hex_map.get_Empty_neighbors(keys[0][0],keys[0][1] )
@@ -14,7 +14,7 @@ def AvailablePositions(hex_map, turn):
             for key in keys:
                 List += hex_map.get_Empty_neighbors(key[0], key[1])
                 for element in List:
-                    s.add((element[0], element[1]))
+                    s.add((element[0], element[1],element[2]))
 
             for element in s:
                 flag = 0
@@ -22,11 +22,11 @@ def AvailablePositions(hex_map, turn):
                     if (element[0] == element2[0]) and (element[1] == element2[1]) and element2[2] == "B":
                         flag = 1
                 if flag == 0:
-                    result.append((element[0], element[1]))
+                    result.append((element[0], element[1],element[2]))
 
     if turn == "B":
         if hex_map.Length == 0:
-            return True
+            return [(0,0,None)] #was return TRUE
         elif hex_map.Length == 1:
             keys = list(hex_map.map.keys())
             return hex_map.get_Empty_neighbors(keys[0][0], keys[0][1])
@@ -36,7 +36,7 @@ def AvailablePositions(hex_map, turn):
             for key in keys:
                 List += hex_map.get_Empty_neighbors(key[0], key[1])
                 for element in List:
-                    s.add((element[0], element[1]))
+                    s.add((element[0], element[1],element[2]))
 
             for element in s:
                 flag = 0
@@ -44,7 +44,7 @@ def AvailablePositions(hex_map, turn):
                     if (element[0] == element2[0]) and (element[1] == element2[1]) and (element2[2] == "W"):
                         flag = 1
                 if flag == 0:
-                    result.append((element[0], element[1]))
+                    result.append((element[0], element[1],element[2]))
 
     return result
 

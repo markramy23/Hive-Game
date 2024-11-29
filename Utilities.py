@@ -45,10 +45,12 @@ def display_avail(list, screen):
         y += HEIGHT // 2
         draw_hexagon(screen, x, y, (255, 0, 255), BORDER_COLOR)
 
-def hex_to_pixel(q, r):
+def hex_to_pixel(q, r,hex_size):
     """Convert hexagonal (q, r) coordinates to pixel coordinates (x, y)."""
-    x = HEX_SIZE * (3 / 2 * q)
-    y = HEX_SIZE * (math.sqrt(3) * (r + q / 2))
+    x = hex_size * (3/2 * q)
+    y = hex_size * (math.sqrt(3) * (r + q / 2))
+    x += screen_width // 2
+    y +=screen_height // 2
     return x, y
 
 

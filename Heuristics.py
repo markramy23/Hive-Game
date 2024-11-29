@@ -105,6 +105,37 @@ def minimax(hex_map:HexMap , depth , maximizingPlayer,player):
             undoMove(hex_map,move)
         return bestValue
 
+
+def minimax_alpha_beta(hex_map: HexMap, depth, maximizingPlayer, player, alpha, beta):
+    # Base case: if max depth is reached or game is over, calculate the heuristic value for the player
+    if GameOver(hex_map) or depth == 0:
+        return calculateValue(hex_map, player)
+
+    moves = generateMoves(hex_map, player)
+
+    if maximizingPlayer:
+        bestValue = alpha  # Start with alpha for maximizing player
+    else:
+        bestValue = beta  # Start with beta for minimizing player
+
+    for move in moves:
+        applyMove(hex_map, move)  # Apply the move
+        value = minimax_alpha_beta(hex_map, depth - 1, not maximizingPlayer, player, alpha, beta)  # Recursive call
+        undoMove(hex_map, move)  # Undo the move
+
+        if maximizingPlayer:
+            bestValue = max(bestValue, value)
+            alpha = max(alpha, value)
+        else:
+            bestValue = min(bestValue, value)
+            beta = min(beta, value)
+
+        # Pruning
+        if beta <= alpha:
+            return bestValue  # Early return when pruning
+
+    return bestValue
+
 def generateMoves (hex_map:HexMap , Player):
     Result =[]
     for (key,value) in hex_map.map.items() :

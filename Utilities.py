@@ -45,30 +45,6 @@ def display_avail(list, screen):
         y += HEIGHT // 2
         draw_hexagon(screen, x, y, (255, 0, 255), BORDER_COLOR)
 
-
-# Utility functions
-def draw_hexagon(surface, x, y, fill_color, border_color):
-    """Draw a single hexagon centered at (x, y) with a solid color and a border."""
-    points = []
-    for i in range(6):
-        angle = math.radians(60 * i)
-        px = x + HEX_SIZE * math.cos(angle)
-        py = y + HEX_SIZE * math.sin(angle)
-        points.append((px, py))
-    # Draw the filled hexagon
-    pygame.draw.polygon(surface, fill_color, points)
-    # Draw the border of the hexagon
-    pygame.draw.polygon(surface, border_color, points, width=1)  # Border width = 1 pixel
-
-
-def draw_text_centered(surface, text, x, y, font_size=20, color=(255, 255, 255)):
-    """Draw text centered at (x, y)."""
-    font = pygame.font.Font(None, font_size)
-    text_surface = font.render(text, True, color)
-    text_rect = text_surface.get_rect(center=(x, y))
-    surface.blit(text_surface, text_rect)
-
-
 def hex_to_pixel(q, r):
     """Convert hexagonal (q, r) coordinates to pixel coordinates (x, y)."""
     x = HEX_SIZE * (3 / 2 * q)

@@ -33,6 +33,28 @@ Beetle = pygame.image.load("./images/Beetle.png")
 GrassHopper= pygame.image.load("./images/GrassHopper.png")
 Spider = pygame.image.load("./images/Spider.png")
 
+# Draw functions
+def draw_hexagon(surface, x, y, fill_color, border_color):
+    """Draw a single hexagon centered at (x, y) with a solid color and a border."""
+    points = []
+    for i in range(6):
+        angle = math.radians(60 * i)
+        px = x + HEX_SIZE * math.cos(angle)
+        py = y + HEX_SIZE * math.sin(angle)
+        points.append((px, py))
+    # Draw the filled hexagon
+    pygame.draw.polygon(surface, fill_color, points)
+    # Draw the border of the hexagon
+    pygame.draw.polygon(surface, border_color, points, width=1)  # Border width = 1 pixel
+
+
+def draw_text_centered(surface, text, x, y, font_size=20, color=(255, 255, 255)):
+    """Draw text centered at (x, y)."""
+    font = pygame.font.Font(None, font_size)
+    text_surface = font.render(text, True, color)
+    text_rect = text_surface.get_rect(center=(x, y))
+    surface.blit(text_surface, text_rect)
+
 def draw_single_hex(q, r, camera_x, camera_y, screen, hex_map, selected_hex):
     """Draws a single hexagon at the specified (q, r) position."""
     x, y = hex_to_pixel(q, r, HEX_SIZE_Board)
@@ -49,7 +71,6 @@ def draw_single_hex(q, r, camera_x, camera_y, screen, hex_map, selected_hex):
     piece = hex_map.get_piece(q, r)
     if piece:
         draw_text_centered(screen, piece, x, y)
-
 
 def draw_player(player1_name, player2_name, Players_type, screen):
     # Get the window size after setting the display mode
@@ -72,3 +93,4 @@ def draw_player(player1_name, player2_name, Players_type, screen):
     # if Players_type is "Human-Human":
     # elif Players_type is "Human-AI":
     # elif Players_type is "AI-AI":
+

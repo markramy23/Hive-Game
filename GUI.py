@@ -16,6 +16,23 @@ BACKGROUND_COLOR = (0, 0, 0)  # Black
 WHITE_PLAYER = (255, 255, 255)  # White
 BLACK_PLAYER = (0, 255, 255)  # Black
 
+#Background
+background = pygame.image.load("./images/bg2.jpg")
+
+#Player background
+player_background = pygame.image.load("./images/Player_background.png")
+
+#icons
+blackIcon = pygame.image.load("./images/BlackIcon.png")
+whiteIcon = pygame.image.load("./images/WhiteIcon.png")
+
+#animals
+Ant = pygame.image.load("./images/Ant.png")
+Queen = pygame.image.load("./images/QuuenBee.png")
+Beetle = pygame.image.load("./images/Beetle.png")
+GrassHopper= pygame.image.load("./images/GrassHopper.png")
+Spider = pygame.image.load("./images/Spider.png")
+
 def draw_single_hex(q, r, camera_x, camera_y, screen, hex_map, selected_hex):
     """Draws a single hexagon at the specified (q, r) position."""
     x, y = hex_to_pixel(q, r, HEX_SIZE_Board)

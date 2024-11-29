@@ -1,5 +1,6 @@
 import math
 import pygame
+
 # Constants
 INTMIN = -2**31
 INTMAX =  2**31
@@ -37,7 +38,7 @@ def hex_round(q, r):
     return int(q_round), int(r_round)
 
 
-def hex_to_pixel(q, r,hex_size):
+def hex_to_pixel(q, r,hex_size,screen_width,screen_height):
     """Convert hexagonal (q, r) coordinates to pixel coordinates (x, y)."""
     x = hex_size * (3/2 * q)
     y = hex_size * (math.sqrt(3) * (r + q / 2))
@@ -45,13 +46,12 @@ def hex_to_pixel(q, r,hex_size):
     y +=screen_height // 2
     return x, y
 
-
-def pixel_to_hex(x, y):
+def pixel_to_hex(x, y,hex_size,screen_width,screen_height):
     """Convert pixel (x, y) coordinates to hexagonal (q, r) coordinates."""
-    x -= WIDTH // 2
-    y -= HEIGHT // 2
-    q = (2 / 3 * x) / HEX_SIZE
-    r = (-1 / 3 * x + math.sqrt(3) / 3 * y) / HEX_SIZE
+    x -= screen_width // 2
+    y -= screen_height // 2
+    q = (2/3 * x) / hex_size
+    r = (-1/3 * x + math.sqrt(3)/3 * y) / hex_size
     return hex_round(q, r)
 
 #Function Mapping of hex coordinates to their respective numbers 

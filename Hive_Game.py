@@ -3,23 +3,19 @@ from GUI import *
 from Hex_map import HexMap
 from Utilities import *
 from Available_positions import *
-import copy
-
 
 
 
 def main():
-    global screen_width, screen_height, font
+    global screen_width, screen_height
 
     pygame.init()
-    font = pygame.font.Font('freesansbold.ttf', 20)
+
 
     # Set up a maximized window with minimize, maximize, and close icons
     display_info = pygame.display.Info()
     screen_width, screen_height = display_info.current_w, display_info.current_h
     screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
-    # Create a transparent surface
-    Transparent_surface = pygame.Surface((800, 600), pygame.SRCALPHA)
 
     pygame.display.set_caption("Hive Game")
     clock = pygame.time.Clock()
@@ -30,58 +26,58 @@ def main():
 
     # Define positions for the white and black pieces in pixels
     positions_white = [
-        (hex_to_pixel(19, -18,HEX_SIZE_Board)[0] , hex_to_pixel(19, -18,HEX_SIZE_Board)[1]) , #ANT1
-        (hex_to_pixel(17, -17,HEX_SIZE_Board)[0] , hex_to_pixel(17, -17,HEX_SIZE_Board)[1]) , #ANT2
-        (hex_to_pixel(15, -16,HEX_SIZE_Board)[0],  hex_to_pixel(15, -16,HEX_SIZE_Board)[1]) , #ANT3
-        (hex_to_pixel(19, -17,HEX_SIZE_Board)[0] , hex_to_pixel(19, -17,HEX_SIZE_Board)[1]) , #GrassHopper1
-        (hex_to_pixel(17, -16,HEX_SIZE_Board)[0] , hex_to_pixel(17, -16,HEX_SIZE_Board)[1]) , #GrassHopper2
-        (hex_to_pixel(15, -15,HEX_SIZE_Board)[0] , hex_to_pixel(15, -15,HEX_SIZE_Board)[1]) , #GrassHopper3
-        (hex_to_pixel(19, -16,HEX_SIZE_Board)[0] , hex_to_pixel(19, -16,HEX_SIZE_Board)[1]) , #Spider1
-        (hex_to_pixel(17, -15,HEX_SIZE_Board)[0] , hex_to_pixel(17, -15,HEX_SIZE_Board)[1]) , #Spider2
-        (hex_to_pixel(15, -14,HEX_SIZE_Board)[0] , hex_to_pixel(15, -14,HEX_SIZE_Board)[1]) , #Beetle1
-        (hex_to_pixel(19, -15,HEX_SIZE_Board)[0] , hex_to_pixel(19, -15,HEX_SIZE_Board)[1]) , #Beetle2
-        (hex_to_pixel(17, -14,HEX_SIZE_Board)[0] , hex_to_pixel(17, -14,HEX_SIZE_Board)[1]) , #Queen1
+        (hex_to_pixel(19, -18,HEX_SIZE_Board,screen_width,screen_height)[0] , hex_to_pixel(19, -18,HEX_SIZE_Board,screen_width,screen_height)[1]) , #ANT1
+        (hex_to_pixel(17, -17,HEX_SIZE_Board,screen_width,screen_height)[0] , hex_to_pixel(17, -17,HEX_SIZE_Board,screen_width,screen_height)[1]) , #ANT2
+        (hex_to_pixel(15, -16,HEX_SIZE_Board,screen_width,screen_height)[0],  hex_to_pixel(15, -16,HEX_SIZE_Board,screen_width,screen_height)[1]) , #ANT3
+        (hex_to_pixel(19, -17,HEX_SIZE_Board,screen_width,screen_height)[0] , hex_to_pixel(19, -17,HEX_SIZE_Board,screen_width,screen_height)[1]) , #GrassHopper1
+        (hex_to_pixel(17, -16,HEX_SIZE_Board,screen_width,screen_height)[0] , hex_to_pixel(17, -16,HEX_SIZE_Board,screen_width,screen_height)[1]) , #GrassHopper2
+        (hex_to_pixel(15, -15,HEX_SIZE_Board,screen_width,screen_height)[0] , hex_to_pixel(15, -15,HEX_SIZE_Board,screen_width,screen_height)[1]) , #GrassHopper3
+        (hex_to_pixel(19, -16,HEX_SIZE_Board,screen_width,screen_height)[0] , hex_to_pixel(19, -16,HEX_SIZE_Board,screen_width,screen_height)[1]) , #Spider1
+        (hex_to_pixel(17, -15,HEX_SIZE_Board,screen_width,screen_height)[0] , hex_to_pixel(17, -15,HEX_SIZE_Board,screen_width,screen_height)[1]) , #Spider2
+        (hex_to_pixel(15, -14,HEX_SIZE_Board,screen_width,screen_height)[0] , hex_to_pixel(15, -14,HEX_SIZE_Board,screen_width,screen_height)[1]) , #Beetle1
+        (hex_to_pixel(19, -15,HEX_SIZE_Board,screen_width,screen_height)[0] , hex_to_pixel(19, -15,HEX_SIZE_Board,screen_width,screen_height)[1]) , #Beetle2
+        (hex_to_pixel(17, -14,HEX_SIZE_Board,screen_width,screen_height)[0] , hex_to_pixel(17, -14,HEX_SIZE_Board,screen_width,screen_height)[1]) , #Queen1
     ]
     
 
     positions_black = [
-        (hex_to_pixel(-19, 1  ,HEX_SIZE_Board)[0]  , hex_to_pixel(-19,  1 , HEX_SIZE_Board)[1] )  , #ANT1
-        (hex_to_pixel(-17, 0  ,HEX_SIZE_Board)[0]  , hex_to_pixel(-17,  0 , HEX_SIZE_Board)[1] )  , #ANT2
-        (hex_to_pixel(-15, -1 ,HEX_SIZE_Board)[0]  , hex_to_pixel(-15 , -1 , HEX_SIZE_Board)[1])  , #ANT3
-        (hex_to_pixel(-19, 2  ,HEX_SIZE_Board)[0]  , hex_to_pixel(-19,  2 , HEX_SIZE_Board)[1] )  , #GrassHopper1
-        (hex_to_pixel(-17, 1  ,HEX_SIZE_Board)[0]  , hex_to_pixel(-17,  1 , HEX_SIZE_Board)[1] )  , #GrassHopper2
-        (hex_to_pixel(-15, 0  ,HEX_SIZE_Board)[0]  , hex_to_pixel(-15,  0 , HEX_SIZE_Board)[1] )  , #GrassHopper3
-        (hex_to_pixel(-19, 3  ,HEX_SIZE_Board)[0]  , hex_to_pixel(-19,  3 , HEX_SIZE_Board)[1] )  , #Spider1
-        (hex_to_pixel(-17, 2  ,HEX_SIZE_Board)[0]  , hex_to_pixel(-17,  2 , HEX_SIZE_Board)[1] )  , #Spider2
-        (hex_to_pixel(-15, 1  ,HEX_SIZE_Board)[0]  , hex_to_pixel(-15,  1 , HEX_SIZE_Board)[1] )  , #Beetle1
-        (hex_to_pixel(-19, 4  ,HEX_SIZE_Board)[0]  , hex_to_pixel(-19,  4 , HEX_SIZE_Board)[1] )  , #Beetle2
-        (hex_to_pixel(-17, 3  ,HEX_SIZE_Board)[0]  , hex_to_pixel(-17,  3 , HEX_SIZE_Board)[1] )  , #Queen1
+        (hex_to_pixel(-19, 1  ,HEX_SIZE_Board,screen_width,screen_height)[0]  , hex_to_pixel(-19,  1 , HEX_SIZE_Board,screen_width,screen_height)[1])  , #ANT1
+        (hex_to_pixel(-17, 0  ,HEX_SIZE_Board,screen_width,screen_height)[0]  , hex_to_pixel(-17,  0 , HEX_SIZE_Board,screen_width,screen_height)[1])  , #ANT2
+        (hex_to_pixel(-15, -1 ,HEX_SIZE_Board,screen_width,screen_height)[0]  ,hex_to_pixel(-15 , -1 , HEX_SIZE_Board,screen_width,screen_height)[1])  , #ANT3
+        (hex_to_pixel(-19, 2  ,HEX_SIZE_Board,screen_width,screen_height)[0]  , hex_to_pixel(-19,  2 , HEX_SIZE_Board,screen_width,screen_height)[1])  , #GrassHopper1
+        (hex_to_pixel(-17, 1  ,HEX_SIZE_Board,screen_width,screen_height)[0]  , hex_to_pixel(-17,  1 , HEX_SIZE_Board,screen_width,screen_height)[1])  , #GrassHopper2
+        (hex_to_pixel(-15, 0  ,HEX_SIZE_Board,screen_width,screen_height)[0]  , hex_to_pixel(-15,  0 , HEX_SIZE_Board,screen_width,screen_height)[1])  , #GrassHopper3
+        (hex_to_pixel(-19, 3  ,HEX_SIZE_Board,screen_width,screen_height)[0]  , hex_to_pixel(-19,  3 , HEX_SIZE_Board,screen_width,screen_height)[1])  , #Spider1
+        (hex_to_pixel(-17, 2  ,HEX_SIZE_Board,screen_width,screen_height)[0]  , hex_to_pixel(-17,  2 , HEX_SIZE_Board,screen_width,screen_height)[1])  , #Spider2
+        (hex_to_pixel(-15, 1  ,HEX_SIZE_Board,screen_width,screen_height)[0]  , hex_to_pixel(-15,  1 , HEX_SIZE_Board,screen_width,screen_height)[1])  , #Beetle1
+        (hex_to_pixel(-19, 4  ,HEX_SIZE_Board,screen_width,screen_height)[0]  , hex_to_pixel(-19,  4 , HEX_SIZE_Board,screen_width,screen_height)[1])  , #Beetle2
+        (hex_to_pixel(-17, 3  ,HEX_SIZE_Board,screen_width,screen_height)[0]  , hex_to_pixel(-17,  3 , HEX_SIZE_Board,screen_width,screen_height)[1])  , #Queen1
     ] 
     def general_get_hex_number(q, r):
         # Mapping of hex coordinates to their respective numbers
         hex_map = { 
-            pixel_to_hex(positions_black[0][0]  , positions_black[0][1],HEX_SIZE_Board)  : 0   ,
-            pixel_to_hex(positions_black[1][0]  , positions_black[1][1],HEX_SIZE_Board)  : 1   ,     
-            pixel_to_hex(positions_black[2][0]  , positions_black[2][1],HEX_SIZE_Board)  : 2   ,
-            pixel_to_hex(positions_black[3][0]  , positions_black[3][1],HEX_SIZE_Board)  : 3   ,
-            pixel_to_hex(positions_black[4][0]  , positions_black[4][1],HEX_SIZE_Board)  : 4   ,
-            pixel_to_hex(positions_black[5][0]  , positions_black[5][1],HEX_SIZE_Board)  : 5   ,
-            pixel_to_hex(positions_black[6][0]  , positions_black[6][1],HEX_SIZE_Board)  : 6   ,
-            pixel_to_hex(positions_black[7][0]  , positions_black[7][1],HEX_SIZE_Board)  : 7   ,
-            pixel_to_hex(positions_black[8][0]  , positions_black[8][1],HEX_SIZE_Board)  : 8   ,
-            pixel_to_hex(positions_black[9][0]  , positions_black[9][1],HEX_SIZE_Board)  : 9   ,
-            pixel_to_hex(positions_black[10][0] , positions_black[10][1],HEX_SIZE_Board) : 10  ,
-            pixel_to_hex(positions_white[0][0]  , positions_white[0][1],HEX_SIZE_Board)  : 11  ,
-            pixel_to_hex(positions_white[1][0]  , positions_white[1][1],HEX_SIZE_Board)  : 12  ,
-            pixel_to_hex(positions_white[2][0]  , positions_white[2][1],HEX_SIZE_Board)  : 13  ,
-            pixel_to_hex(positions_white[3][0]  , positions_white[3][1],HEX_SIZE_Board)  : 14  ,
-            pixel_to_hex(positions_white[4][0]  , positions_white[4][1],HEX_SIZE_Board)  : 15  ,
-            pixel_to_hex(positions_white[5][0]  , positions_white[5][1],HEX_SIZE_Board)  : 16  ,
-            pixel_to_hex(positions_white[6][0]  , positions_white[6][1],HEX_SIZE_Board)  : 17  ,
-            pixel_to_hex(positions_white[7][0]  , positions_white[7][1],HEX_SIZE_Board)  : 18  ,
-            pixel_to_hex(positions_white[8][0]  , positions_white[8][1],HEX_SIZE_Board)  : 19  ,
-            pixel_to_hex(positions_white[9][0]  , positions_white[9][1],HEX_SIZE_Board)  : 20  ,
-            pixel_to_hex(positions_white[10][0] , positions_white[10][1],HEX_SIZE_Board) : 21 
+            pixel_to_hex(positions_black[0][0]  , positions_black[0][1],HEX_SIZE_Board,screen_width,screen_height)  : 0   ,
+            pixel_to_hex(positions_black[1][0]  , positions_black[1][1],HEX_SIZE_Board,screen_width,screen_height)  : 1   ,     
+            pixel_to_hex(positions_black[2][0]  , positions_black[2][1],HEX_SIZE_Board,screen_width,screen_height)  : 2   ,
+            pixel_to_hex(positions_black[3][0]  , positions_black[3][1],HEX_SIZE_Board,screen_width,screen_height)  : 3   ,
+            pixel_to_hex(positions_black[4][0]  , positions_black[4][1],HEX_SIZE_Board,screen_width,screen_height)  : 4   ,
+            pixel_to_hex(positions_black[5][0]  , positions_black[5][1],HEX_SIZE_Board,screen_width,screen_height)  : 5   ,
+            pixel_to_hex(positions_black[6][0]  , positions_black[6][1],HEX_SIZE_Board,screen_width,screen_height)  : 6   ,
+            pixel_to_hex(positions_black[7][0]  , positions_black[7][1],HEX_SIZE_Board,screen_width,screen_height)  : 7   ,
+            pixel_to_hex(positions_black[8][0]  , positions_black[8][1],HEX_SIZE_Board,screen_width,screen_height)  : 8   ,
+            pixel_to_hex(positions_black[9][0]  , positions_black[9][1],HEX_SIZE_Board,screen_width,screen_height)  : 9   ,
+            pixel_to_hex(positions_black[10][0] , positions_black[10][1],HEX_SIZE_Board,screen_width,screen_height) : 10  ,
+            pixel_to_hex(positions_white[0][0]  , positions_white[0][1],HEX_SIZE_Board,screen_width,screen_height)  : 11  ,
+            pixel_to_hex(positions_white[1][0]  , positions_white[1][1],HEX_SIZE_Board,screen_width,screen_height)  : 12  ,
+            pixel_to_hex(positions_white[2][0]  , positions_white[2][1],HEX_SIZE_Board,screen_width,screen_height)  : 13  ,
+            pixel_to_hex(positions_white[3][0]  , positions_white[3][1],HEX_SIZE_Board,screen_width,screen_height)  : 14  ,
+            pixel_to_hex(positions_white[4][0]  , positions_white[4][1],HEX_SIZE_Board,screen_width,screen_height)  : 15  ,
+            pixel_to_hex(positions_white[5][0]  , positions_white[5][1],HEX_SIZE_Board,screen_width,screen_height)  : 16  ,
+            pixel_to_hex(positions_white[6][0]  , positions_white[6][1],HEX_SIZE_Board,screen_width,screen_height)  : 17  ,
+            pixel_to_hex(positions_white[7][0]  , positions_white[7][1],HEX_SIZE_Board,screen_width,screen_height)  : 18  ,
+            pixel_to_hex(positions_white[8][0]  , positions_white[8][1],HEX_SIZE_Board,screen_width,screen_height)  : 19  ,
+            pixel_to_hex(positions_white[9][0]  , positions_white[9][1],HEX_SIZE_Board,screen_width,screen_height)  : 20  ,
+            pixel_to_hex(positions_white[10][0] , positions_white[10][1],HEX_SIZE_Board,screen_width,screen_height) : 21 
         }       
 
         # Return the number if the hex coordina te exists, or None otherwise    
@@ -110,7 +106,7 @@ def main():
                 if piece_index >= len(positions):
                     break
                 x, y = positions[piece_index]
-                q, r = pixel_to_hex(x, y, HEX_SIZE_MENU)
+                q, r = pixel_to_hex(x, y, HEX_SIZE_MENU,screen_width,screen_height)
                 img = piece_images[name]
                 hex_map_on_menu.add_piece(q, r, f"{name}{i}", color, img)
                 piece_index += 1
@@ -120,13 +116,13 @@ def main():
 
     def draw_hexagons(positions, color1, color2):
         for x, y in positions:
-            if(get_hex_number(pixel_to_hex(x,y,HEX_SIZE_Board)[0],pixel_to_hex(x,y,HEX_SIZE_Board)[1]) == None): 
+            if(get_hex_number(pixel_to_hex(x,y,HEX_SIZE_Board,screen_width,screen_height)[0],pixel_to_hex(x,y,HEX_SIZE_Board,screen_width,screen_height)[1]) == None): 
                 x+=hex_map.x
                 y+=hex_map.y
                 #print(x,y)
             draw_hexagon(screen, x, y, color1, color2, HEX_SIZE_MENU)
-            q1, r1 = pixel_to_hex(x-hex_map.x, y-hex_map.y, HEX_SIZE_MENU)#Right q and r
-            q, r = pixel_to_hex(x, y, HEX_SIZE_MENU)#Right q and r
+            q1, r1 = pixel_to_hex(x-hex_map.x, y-hex_map.y, HEX_SIZE_MENU,screen_width,screen_height)#Right q and r
+            q, r = pixel_to_hex(x, y, HEX_SIZE_MENU,screen_width,screen_height)#Right q and r
             piece1 = hex_map_on_menu.get_piece(q, r)
             piece2 = hex_map.get_piece(q1,r1)
             if piece1:
@@ -155,7 +151,7 @@ def main():
     
         for q in range(-10  , 10):
             for r in range(-10, 10):
-                x, y = hex_to_pixel(q, r, HEX_SIZE_Board)
+                x, y = hex_to_pixel(q, r, HEX_SIZE_Board,screen_width,screen_height)
                 x+=hex_map.x
                 y+=hex_map.y
                 fill_color = HEX_COLOR
@@ -230,16 +226,16 @@ def main():
                     
                     #to chech if the mouse click in the board range or menu range
                     if (mouse_x <=250 and mouse_y<=250) or (mouse_x >=screen_width-250 and mouse_y<=250):
-                        selected_hex = pixel_to_hex(mouse_x - hex_map_on_menu.x, mouse_y - hex_map_on_menu.y, HEX_SIZE_Board)
+                        selected_hex = pixel_to_hex(mouse_x - hex_map_on_menu.x, mouse_y - hex_map_on_menu.y, HEX_SIZE_Board,screen_width,screen_height)
                         print(f"Selected Hex: {selected_hex},{hex_map_on_menu.get_piece(selected_hex[0], selected_hex[1])}")
                     else:
-                        selected_hex = pixel_to_hex(mouse_x - hex_map.x, mouse_y - hex_map.y, HEX_SIZE_Board)
+                        selected_hex = pixel_to_hex(mouse_x - hex_map.x, mouse_y - hex_map.y, HEX_SIZE_Board,screen_width,screen_height)
                         print(f"Selected Hex: {selected_hex},{hex_map.get_piece(selected_hex[0], selected_hex[1])}")
                     #Determine the values of list based on the state    
                     
                     
                     #check first click    
-                    new_mouse_x,new_mouse_y=hex_to_pixel(selected_hex[0],selected_hex[1],HEX_SIZE_Board)
+                    new_mouse_x,new_mouse_y=hex_to_pixel(selected_hex[0],selected_hex[1],HEX_SIZE_Board,screen_width,screen_height)
                     
                     if(((new_mouse_x>screen_width-250 and new_mouse_y<250) and hex_map.Turn == 'B') or
                        ((new_mouse_x<250 and new_mouse_y<250) and hex_map.Turn == 'W')):
@@ -310,7 +306,7 @@ def main():
                                 #print(preselected_hex)
                                 print(f"the hex number is : {hex_number,hex_map.Turn}")
                                 preselected_hex= (0,0)
-                                h2p_x,h2p_y = hex_to_pixel(*selected_hex,HEX_SIZE_Board)
+                                h2p_x,h2p_y = hex_to_pixel(*selected_hex,HEX_SIZE_Board,screen_width,screen_height)
                                 if(hex_map.Turn == "W" and (hex_number>10 and hex_number<22)):
                                     print(hex_number)
                                     print(hex_map.Turn)
@@ -343,7 +339,7 @@ def main():
             #print("555")
             #print("Available Positions:", list)
             for hamada in list: 
-                x,y = hex_to_pixel( hamada[0],hamada[1],HEX_SIZE_Board)
+                x,y = hex_to_pixel( hamada[0],hamada[1],HEX_SIZE_Board,screen_width,screen_height)
                 x+=hex_map.x
                 y+=hex_map.y
                 draw_hexagon(screen,x,y, SELECTED_COLOR, BORDER_COLOR, HEX_SIZE_MENU)

@@ -11,9 +11,9 @@ class HexMap:
         self.Length = 0
         self.OutCasts = []
 
-    def add_piece(self, q, r, name, color):
+    def add_piece(self, q, r, name, color, Img):
         self.Length += 1
-        self.map[(q, r)] = (name, color)
+        self.map[(q, r)] = (name, color, Img)
         if color == "W":
             self.White_turn_count += 1
             self.Turn = "W"

@@ -73,3 +73,15 @@ def CalculateBoardValue (hex_map: HexMap , ActivePlayer ):
     return 20*(len(whiteHexesAround_BQ) - len(BlackHexesAround_WQ))+ 1*(hex_map.White_turn_count -hex_map.Black_turn_count)+ 5*(numberOfWhiteFreePieces - numberOfBlackFreePieces) ;
 
 
+def GameOver(hex_map : HexMap):
+    blackDead = isQueenSurrounded("B", hex_map)
+    whiteDead = isQueenSurrounded("W", hex_map)
+    return blackDead or whiteDead
+
+def calculateValue(hex_map:HexMap,player):
+    vlaue = CalculateBoardValue(hex_map)
+    if(player=="W"):
+        return vlaue
+    else:
+        return -vlaue
+

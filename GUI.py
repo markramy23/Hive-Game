@@ -94,3 +94,10 @@ def draw_player(player1_name, player2_name, Players_type, screen):
     # elif Players_type is "Human-AI":
     # elif Players_type is "AI-AI":
 
+# display available positions on the screen
+def display_avail(list, screen):
+    for element in list:
+        x, y = hex_to_pixel(element[0], element[1])
+        x += WIDTH // 2
+        y += HEIGHT // 2
+        draw_hexagon(screen, x, y, (255, 0, 255), BORDER_COLOR)

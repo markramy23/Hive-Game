@@ -26,6 +26,41 @@ class HexMap:
             else:
                 self.queen_placed["B"] = True
 
+        
+    def remove_piece(self, q, r):
+        """
+        Remove a piece from the board at the specified hex coordinates (q, r).
+
+        Args:
+            q: The q-coordinate of the hex.
+            r: The r-coordinate of the hex.
+
+        Returns:
+            The removed piece as a tuple (name, color, Img), or None if no piece was found.
+        """
+        if (q, r) in self.map:
+            # Retrieve and remove the piece
+            name, color, Img = self.map.pop((q, r))
+            self.Length -= 1
+
+            # Update turn counters
+            if color == "W":
+                self.White_turn_count -= 1
+                self.Turn = "W"  # Switch turn to the opposite color
+            else:
+                self.Black_turn_count -= 1
+                self.Turn = "B"  # Switch turn to the opposite color
+
+            # Update queen placed status
+            if name == "Queen":
+                self.queen_placed[color] = False
+
+            return name, color, Img  # Return the removed piece details
+        else:
+            print(f"No piece found at ({q}, {r}) to remove.")
+            return None
+
+    
     def get_piece(self, q, r):
         return self.map.get((q, r), None)
 

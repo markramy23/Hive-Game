@@ -1,4 +1,6 @@
 from rules import *
+import copy
+
 def AvailablePositions(hex_map, turn):
     result = []
     s = set()

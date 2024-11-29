@@ -1,5 +1,5 @@
 import pygame
-
+from GUI import *
 from Hex_map import HexMap
 from Utilities import *
 from Available_positions import *

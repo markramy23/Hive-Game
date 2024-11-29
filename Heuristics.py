@@ -105,3 +105,10 @@ def minimax(hex_map:HexMap , depth , maximizingPlayer,player):
             undoMove(move)
         return bestValue
 
+def generateMoves (hex_map , Player):
+    Result =[]
+    for (key,value) in hex_map.map.items() :
+        if color == value[1] :
+            for Pos in Pieces_Available_Positions[value[0]](hex_map ,key[0],key[1]) :
+                Result.append( (key[0],key[1],Pos[0],Pos[1] ,value[0] ,value[1]) )
+    return  Result

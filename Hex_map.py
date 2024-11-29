@@ -62,7 +62,12 @@ class HexMap:
 
     
     def get_piece(self, q, r):
-        return self.map.get((q, r), None)
+        """Retrieve the name and color of the piece at the specified coordinates."""
+        piece = self.map.get((q, r))
+        if piece:
+            name, color, img = piece  # Extract name and color from the tuple
+            return name, color , img
+        return None  # Return None if no piece exists at the specified coordinates
 
     def move_piece(self, q, r, new_q, new_r):
         self.map[(new_q, new_r)] = self.map.pop((q, r))

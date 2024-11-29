@@ -37,14 +37,6 @@ def hex_round(q, r):
     return int(q_round), int(r_round)
 
 
-# display available positions on the screen
-def display_avail(list, screen):
-    for element in list:
-        x, y = hex_to_pixel(element[0], element[1])
-        x += WIDTH // 2
-        y += HEIGHT // 2
-        draw_hexagon(screen, x, y, (255, 0, 255), BORDER_COLOR)
-
 def hex_to_pixel(q, r,hex_size):
     """Convert hexagonal (q, r) coordinates to pixel coordinates (x, y)."""
     x = hex_size * (3/2 * q)

@@ -62,3 +62,16 @@ def pixel_to_hex(x, y):
     r = (-1 / 3 * x + math.sqrt(3) / 3 * y) / HEX_SIZE
     return hex_round(q, r)
 
+#Function Mapping of hex coordinates to their respective numbers 
+def get_hex_number(q, r):
+    hex_map = {
+        (-19, 1): 0, (-17, 0): 1, (-15, -1): 2, (-19, 2): 3,
+        (-17, 1): 4, (-15, 0): 5, (-19, 3): 6, (-17, 2): 7,
+        (-15, 1): 8, (-19, 4): 9, (-17, 3): 10,(19, -18): 11, 
+        (17, -17): 12, (15, -16): 13,(19, -17): 14, (17, -16): 15, 
+        (15, -15): 16, (19, -16): 17,(17, -15): 18, (15, -14): 19,
+        (19, -15): 20, (17, -14): 21
+    }
+    
+    # Return the number if the hex coordinate exists, or None otherwise
+    return hex_map.get((q, r), None)

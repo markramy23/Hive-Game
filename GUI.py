@@ -1,6 +1,8 @@
 # Function to draw a single hexagon with its content (duplicated)
 from Utilities import  *
 import pygame
+import math
+
 font = pygame.font.Font('freesansbold.ttf', 20)
 # Screen dimensions
 screen_width, screen_height = 1550, 790

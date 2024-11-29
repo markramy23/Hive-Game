@@ -1,5 +1,6 @@
 from Hex_map import HexMap
 from Available_positions import *
+from Utilities import *
 Pieces_Available_Positions={
     "Queen" : Available_Positions_Queen ,
     "Ant"   : AvailablePositions_SoldierAnt ,
@@ -8,9 +9,12 @@ Pieces_Available_Positions={
     "Spider"      : Available_Positions_Spider
 }
 
+
+
+
 def FreePieces (hex_map : HexMap,color):
     cnt=0
-    for (key,value) in hex_map :
+    for (key,value) in hex_map.map.items() :
         if color == value[1] :
             if len(Pieces_Available_Positions[value[0]](hex_map ,key[0],key[1])) >0 :
                 cnt +=1
@@ -18,11 +22,33 @@ def FreePieces (hex_map : HexMap,color):
     return cnt
 
 
+def isQueenSurrounded (color ,hex_map):
+    for (key,value) in hex_map.map.items()  :
+        if  value[0]=="Queen" and color == value[1] :
+            if len(hex_map.get_neighbors(key[0],key[1])) == 6 :
+                return True
+            else :
+                return False
 
 
-def CalculateBoardValue (hex_map: HexMap):
+
+def CalculateBoardValue (hex_map: HexMap , ActivePlayer ):
     whiteQueen=0
     blackQueen=0
+    blackWon = isQueenSurrounded("B",hex_map)
+    whiteWon = isQueenSurrounded("W",hex_map)
+    if blackWon == True and whiteWon == True :
+        if ActivePlayer == "W" :
+            return (INTMIN)
+        else:
+            return  (INTMAX)
+    elif blackWon == True :
+        return INTMIN
+    elif whiteWon == True :
+        return INTMAX
+
+
+
     for (key ,value) in hex_map.map.items() :
         if value[0] == "Queen"  and value[1]=="W" :
             whiteQueen=(key,value)

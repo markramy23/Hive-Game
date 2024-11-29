@@ -1,6 +1,8 @@
 import math
 import pygame
 # Constants
+INTMIN = -2**31
+INTMAX =  2**31
 WIDTH = 800
 HEIGHT = 600
 HEX_SIZE = 30  # Size of the hexagon

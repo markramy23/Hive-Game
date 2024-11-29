@@ -96,19 +96,30 @@ def minimax(hex_map:HexMap , depth , maximizingPlayer,player):
         else:
             bestValue = INTMAX
         for move in moves:
-            applyMove(move)
+            applyMove(hex_map,move)
             value = minimax(hex_map,depth-1,not maximizingPlayer,player)
             if maximizingPlayer:
                 bestValue = max(bestValue,value)
             else:
                 bestValue = min(bestValue,value)
-            undoMove(move)
+            undoMove(hex_map,move)
         return bestValue
 
-def generateMoves (hex_map , Player):
+def generateMoves (hex_map:HexMap , Player):
     Result =[]
     for (key,value) in hex_map.map.items() :
         if color == value[1] :
             for Pos in Pieces_Available_Positions[value[0]](hex_map ,key[0],key[1]) :
                 Result.append( (key[0],key[1],Pos[0],Pos[1] ,value[0] ,value[1]) )
+                # (Current q , Current r , next q , next r , name, color )
     return  Result
+
+
+def applyMove (hex_map:HexMap , move):
+    hex_map.move_piece(move[0],move[1],move[2],move[3])
+
+def undoMove (hex_map:HexMap , move):
+    hex_map.move_piece(move[2], move[3], move[0], move[1])
+
+
+

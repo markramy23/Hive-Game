@@ -26,7 +26,7 @@ class HexMap:
             else:
                 self.queen_placed["B"] = True
 
-        
+   
     def remove_piece(self, q, r):
         """
         Remove a piece from the board at the specified hex coordinates (q, r).
@@ -62,10 +62,12 @@ class HexMap:
 
     
     def get_piece(self, q, r):
-        """Retrieve the name and color of the piece at the specified coordinates."""
+        """Retrieve the name  color and img of the piece at the specified coordinates."""
         piece = self.map.get((q, r))
         if piece:
+            #print(piece)
             name, color, img = piece  # Extract name and color from the tuple
+            
             return name, color , img
         return None  # Return None if no piece exists at the specified coordinates
 

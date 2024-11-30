@@ -70,9 +70,9 @@ def Available_Positions_Queen(hex_map, q, r):
                     break
             if flag:
                 result.append((element[0], element[1]))
-    print(result)
+    #print(result)
     result = list(FreedomToMove(hex_map, empty_neighbours, result))
-    print(result)
+    #print(result)
     return result
 
 #Spider Available Positions

@@ -266,29 +266,33 @@ def main():
                         if(not draw_flag or (result_board != None and hex_map.get_piece(preselected_hex[0],preselected_hex[1]) != None)):  
                             draw_flag = True
                             preselected_hex = selected_hex  
-                            match name_on_board:
-                                case "Queen":
-                                    list = Available_Positions_Queen(hex_map,selected_hex[0],selected_hex[1])
-                                    
-                                case "Ant":
-                                    list = AvailablePositions_Ant(hex_map,selected_hex[0],selected_hex[1])
-                                    
-                                case "Grasshopper":
-                                    list = AvailablePositions_GrassHopper(hex_map,selected_hex[0],selected_hex[1])
-                            
-                                case "Spider":
-                                    list = Available_Positions_Spider(hex_map,selected_hex[0],selected_hex[1])
+                            if(not does_removal_break_hive(hex_map.map,selected_hex)):
+                                match name_on_board:
+                                    case "Queen":
+                                        list = Available_Positions_Queen(hex_map,selected_hex[0],selected_hex[1])
+                                        
+                                    case "Ant":
+                                         list = AvailablePositions_Ant(hex_map,selected_hex[0],selected_hex[1])
+                                        
+                                    case "Grasshopper":
+                                        list = AvailablePositions_GrassHopper(hex_map,selected_hex[0],selected_hex[1])
+                                
+                                    case "Spider":
+                                            list = Available_Positions_Spider(hex_map,selected_hex[0],selected_hex[1])
 
-                                case "Beetle":
-                                    list = AvailablePositions_Beetle(hex_map,selected_hex[0],selected_hex[1])
+                                    case "Beetle":
+                                        list = AvailablePositions_Beetle(hex_map,selected_hex[0],selected_hex[1])
+                            else:
+                                draw_flag = False
                     
                     if (draw_flag):
                         #print("222")  
                         for element in list:
                             #check 2 left clicking 
                             #print(element)
+                            result = hex_map.get_piece(selected_hex[0],selected_hex[1])
                             if (selected_hex[0] == element[0] and selected_hex[1] == element[1]):
-                                print(preselected_hex)
+                                #print(preselected_hex)
                                 prevresult_on_menu = hex_map_on_menu.get_piece(preselected_hex[0],preselected_hex[1])
                                 prevresult_on_board = hex_map.get_piece(preselected_hex[0],preselected_hex[1])
                                 if(prevresult_on_menu != None):
@@ -304,23 +308,24 @@ def main():
                                 hex_number = general_get_hex_number(preselected_hex[0],preselected_hex[1])
                                 
                                 #print(preselected_hex)
-                                print(f"the hex number is : {hex_number,hex_map.Turn}")
+                                #print(f"the hex number is : {hex_number,hex_map.Turn}")
                                 preselected_hex= (0,0)
                                 h2p_x,h2p_y = hex_to_pixel(*selected_hex,HEX_SIZE_Board,screen_width,screen_height)
                                 if(hex_map.Turn == "W" and (hex_number>10 and hex_number<22)):
-                                    print(hex_number)
-                                    print(hex_map.Turn)
+                                    # print(hex_number)
+                                    # print(hex_map.Turn)
                                     positions_white[hex_number-11]=h2p_x,h2p_y
                                     hex_map.Turn = "B"
                                 elif(hex_map.Turn == "B" and (hex_number>-1 and hex_number<11)):
-                                    print("555")
-                                    print(hex_number)
-                                    print(hex_map.Turn)
+                                    # print("555")
+                                    # print(hex_number)
+                                    # print(hex_map.Turn)
                                     positions_black[hex_number]=h2p_x,h2p_y
                                     hex_map.Turn = "W"
                                 break
                             #Deselecting
-                            elif(((hex_map_on_menu.get_piece(selected_hex[0],selected_hex[1]) == None) and (hex_map.get_piece(selected_hex[0],selected_hex[1]) == None)) and (selected_hex[0] != element[0] and selected_hex[1] != element[1])):
+
+                            elif(((hex_map_on_menu.get_piece(selected_hex[0],selected_hex[1]) == None) and (result == None)) and (selected_hex[0] != element[0] and selected_hex[1] != element[1])):
                                 # for element1 in list:
                                 #     if (selected_hex[0] == element[0] and selected_hex[1] == element[1]):
 
@@ -358,7 +363,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-

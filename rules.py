@@ -1,21 +1,21 @@
-
+from Utilities import get_neighbors
 def FreedomToMove(hex_map,Empty_Neighbours, AvailablePOSs):
-    s = set() ;
+    s = set() 
     directions = [(+1, 0), (-1, 0), (0, +1), (0, -1), (+1, -1), (-1, +1)]
     for AvailablePOS in AvailablePOSs :
         Empty_Neighbours_ForAvailablePOS =[]
         for  direction in directions:
             Empty_Neighbours_ForAvailablePOS.append((AvailablePOS[0]+direction[0] , AvailablePOS[1]+direction[1]) )
         for Empty_Neighbour_ForAvailablePOS in Empty_Neighbours_ForAvailablePOS :
-            flag =0 ;
+            flag =0 
             for Empty_Neighbour in Empty_Neighbours :
                 if Empty_Neighbour[0] == Empty_Neighbour_ForAvailablePOS[0] and  Empty_Neighbour[1] == Empty_Neighbour_ForAvailablePOS[1] :
-                    s.add( AvailablePOS) ;
-                    flag=1 ;
-                    break ;
+                    s.add( AvailablePOS) 
+                    flag=1 
+                    break 
 
             if flag ==1 :
-                break ;
+                break 
 
 
     return s
@@ -41,12 +41,14 @@ def does_removal_break_hive(grid, removed_piece):
     """
     # Step 1: Identify neighbors of the removed piece
     neighbors = get_neighbors(removed_piece, grid)
+    #print(neighbors)
     if len(neighbors) < 2:
         # Hive cannot break if the piece has less than 2 neighbors
         return False
 
+    piece = grid[removed_piece]
     # Step 2: Temporarily remove the piece from the grid
-    del grid[removed_piece]
+    del grid[removed_piece]  #del the selected piece from the hex map
 
     # Step 3: Start DFS from one neighbor
     start = neighbors[0]
@@ -57,9 +59,9 @@ def does_removal_break_hive(grid, removed_piece):
     for neighbor in neighbors[1:]:
         if neighbor not in visited:
             # Not all neighbors are connected; hive is broken
-            grid[removed_piece] = "Piece"  # Restore the piece
+            grid[removed_piece] = piece  # Restore the piece hexmap.map[select]
             return True
 
     # Step 5: Restore the removed piece and return the result
-    grid[removed_piece] = "Piece"
+    grid[removed_piece] = piece
     return False

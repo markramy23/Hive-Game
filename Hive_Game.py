@@ -4,8 +4,6 @@ from Hex_map import HexMap
 from Utilities import *
 from Available_positions import *
 
-
-
 def main():
     global screen_width, screen_height
 
@@ -227,10 +225,10 @@ def main():
                     #to chech if the mouse click in the board range or menu range
                     if (mouse_x <=250 and mouse_y<=250) or (mouse_x >=screen_width-250 and mouse_y<=250):
                         selected_hex = pixel_to_hex(mouse_x - hex_map_on_menu.x, mouse_y - hex_map_on_menu.y, HEX_SIZE_Board,screen_width,screen_height)
-                        print(f"Selected Hex: {selected_hex},{hex_map_on_menu.get_piece(selected_hex[0], selected_hex[1])}")
+                        # print(f"Selected Hex: {selected_hex},{hex_map_on_menu.get_piece(selected_hex[0], selected_hex[1])}")
                     else:
                         selected_hex = pixel_to_hex(mouse_x - hex_map.x, mouse_y - hex_map.y, HEX_SIZE_Board,screen_width,screen_height)
-                        print(f"Selected Hex: {selected_hex},{hex_map.get_piece(selected_hex[0], selected_hex[1])}")
+                        # print(f"Selected Hex: {selected_hex},{hex_map.get_piece(selected_hex[0], selected_hex[1])}")
                     #Determine the values of list based on the state    
                     
                     
@@ -244,16 +242,20 @@ def main():
                     #get the name and color and img of the selected piece
                     result_menu = hex_map_on_menu.get_piece(selected_hex[0],selected_hex[1]) 
                     result_board = hex_map.get_piece(selected_hex[0],selected_hex[1])
+                    print("preselected")
+                    print(preselected_hex,hex_map_on_menu.get_piece(preselected_hex[0], preselected_hex[1]))
+                    print("selected")
+                    print(selected_hex,hex_map.get_piece(selected_hex[0], selected_hex[1]))
+                    
                     ########################## Code to enter the piece from menu to board ################################### 
-                    if(result_menu != None):
+                    if(result_menu != None):#to ensure that the currect selected piece is on menu
                         name_on_menu,color_on_menu,img_on_menu = result_menu
                         #print("000")
-                        if(not draw_flag or (result_menu != None and hex_map_on_menu.get_piece(preselected_hex[0],preselected_hex[1]) != None)):
+                        if(not draw_flag or (result_menu != None and hex_map_on_menu.get_piece(preselected_hex[0],preselected_hex[1]) != None)):#to handle the succesive clicks on multible pieces on menu
                             #print("111")
                             list = AvailablePositions(hex_map,hex_map.Turn)
                             draw_flag = True
                             preselected_hex = selected_hex
-
                     ########################## Code to enter the piece from board to board ################################### 
                     elif(result_board != None):
                         name_on_board,color_on_board,img_on_board = result_board
@@ -262,29 +264,70 @@ def main():
                             draw_flag=False
                             continue
                         name_on_board = name_on_board[:-1]
-                        
-                        if(not draw_flag or (result_board != None and hex_map.get_piece(preselected_hex[0],preselected_hex[1]) != None)):  
+                        print("1010")
+                        if((hex_map_on_menu.get_piece(preselected_hex[0],preselected_hex[1]) != None) and (hex_map_on_menu.get_piece(selected_hex[0],selected_hex[1]) == None)):
+                            print("000")
+                            preselected_hex=(0,0)
+                        prevresult_on_board_1click = hex_map.get_piece(preselected_hex[0],preselected_hex[1])
+                        if (prevresult_on_board_1click != None):
+                            prev_name_board_1click , prev_color_board_1click , prev_img_board_1click = prevresult_on_board_1click 
+                            prev_name_board_1click = prev_name_board_1click[:-1]
+                        if(not draw_flag or (result_board != None and prevresult_on_board_1click != None)):  
                             draw_flag = True
-                            preselected_hex = selected_hex  
-                            if(not does_removal_break_hive(hex_map.map,selected_hex)):
-                                match name_on_board:
+                            flag = True
+
+                            if(prev_name_board_1click == "Beetle"): 
+                                   list = AvailablePositions_Beetle(hex_map,preselected_hex[0],preselected_hex[1])
+                                   print(list)
+                                   for element in list: 
+                                        if (selected_hex[0] == element[0] and selected_hex[1] == element[1]):
+                                            #selected_hex = preselected_hex
+                                            flag =False
+                                            print(555)
+                                            break
+                                        else:
+                                            flag = True 
+                            else:
+                                print(666)
+                                preselected_hex = selected_hex  
+                            if(flag == True):
+                                print(444)
+                                preselected_hex = selected_hex 
+                            
+                            is_beetle_stacked = False
+                            prevresult_on_board_1click = hex_map.get_piece(preselected_hex[0],preselected_hex[1])
+                            if (prevresult_on_board_1click != None):
+                                prev_name_board_1click , prev_color_board_1click , prev_img_board_1click = prevresult_on_board_1click 
+                                prev_name_board_1click = prev_name_board_1click[:-1]
+                            if(does_removal_break_hive(hex_map.map,preselected_hex) and prev_name_board_1click == "Beetle"):
+                                for outcast in hex_map.OutCasts:
+                                    if(outcast[0]==preselected_hex):
+                                        is_beetle_stacked = True
+                                        break
+                                    else:
+                                        is_beetle_stacked = False
+
+                            if(not does_removal_break_hive(hex_map.map,preselected_hex) or is_beetle_stacked ):
+                                name_on_board_3 ,color_on_board_3 ,img_on_board_3 = hex_map.get_piece(preselected_hex[0],preselected_hex[1])
+                                name_on_board_3 = name_on_board_3[:-1]
+                                match name_on_board_3:
                                     case "Queen":
-                                        list = Available_Positions_Queen(hex_map,selected_hex[0],selected_hex[1])
+                                        list = Available_Positions_Queen(hex_map,preselected_hex[0],preselected_hex[1])
                                         
                                     case "Ant":
-                                         list = AvailablePositions_Ant(hex_map,selected_hex[0],selected_hex[1])
+                                         list = AvailablePositions_Ant(hex_map,preselected_hex[0],preselected_hex[1])
                                         
                                     case "Grasshopper":
-                                        list = AvailablePositions_GrassHopper(hex_map,selected_hex[0],selected_hex[1])
+                                        list = AvailablePositions_GrassHopper(hex_map,preselected_hex[0],preselected_hex[1])
                                 
                                     case "Spider":
-                                            list = Available_Positions_Spider(hex_map,selected_hex[0],selected_hex[1])
+                                            list = Available_Positions_Spider(hex_map,preselected_hex[0],preselected_hex[1])
 
                                     case "Beetle":
-                                        list = AvailablePositions_Beetle(hex_map,selected_hex[0],selected_hex[1])
+                                        list = AvailablePositions_Beetle(hex_map,preselected_hex[0],preselected_hex[1])
                             else:
                                 draw_flag = False
-                    
+                                  
                     if (draw_flag):
                         #print("222")  
                         for element in list:
@@ -295,15 +338,26 @@ def main():
                                 #print(preselected_hex)
                                 prevresult_on_menu = hex_map_on_menu.get_piece(preselected_hex[0],preselected_hex[1])
                                 prevresult_on_board = hex_map.get_piece(preselected_hex[0],preselected_hex[1])
-                                if(prevresult_on_menu != None):
+                                if(prevresult_on_menu != None):#Check if the prev selected on menu 
                                     #print("444")
                                     name , color , img = prevresult_on_menu
                                     hex_map.add_piece(selected_hex[0],selected_hex[1],name,color,img)
                                     hex_map_on_menu.remove_piece(preselected_hex[0],preselected_hex[1])
-                                if(prevresult_on_board != None):
+                                if(prevresult_on_board != None):#Check if the prev selected on board 
                                     name , color , img = prevresult_on_board
-                                    hex_map.add_piece(selected_hex[0],selected_hex[1],name,color,img)
-                                    hex_map.remove_piece(preselected_hex[0],preselected_hex[1])  
+                                    name1 = name[:-1]
+                                    for outcost in hex_map.OutCasts:
+                                        if(outcost[0] == preselected_hex):
+                                            flag =False
+                                            print(777)
+                                    if (name1 == "Beetle" and flag == False):
+                                        print(111)
+                                        hex_map.move_beetle(preselected_hex[0],preselected_hex[1],selected_hex[0],selected_hex[1])
+                                    else:
+                                        hex_map.add_piece(selected_hex[0],selected_hex[1],name,color,img)
+                                        hex_map.remove_piece(preselected_hex[0],preselected_hex[1]) 
+                                    print(f"outcast :{hex_map.OutCasts}")
+                                    # print(f"Hex_Map :{hex_map.map}")
                                 draw_flag=False
                                 hex_number = general_get_hex_number(preselected_hex[0],preselected_hex[1])
                                 
@@ -347,7 +401,7 @@ def main():
                 x,y = hex_to_pixel( hamada[0],hamada[1],HEX_SIZE_Board,screen_width,screen_height)
                 x+=hex_map.x
                 y+=hex_map.y
-                draw_hexagon(screen,x,y, SELECTED_COLOR, BORDER_COLOR, HEX_SIZE_MENU)
+                draw_hexagon(screen,x,y, SELECTED_COLOR, BORDER_COLOR, HEX_SIZE_Board)
 
         
         draw_player("Ahmed Gamal", "Deatrex", "Human-Human", screen)
@@ -355,6 +409,17 @@ def main():
         #print(f"{positions_white}")
         draw_hexagons(positions_white, WHITE_PLAYER, BORDER_COLOR)
         draw_hexagons(positions_black, BLACK_PLAYER, BORDER_COLOR) 
+        result = hex_map.get_piece(selected_hex[0],selected_hex[1])
+        if(result != None):
+            name_on_board_2 ,color_on_board_2,img_on_board_2 = result
+            name_on_board_2 = name_on_board_2[:-1]
+            if(draw_flag and name_on_board_2 == "Beetle"):
+                for hamada in list: 
+                    x,y = hex_to_pixel( hamada[0],hamada[1],HEX_SIZE_Board,screen_width,screen_height)
+                    x+=hex_map.x
+                    y+=hex_map.y
+                    draw_hexagon(screen,x,y, SELECTED_COLOR, BORDER_COLOR, HEX_SIZE_Board)
+            
         pygame.display.flip()
         clock.tick(30)
     
@@ -363,3 +428,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
+

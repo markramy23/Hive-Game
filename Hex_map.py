@@ -14,6 +14,7 @@ class HexMap:
     def add_piece(self, q, r, name, color, Img):
         self.Length += 1
         self.map[(q, r)] = (name, color, Img)
+        name = name[:-1]
         if color == "W":
             self.White_turn_count += 1
             self.Turn = "W"
@@ -78,7 +79,7 @@ class HexMap:
         """Returns a list of neighboring hexes for the given hex."""
         directions = [(+1, 0), (-1, 0), (0, +1), (0, -1), (+1, -1), (-1, +1)]
         return [(q + dq, r + dr) for dq, dr in directions if (q + dq, r + dr) in self.map]
-
+    # q,r = beetle1, qnew,rnew = beetle2
     def move_beetle(self, q, r, new_q, new_r):
         if (new_q, new_r) in self.map.keys():
             self.OutCasts.append(((new_q, new_r), self.map[(new_q, new_r)]))
@@ -86,10 +87,58 @@ class HexMap:
         for OutCast in reversed(self.OutCasts):
             if OutCast[0] == (q, r):
                 self.map[OutCast[0]] = OutCast[1]
-                OutCast.pop(OutCast)
-                break 
+                self.OutCasts.remove(OutCast)
+                break
 
     def get_Empty_neighbors(self, q, r):
         """Returns a list of neighboring hexes for the given hex."""
         directions = [(+1, 0), (-1, 0), (0, +1), (0, -1), (+1, -1), (-1, +1)]
         return [(q + dq, r + dr, self.map[(q, r)][1]) for dq, dr in directions if (q + dq, r + dr) not in self.map]
+    
+    # def did_Player_Lose(self,Queen_q,Queen_r):
+    #     empty_cells = get_Empty_neighbors(self,Queen_q,Queen_r)
+    #     if (empty_cells < 2):
+    #         return True
+    #     elif(empty_cells >= 4):
+    #         return False
+    #     else:
+    #         directions = [(+1, 0), (-1, 0), (0, +1), (0, -1), (+1, -1), (-1, +1)]
+    #         # for i, outer_point in enumerate(empty_cells):
+    #         #     for inner_point in empty_cells[i+1:]:
+    #         for i in range(6):
+    #             if( self.map[Queen_q+directions[i][0] , Queen_r+directions[i][1]]) and self.map[Queen_q+directions[i+1][0] , Queen_r+directions[i+1][1]] :
+                    
+
+    def did_Player_Lose(self, Queen_q, Queen_r):
+        """
+        Check if there are two neighboring free places in a hexagonal grid.
+        
+        Args:
+        free_places (list of tuple): List of free hexagon coordinates (q, r).
+        
+        Returns:
+        bool: True if there are two neighboring free places, False otherwise.
+        """
+        empty_cells = self.get_Empty_neighbors(Queen_q,Queen_r)
+        print("Empty cells")
+        print(empty_cells)
+        if (len(empty_cells) < 2):
+            return True
+        
+        NEIGHBOR_DIRECTIONS = [
+            (1, 0),   # East
+            (0, 1),   # Southeast
+            (-1, 1),  # Southwest
+            (-1, 0),  # West
+            (0, -1),  # Northwest
+            (1, -1)   # Northeast
+        ]
+        empty_set = set(empty_cells)  # Convert list to set for fast lookup
+        print("Empty Set")
+        print(empty_set)
+        for q, r, color in empty_cells:
+            for dq, dr in NEIGHBOR_DIRECTIONS:
+                neighbor = (q + dq, r + dr)
+                if neighbor in empty_set:  # Check if neighbor is also free
+                    return False
+        return True

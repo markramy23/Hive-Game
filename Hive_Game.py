@@ -208,12 +208,28 @@ def main():
     draw_flag = False
     hex_number = 0 
 
+    # 1 for white win,
+    # 2 for black win 
+    # 3 for Draw
+    # flag_winner = 0 
+    white_player_lost = False
+    black_player_lost = False
+    
     while running:
         
         screen.blit(background, (0, 0))
         #Draw hexagons
         #Test_Map(screen,hex_map,selected_hex,HEX_SIZE_Board,HEX_COLOR,SELECTED_COLOR,BORDER_COLOR)
         
+        if(white_player_lost and black_player_lost):
+            print("Draw Match")
+        elif(black_player_lost):
+            print("White Won")
+            #display WHITE winner won and stop game
+        # elif(white_player_lost):
+            # print("Black Won")
+
+
         # Main event loop
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -229,9 +245,9 @@ def main():
                     else:
                         selected_hex = pixel_to_hex(mouse_x - hex_map.x, mouse_y - hex_map.y, HEX_SIZE_Board,screen_width,screen_height)
                         # print(f"Selected Hex: {selected_hex},{hex_map.get_piece(selected_hex[0], selected_hex[1])}")
+                    
                     #Determine the values of list based on the state    
-                    
-                    
+                      
                     #check first click    
                     new_mouse_x,new_mouse_y=hex_to_pixel(selected_hex[0],selected_hex[1],HEX_SIZE_Board,screen_width,screen_height)
                     
@@ -243,7 +259,7 @@ def main():
                     result_menu = hex_map_on_menu.get_piece(selected_hex[0],selected_hex[1]) 
                     result_board = hex_map.get_piece(selected_hex[0],selected_hex[1])
                     print("preselected")
-                    print(preselected_hex,hex_map_on_menu.get_piece(preselected_hex[0], preselected_hex[1]))
+                    print(preselected_hex,hex_map.get_piece(preselected_hex[0], preselected_hex[1]))
                     print("selected")
                     print(selected_hex,hex_map.get_piece(selected_hex[0], selected_hex[1]))
                     
@@ -267,29 +283,29 @@ def main():
                         print("1010")
                         if((hex_map_on_menu.get_piece(preselected_hex[0],preselected_hex[1]) != None) and (hex_map_on_menu.get_piece(selected_hex[0],selected_hex[1]) == None)):
                             print("000")
-                            preselected_hex=(0,0)
+                            preselected_hex=(100,100)
                         prevresult_on_board_1click = hex_map.get_piece(preselected_hex[0],preselected_hex[1])
-                        if (prevresult_on_board_1click != None):
-                            prev_name_board_1click , prev_color_board_1click , prev_img_board_1click = prevresult_on_board_1click 
-                            prev_name_board_1click = prev_name_board_1click[:-1]
-                        if(not draw_flag or (result_board != None and prevresult_on_board_1click != None)):  
+                        
+                        if(not draw_flag or result_board != None):  
                             draw_flag = True
                             flag = True
-
-                            if(prev_name_board_1click == "Beetle"): 
-                                   list = AvailablePositions_Beetle(hex_map,preselected_hex[0],preselected_hex[1])
-                                   print(list)
-                                   for element in list: 
-                                        if (selected_hex[0] == element[0] and selected_hex[1] == element[1]):
-                                            #selected_hex = preselected_hex
-                                            flag =False
-                                            print(555)
-                                            break
-                                        else:
-                                            flag = True 
-                            else:
-                                print(666)
-                                preselected_hex = selected_hex  
+                            if (prevresult_on_board_1click != None):
+                                prev_name_board_1click , prev_color_board_1click , prev_img_board_1click = prevresult_on_board_1click 
+                                prev_name_board_1click = prev_name_board_1click[:-1]
+                                if(prev_name_board_1click == "Beetle"): 
+                                    list = AvailablePositions_Beetle(hex_map,preselected_hex[0],preselected_hex[1])
+                                    print(list)
+                                    for element in list: 
+                                            if (selected_hex[0] == element[0] and selected_hex[1] == element[1]):
+                                                #selected_hex = preselected_hex
+                                                flag =False
+                                                print(555)
+                                                break
+                                            else:
+                                                flag = True 
+                                else:
+                                    print(666)
+                                    preselected_hex = selected_hex  
                             if(flag == True):
                                 print(444)
                                 preselected_hex = selected_hex 
@@ -332,7 +348,7 @@ def main():
                         #print("222")  
                         for element in list:
                             #check 2 left clicking 
-                            #print(element)
+                            print(element)
                             result = hex_map.get_piece(selected_hex[0],selected_hex[1])
                             if (selected_hex[0] == element[0] and selected_hex[1] == element[1]):
                                 #print(preselected_hex)
@@ -363,19 +379,39 @@ def main():
                                 
                                 #print(preselected_hex)
                                 #print(f"the hex number is : {hex_number,hex_map.Turn}")
-                                preselected_hex= (0,0)
+                                preselected_hex= (100,100)
+
                                 h2p_x,h2p_y = hex_to_pixel(*selected_hex,HEX_SIZE_Board,screen_width,screen_height)
                                 if(hex_map.Turn == "W" and (hex_number>10 and hex_number<22)):
-                                    # print(hex_number)
-                                    # print(hex_map.Turn)
                                     positions_white[hex_number-11]=h2p_x,h2p_y
                                     hex_map.Turn = "B"
                                 elif(hex_map.Turn == "B" and (hex_number>-1 and hex_number<11)):
-                                    # print("555")
-                                    # print(hex_number)
-                                    # print(hex_map.Turn)
                                     positions_black[hex_number]=h2p_x,h2p_y
                                     hex_map.Turn = "W"
+                                
+                                #Player Win Check
+                                white_queen_q,white_queen_r = pixel_to_hex(positions_white[10][0],positions_white[10][1],HEX_SIZE_MENU,screen_width,screen_height)
+                                black_queen_q,black_queen_r = pixel_to_hex(positions_black[10][0],positions_black[10][1],HEX_SIZE_MENU,screen_width,screen_height)
+                                
+                                white_queen_breakhive = does_removal_break_hive(hex_map.map,(white_queen_q,white_queen_r))
+                                black_queen_breakhive = does_removal_break_hive(hex_map.map,(black_queen_q,black_queen_r))
+                                if(hex_map.queen_placed["W"] and hex_map.queen_placed["B"] and (not white_queen_breakhive) and (not black_queen_breakhive)):
+                                    white_player_lost = hex_map.did_Player_Lose(white_queen_q, white_queen_r)
+                                    black_player_lost = hex_map.did_Player_Lose(black_queen_q, black_queen_r) 
+                                if(hex_map.queen_placed["W"] and (not white_queen_breakhive) ):
+                                    white_player_lost = hex_map.did_Player_Lose(white_queen_q, white_queen_r)
+                                if(hex_map.queen_placed["B"] and (not black_queen_breakhive) ):
+                                    black_player_lost = hex_map.did_Player_Lose(black_queen_q, black_queen_r)
+                                # 1 for white win,
+                                # 2 for black win 
+                                # 3 for Draw
+                                # if ( (not white_queen_breakhive) and (not black_queen_breakhive) and (hex_map.queen_placed["W"]) and (hex_map.queen_placed["B"]) and white_player_lost and black_player_lost):
+                                #     flag_winner = 3
+                                # elif ( (not white_queen_breakhive) and (hex_map.queen_placed["W"]) and white_player_lost ):
+                                #     flag_winner = 2
+                                # elif ( (not black_queen_breakhive) and (hex_map.queen_placed["B"]) and black_player_lost ):
+                                #     flag_winner = 1
+
                                 break
                             #Deselecting
 
@@ -428,7 +464,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-

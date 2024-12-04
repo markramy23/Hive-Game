@@ -111,14 +111,36 @@ def main():
 
     add_pieces(positions_white, "W")
     add_pieces(positions_black, "B")
-
+    
     def draw_hexagons(positions, color1, color2):
         for x, y in positions:
+            new_x = pixel_to_hex(x,y,HEX_SIZE_Board,screen_width,screen_height)[0]
+            new_y = pixel_to_hex(x,y,HEX_SIZE_Board,screen_width,screen_height)[1]
             if(get_hex_number(pixel_to_hex(x,y,HEX_SIZE_Board,screen_width,screen_height)[0],pixel_to_hex(x,y,HEX_SIZE_Board,screen_width,screen_height)[1]) == None): 
                 x+=hex_map.x
                 y+=hex_map.y
                 #print(x,y)
-            draw_hexagon(screen, x, y, color1, color2, HEX_SIZE_MENU)
+            #flag_to_draw = True
+            result = hex_map.get_piece(new_x,new_y)
+            if(result != None):
+                name3 , color3 , img3 = result
+                if(color3 == "W"):
+                    color1 = WHITE_PLAYER
+                else:
+                    color1 = BLACK_PLAYER
+            # for outcast in hex_map.OutCasts:
+            #     if(outcast[0][0] == new_x and outcast[0][1] == new_y):
+            #         if(outcast[1][1]=='B'):
+                        
+            #             draw_hexagon(screen, x, y, color1, color2,HEX_SIZE_MENU)
+            #             flag_to_draw = False
+            #             break
+            #         elif(outcast[1][1]=='W'):
+            #             draw_hexagon(screen, x, y, color1, color2,HEX_SIZE_MENU)
+            #             flag_to_draw =False
+            #             break
+            #if(flag_to_draw == True):
+            draw_hexagon(screen, x, y, color1, color2, HEX_SIZE_MENU) 
             q1, r1 = pixel_to_hex(x-hex_map.x, y-hex_map.y, HEX_SIZE_MENU,screen_width,screen_height)#Right q and r
             q, r = pixel_to_hex(x, y, HEX_SIZE_MENU,screen_width,screen_height)#Right q and r
             piece1 = hex_map_on_menu.get_piece(q, r)
@@ -221,10 +243,10 @@ def main():
         #Draw hexagons
         #Test_Map(screen,hex_map,selected_hex,HEX_SIZE_Board,HEX_COLOR,SELECTED_COLOR,BORDER_COLOR)
         
-        if(white_player_lost and black_player_lost):
-            print("Draw Match")
-        elif(black_player_lost):
-            print("White Won")
+        # if(white_player_lost and black_player_lost):
+        #     print("Draw Match")
+        # elif(black_player_lost):
+        #     print("White Won")
             #display WHITE winner won and stop game
         # elif(white_player_lost):
             # print("Black Won")
@@ -275,8 +297,19 @@ def main():
                     ########################## Code to enter the piece from board to board ################################### 
                     elif(result_board != None):
                         name_on_board,color_on_board,img_on_board = result_board
-                        #print(color_on_board)
-                        if(color_on_board != hex_map.Turn):
+                        name_on_board=name_on_board[:-1]
+                        flag_deselcet_or_not = True
+                        prevresult_on_board_to_check_beetle = hex_map.get_piece(preselected_hex[0], preselected_hex[1])
+                        if(prevresult_on_board_to_check_beetle !=None):
+                            name_on_board_to_check_beetle,color_on_board_to_check_beetle,img_on_board_to_check_beetle = prevresult_on_board_to_check_beetle    
+                            name_on_board_to_check_beetle = name_on_board_to_check_beetle[:-1]
+                            #print(color_on_board)
+                            if(name_on_board_to_check_beetle =="Beetle"):
+                                    list = AvailablePositions_Beetle(hex_map,preselected_hex[0],preselected_hex[1])
+                                    for element in list: 
+                                                if (selected_hex[0] == element[0] and selected_hex[1] == element[1]):
+                                                    flag_deselcet_or_not =False
+                        elif(color_on_board != hex_map.Turn and flag_deselcet_or_not == True):    
                             draw_flag=False
                             continue
                         name_on_board = name_on_board[:-1]
@@ -286,7 +319,7 @@ def main():
                             preselected_hex=(100,100)
                         prevresult_on_board_1click = hex_map.get_piece(preselected_hex[0],preselected_hex[1])
                         
-                        if(not draw_flag or result_board != None):  
+                        if(not draw_flag or result_board != None): 
                             draw_flag = True
                             flag = True
                             if (prevresult_on_board_1click != None):
@@ -385,6 +418,9 @@ def main():
                                 if(hex_map.Turn == "W" and (hex_number>10 and hex_number<22)):
                                     positions_white[hex_number-11]=h2p_x,h2p_y
                                     hex_map.Turn = "B"
+                                elif(hex_map.Turn == "B" and (hex_number>10 and hex_number<22) and name1 == "Beetle"):
+                                    positions_black[hex_number-11]=h2p_x,h2p_y
+                                    hex_map.Turn = "W"
                                 elif(hex_map.Turn == "B" and (hex_number>-1 and hex_number<11)):
                                     positions_black[hex_number]=h2p_x,h2p_y
                                     hex_map.Turn = "W"
@@ -443,8 +479,15 @@ def main():
         draw_player("Ahmed Gamal", "Deatrex", "Human-Human", screen)
         #print(pixel_to_hex(768,432,HEX_SIZE_Board))
         #print(f"{positions_white}")
-        draw_hexagons(positions_white, WHITE_PLAYER, BORDER_COLOR)
+        # if(hex_map.Turn == "W"):
+        #     draw_hexagons(positions_white, WHITE_PLAYER, BORDER_COLOR)
+        #     draw_hexagons(positions_black, BLACK_PLAYER, BORDER_COLOR) 
+        # else:
+        
         draw_hexagons(positions_black, BLACK_PLAYER, BORDER_COLOR) 
+        draw_hexagons(positions_white, WHITE_PLAYER, BORDER_COLOR)
+
+            
         result = hex_map.get_piece(selected_hex[0],selected_hex[1])
         if(result != None):
             name_on_board_2 ,color_on_board_2,img_on_board_2 = result

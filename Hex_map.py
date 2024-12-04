@@ -83,9 +83,11 @@ class HexMap:
         if (new_q, new_r) in self.map.keys():
             self.OutCasts.append(((new_q, new_r), self.map[(new_q, new_r)]))
         self.map[(new_q, new_r)] = self.map.pop((q, r))
-        for OutCast in self.OutCasts:
+        for OutCast in reversed(self.OutCasts):
             if OutCast[0] == (q, r):
                 self.map[OutCast[0]] = OutCast[1]
+                OutCast.pop(OutCast)
+                break 
 
     def get_Empty_neighbors(self, q, r):
         """Returns a list of neighboring hexes for the given hex."""

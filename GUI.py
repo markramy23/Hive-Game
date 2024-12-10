@@ -12,13 +12,16 @@ HEX_SIZE_Board = 25  # Size of the hexagon
 HEX_SIZE_MENU = 25 #Size of Menu Player
 HEX_COLOR = (255, 255, 255)  # White (Fill Color)
 BLACK =(0,0,0) # Black
-BORDER_COLOR = BLACK  # Black (Border Color)
+BORDER_COLOR = (139,135,116)  # Black (Border Color)
 SELECTED_COLOR = (255, 0, 0)  # Red
 NEIGHBOR_COLOR = (0, 255, 0)  # Green
-BACKGROUND_COLOR = (0, 0, 0)  # Black
-WHITE_PLAYER = (255, 255, 255)  # White
-BLACK_PLAYER = (0, 255, 255)  # Black
-
+BACKGROUND_COLOR = (255, 255, 255)  # Black
+WHITE_PLAYER = (230, 211, 160)  # White
+BLACK_PLAYER = (27,27,27)  # Black
+BORDER_COLOR_2 =(0,255,255)
+BUTTON_COLOR = (100, 100, 255)
+BUTTON_HOVER_COLOR = (150, 150, 255)
+TEXT_COLOR = (255, 255, 255)
 #Background
 background = pygame.image.load("./images/bg2.jpg")
 
@@ -48,7 +51,18 @@ def draw_hexagon(surface, x, y, fill_color, border_color , hex_size):
     # Draw the filled hexagon
     pygame.draw.polygon(surface, fill_color, points)
     # Draw the border of the hexagon
-    pygame.draw.polygon(surface, border_color, points, width=1)  # Border width = 1 pixel
+    pygame.draw.polygon(surface, border_color, points, width=3)  # Border width = 1 pixel
+
+def draw_border(surface, x, y, border_color , hex_size):
+    """Draw a single hexagon centered at (x, y) with a solid color and a border."""
+    points = []
+    for i in range(6):
+        angle = math.radians(60 * i)
+        px = x + hex_size * math.cos(angle)  #10 + 30 * 1/2 = 10 + 15 = 25 
+        py = y + hex_size * math.sin(angle) 
+        points.append((px, py)) #[(),(),()]
+    # Draw the border of the hexagon
+    pygame.draw.polygon(surface, border_color, points, width=3)  # Border width = 1 pixel
 
 
 def draw_text_centered(surface, text, x, y, font_size=20, color=(255, 255, 255)):
@@ -75,7 +89,7 @@ def draw_text_centered(surface, text, x, y, font_size=20, color=(255, 255, 255))
 #     if piece:
 #         draw_text_centered(screen, piece, x, y)
 
-def draw_player(player1_name, player2_name, Players_type, screen):
+def draw_player(player1_name, player2_name, screen):
     # Get the window size after setting the display mode
     window_width, window_height = pygame.display.get_surface().get_size()
     player_background = pygame.image.load("./images/Player_background.png")
@@ -99,9 +113,17 @@ def draw_player(player1_name, player2_name, Players_type, screen):
 
 
 # display available positions on the screen
-def display_avail(list, screen):
+def display_avail(list, screen,screen_width,screen_height):
     for element in list:
         x, y = hex_to_pixel(element[0], element[1])
-        x += WIDTH // 2
-        y += HEIGHT // 2
+        x += screen_width // 2
+        y += screen_height // 2
         draw_hexagon(screen, x, y, (255, 0, 255), BORDER_COLOR)
+
+def draw_button(surface, text, rect, font_size=40, color=BUTTON_COLOR, hover_color=BUTTON_HOVER_COLOR):
+    mouse_pos = pygame.mouse.get_pos()
+    is_hovered = rect.collidepoint(mouse_pos)
+    button_color = hover_color if is_hovered else color
+    pygame.draw.rect(surface, button_color, rect, border_radius=10)
+    draw_text_centered(surface, text, rect.centerx, rect.centery, font_size, TEXT_COLOR)
+    return is_hovered

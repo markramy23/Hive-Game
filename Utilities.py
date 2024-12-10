@@ -4,8 +4,8 @@ import pygame
 # Constants
 INTMIN = -2**31
 INTMAX =  2**31
-WIDTH = 800
-HEIGHT = 600
+#WIDTH = 800
+#HEIGHT = 600
 HEX_SIZE = 30  # Size of the hexagon
 HEX_COLOR = (255, 255, 255)  # White (Fill Color)
 BORDER_COLOR = (0, 0, 0)  # Black (Border Color)

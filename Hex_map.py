@@ -120,25 +120,7 @@ class HexMap:
         bool: True if there are two neighboring free places, False otherwise.
         """
         empty_cells = self.get_Empty_neighbors(Queen_q,Queen_r)
-        print("Empty cells")
-        print(empty_cells)
-        if (len(empty_cells) < 2):
+        if (len(empty_cells) > 0):
+            return False
+        else:
             return True
-        
-        NEIGHBOR_DIRECTIONS = [
-            (1, 0),   # East
-            (0, 1),   # Southeast
-            (-1, 1),  # Southwest
-            (-1, 0),  # West
-            (0, -1),  # Northwest
-            (1, -1)   # Northeast
-        ]
-        empty_set = set(empty_cells)  # Convert list to set for fast lookup
-        print("Empty Set")
-        print(empty_set)
-        for q, r, color in empty_cells:
-            for dq, dr in NEIGHBOR_DIRECTIONS:
-                neighbor = (q + dq, r + dr)
-                if neighbor in empty_set:  # Check if neighbor is also free
-                    return False
-        return True

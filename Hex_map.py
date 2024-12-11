@@ -1,4 +1,4 @@
-# HexMap class to store pieces on the hex map
+# HexMap class to store pieces on the hex-map
 class HexMap:
     def __init__(self):
         self.x=0

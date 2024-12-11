@@ -24,7 +24,7 @@ BUTTON_HOVER_COLOR = (150, 150, 255)
 TEXT_COLOR = (255, 255, 255)
 #Background
 background = pygame.image.load("./images/bg2.jpg")
-
+HomePage = pygame.image.load("./images/Home.png")
 #Player background
 player_background = pygame.image.load("./images/Player_background.png")
 
@@ -127,3 +127,70 @@ def draw_button(surface, text, rect, font_size=40, color=BUTTON_COLOR, hover_col
     pygame.draw.rect(surface, button_color, rect, border_radius=10)
     draw_text_centered(surface, text, rect.centerx, rect.centery, font_size, TEXT_COLOR)
     return is_hovered
+
+def draw_hexagons(positions, color1, color2,screen_width,screen_height,hex_map,screen,hex_map_on_menu):
+    for x, y in positions:
+        new_x = pixel_to_hex(x,y,HEX_SIZE_Board,screen_width,screen_height)[0]
+        new_y = pixel_to_hex(x,y,HEX_SIZE_Board,screen_width,screen_height)[1]
+        if(get_hex_number(pixel_to_hex(x,y,HEX_SIZE_Board,screen_width,screen_height)[0],pixel_to_hex(x,y,HEX_SIZE_Board,screen_width,screen_height)[1]) == None): 
+            x+=hex_map.x
+            y+=hex_map.y
+            #print(x,y)
+        #flag_to_draw = True
+        result = hex_map.get_piece(new_x,new_y)
+        if(result != None):
+            name3 , color3 , img3 = result
+            if(color3 == "W"):
+                color1 = WHITE_PLAYER
+            else:
+                color1 = BLACK_PLAYER
+
+        draw_hexagon(screen, x, y, color1, color2, HEX_SIZE_MENU) 
+        q1, r1 = pixel_to_hex(x-hex_map.x, y-hex_map.y, HEX_SIZE_MENU,screen_width,screen_height)#Right q and r
+        q, r = pixel_to_hex(x, y, HEX_SIZE_MENU,screen_width,screen_height)#Right q and r
+        piece1 = hex_map_on_menu.get_piece(q, r)
+        piece2 = hex_map.get_piece(q1,r1)
+        if piece1:
+            name, color, img = piece1
+            if img:
+                img_rect = img.get_rect(center=(x, y))
+                screen.blit(img, img_rect)
+        if piece2:
+            name, color, img = piece2
+            if img:
+                img_rect = img.get_rect(center=(x, y))
+                screen.blit(img, img_rect)
+    
+def Test_Map(screen, hex_map, selected_hex, HEX_SIZE_Board, HEX_COLOR, SELECTED_COLOR, BORDER_COLOR,screen_width,screen_height):
+
+    '''Draws the hexagonal map on the screen.
+
+    Args:
+        screen (Surface): The Pygame screen surface to draw on.
+        hex_map (HexMap): The hex map containing hex data.
+        selected_hex (tuple): The coordinates of the selected hexagon.
+        HEX_SIZE_Board (int): The size of the hexagons.
+        HEX_COLOR (tuple): The color of the hexagons.
+        SELECTED_COLOR (tuple): The color of the selected hexagon.
+        BORDER_COLOR (tuple): The color of the hexagon borders.'''
+
+    for q in range(-10  , 10):
+        for r in range(-10, 10):
+            x, y = hex_to_pixel(q, r, HEX_SIZE_Board,screen_width,screen_height)
+            x+=hex_map.x
+            y+=hex_map.y
+            fill_color = HEX_COLOR
+
+            if (q, r) == selected_hex:
+                fill_color = SELECTED_COLOR
+
+            draw_hexagon(screen, x, y, fill_color, BORDER_COLOR, HEX_SIZE_Board)
+
+def draw_next_move(draw_flag, positions, hex_map, HEX_SIZE_Board, screen, screen_width, screen_height, BORDER_COLOR_2):
+    if draw_flag:
+        # Iterate through the list of positions
+        for position in positions: 
+            x, y = hex_to_pixel(position[0], position[1], HEX_SIZE_Board, screen_width, screen_height)
+            x += hex_map.x
+            y += hex_map.y
+            draw_border(screen, x, y, BORDER_COLOR_2, HEX_SIZE_Board)

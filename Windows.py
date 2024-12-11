@@ -35,9 +35,10 @@ def mainwindow(screen):
 
     running = True
     while running:
-        screen.fill((50, 50, 50))
-        draw_text_centered(screen, "Hive Game", screen_width // 2, 250, font_size=60)
-        screen.blit(Logo, (screen_width // 2 -152, 30))
+        screen.fill((170, 170, 170))
+        screen.blit(HomePage, (0, 0))
+        #draw_text_centered(screen, "Hive Game", screen_width // 2, 250, font_size=60)
+        #screen.blit(Logo, (screen_width // 2 -152, 30))
         human_hovered = draw_button(screen, "Human vs Human", human_button)
         ai_hovered = draw_button(screen, "Human vs AI", ai_button)
         ai_vs_ai_hovered = draw_button(screen, "AI vs AI", ai_vs_ai_button)
@@ -109,6 +110,3 @@ def render_menu_window(parent_screen):
         clock.tick(30)
         if(flag_break == True):
             break #break to function which called you
-
-
- 

@@ -17,7 +17,7 @@ BUTTON_HEIGHT = 50
 Logo = pygame.image.load("./images/Logo_1.png")
 
 def mainwindow(screen):
-    from modes import Human_VS_Human , Human_VS_AI
+    from modes import Human_VS_Human , Human_VS_AI ,AI_VS_AI
     global screen_width, screen_height
     pygame.init()
     # Set up a maximized window with minimize, maximize, and close icons
@@ -52,7 +52,7 @@ def mainwindow(screen):
                 elif ai_hovered:
                     Human_VS_AI(screen)
                 elif ai_vs_ai_hovered:
-                    print("AI vs AI selected!")
+                    AI_VS_AI(screen)
                 elif Quit_hovered:
                     running =False
                     pygame.quit()

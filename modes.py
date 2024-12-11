@@ -8,11 +8,36 @@ from Heuristics import nextMove
 
 #constants
 Human1_Name ="Ahmed Gamal"
-Human2_Name = "Deatrix"
+Human2_Name = "Deatrex"
 AI_Name = "AI"
 Human1_Color = "W"
 Human2_Color = "B"
 AI_Color = "B"
+
+piece_images = {        
+    "Ant": Ant,     
+    "Grasshopper": GrassHopper,     
+    "Spider": Spider,
+    "Beetle": Beetle,
+    "Queen": Queen,
+}
+
+pieces = {
+    "Ant": 3,
+    "Grasshopper": 3,
+    "Spider": 2,
+    "Beetle": 2,
+    "Queen": 1
+}
+
+def check_game_result(white_player_lost, black_player_lost):
+    if white_player_lost and black_player_lost:
+        print("Draw Match")
+    elif black_player_lost:
+        print("White Won")
+        # Display WHITE winner and stop the game
+    elif white_player_lost:
+        print("Black Won")
 
 def Human_VS_Human(screen):
     # Hex map objects
@@ -37,7 +62,6 @@ def Human_VS_Human(screen):
         (hex_to_pixel(17, -14,HEX_SIZE_Board,screen_width,screen_height)[0] , hex_to_pixel(17, -14,HEX_SIZE_Board,screen_width,screen_height)[1]) , #Queen1
     ]
     
-
     positions_black = [
         (hex_to_pixel(-19, 1  ,HEX_SIZE_Board,screen_width,screen_height)[0]  , hex_to_pixel(-19,  1 , HEX_SIZE_Board,screen_width,screen_height)[1])  , #ANT1
         (hex_to_pixel(-17, 0  ,HEX_SIZE_Board,screen_width,screen_height)[0]  , hex_to_pixel(-17,  0 , HEX_SIZE_Board,screen_width,screen_height)[1])  , #ANT2
@@ -51,176 +75,10 @@ def Human_VS_Human(screen):
         (hex_to_pixel(-19, 4  ,HEX_SIZE_Board,screen_width,screen_height)[0]  , hex_to_pixel(-19,  4 , HEX_SIZE_Board,screen_width,screen_height)[1])  , #Beetle2
         (hex_to_pixel(-17, 3  ,HEX_SIZE_Board,screen_width,screen_height)[0]  , hex_to_pixel(-17,  3 , HEX_SIZE_Board,screen_width,screen_height)[1])  , #Queen1
     ] 
-    def general_get_hex_number(q, r):
-        # Mapping of hex coordinates to their respective numbers
-        hex_map = { 
-            pixel_to_hex(positions_black[0][0]  , positions_black[0][1],HEX_SIZE_Board,screen_width,screen_height)  : 0   ,
-            pixel_to_hex(positions_black[1][0]  , positions_black[1][1],HEX_SIZE_Board,screen_width,screen_height)  : 1   ,     
-            pixel_to_hex(positions_black[2][0]  , positions_black[2][1],HEX_SIZE_Board,screen_width,screen_height)  : 2   ,
-            pixel_to_hex(positions_black[3][0]  , positions_black[3][1],HEX_SIZE_Board,screen_width,screen_height)  : 3   ,
-            pixel_to_hex(positions_black[4][0]  , positions_black[4][1],HEX_SIZE_Board,screen_width,screen_height)  : 4   ,
-            pixel_to_hex(positions_black[5][0]  , positions_black[5][1],HEX_SIZE_Board,screen_width,screen_height)  : 5   ,
-            pixel_to_hex(positions_black[6][0]  , positions_black[6][1],HEX_SIZE_Board,screen_width,screen_height)  : 6   ,
-            pixel_to_hex(positions_black[7][0]  , positions_black[7][1],HEX_SIZE_Board,screen_width,screen_height)  : 7   ,
-            pixel_to_hex(positions_black[8][0]  , positions_black[8][1],HEX_SIZE_Board,screen_width,screen_height)  : 8   ,
-            pixel_to_hex(positions_black[9][0]  , positions_black[9][1],HEX_SIZE_Board,screen_width,screen_height)  : 9   ,
-            pixel_to_hex(positions_black[10][0] , positions_black[10][1],HEX_SIZE_Board,screen_width,screen_height) : 10  ,
-            pixel_to_hex(positions_white[0][0]  , positions_white[0][1],HEX_SIZE_Board,screen_width,screen_height)  : 11  ,
-            pixel_to_hex(positions_white[1][0]  , positions_white[1][1],HEX_SIZE_Board,screen_width,screen_height)  : 12  ,
-            pixel_to_hex(positions_white[2][0]  , positions_white[2][1],HEX_SIZE_Board,screen_width,screen_height)  : 13  ,
-            pixel_to_hex(positions_white[3][0]  , positions_white[3][1],HEX_SIZE_Board,screen_width,screen_height)  : 14  ,
-            pixel_to_hex(positions_white[4][0]  , positions_white[4][1],HEX_SIZE_Board,screen_width,screen_height)  : 15  ,
-            pixel_to_hex(positions_white[5][0]  , positions_white[5][1],HEX_SIZE_Board,screen_width,screen_height)  : 16  ,
-            pixel_to_hex(positions_white[6][0]  , positions_white[6][1],HEX_SIZE_Board,screen_width,screen_height)  : 17  ,
-            pixel_to_hex(positions_white[7][0]  , positions_white[7][1],HEX_SIZE_Board,screen_width,screen_height)  : 18  ,
-            pixel_to_hex(positions_white[8][0]  , positions_white[8][1],HEX_SIZE_Board,screen_width,screen_height)  : 19  ,
-            pixel_to_hex(positions_white[9][0]  , positions_white[9][1],HEX_SIZE_Board,screen_width,screen_height)  : 20  ,
-            pixel_to_hex(positions_white[10][0] , positions_white[10][1],HEX_SIZE_Board,screen_width,screen_height) : 21 
-        }       
 
-        # Return the number if the hex coordina te exists, or None otherwise    
-        return hex_map.get((q, r), None)        
-        #print(hex_to_pixel(-19, 1,HEX_SIZE_Boa rd)[0],hex_to_pixel(-19, 1,HEX_SIZE_Boa rd)[1])
-    piece_images = {        
-        "Ant": Ant,     
-        "Grasshopper": GrassHopper,     
-        "Spider": Spider,
-        "Beetle": Beetle,
-        "Queen": Queen,
-    }
-
-    pieces = {
-        "Ant": 3,
-        "Grasshopper": 3,
-        "Spider": 2,
-        "Beetle": 2,
-        "Queen": 1
-    }
-
-    def add_pieces(positions, color):
-        piece_index = 0
-        for name, count in pieces.items():
-            for i in range(1, count + 1):
-                if piece_index >= len(positions):
-                    break
-                x, y = positions[piece_index]
-                q, r = pixel_to_hex(x, y, HEX_SIZE_MENU,screen_width,screen_height)
-                img = piece_images[name]
-                hex_map_on_menu.add_piece(q, r, f"{name}{i}", color, img)
-                piece_index += 1
-
-    add_pieces(positions_white, "W")
-    add_pieces(positions_black, "B")
+    add_pieces(positions_white, "W",piece_images,pieces,screen_width,screen_height,hex_map_on_menu)
+    add_pieces(positions_black, "B",piece_images,pieces,screen_width,screen_height,hex_map_on_menu)
     
-    def draw_hexagons(positions, color1, color2):
-        for x, y in positions:
-            new_x = pixel_to_hex(x,y,HEX_SIZE_Board,screen_width,screen_height)[0]
-            new_y = pixel_to_hex(x,y,HEX_SIZE_Board,screen_width,screen_height)[1]
-            if(get_hex_number(pixel_to_hex(x,y,HEX_SIZE_Board,screen_width,screen_height)[0],pixel_to_hex(x,y,HEX_SIZE_Board,screen_width,screen_height)[1]) == None): 
-                x+=hex_map.x
-                y+=hex_map.y
-                #print(x,y)
-            #flag_to_draw = True
-            result = hex_map.get_piece(new_x,new_y)
-            if(result != None):
-                name3 , color3 , img3 = result
-                if(color3 == "W"):
-                    color1 = WHITE_PLAYER
-                else:
-                    color1 = BLACK_PLAYER
-            # for outcast in hex_map.OutCasts:
-            #     if(outcast[0][0] == new_x and outcast[0][1] == new_y):
-            #         if(outcast[1][1]=='B'):
-                        
-            #             draw_hexagon(screen, x, y, color1, color2,HEX_SIZE_MENU)
-            #             flag_to_draw = False
-            #             break
-            #         elif(outcast[1][1]=='W'):
-            #             draw_hexagon(screen, x, y, color1, color2,HEX_SIZE_MENU)
-            #             flag_to_draw =False
-            #             break
-            #if(flag_to_draw == True):
-            draw_hexagon(screen, x, y, color1, color2, HEX_SIZE_MENU) 
-            q1, r1 = pixel_to_hex(x-hex_map.x, y-hex_map.y, HEX_SIZE_MENU,screen_width,screen_height)#Right q and r
-            q, r = pixel_to_hex(x, y, HEX_SIZE_MENU,screen_width,screen_height)#Right q and r
-            piece1 = hex_map_on_menu.get_piece(q, r)
-            piece2 = hex_map.get_piece(q1,r1)
-            if piece1:
-                name, color, img = piece1
-                if img:
-                    img_rect = img.get_rect(center=(x, y))
-                    screen.blit(img, img_rect)
-            if piece2:
-                name, color, img = piece2
-                if img:
-                    img_rect = img.get_rect(center=(x, y))
-                    screen.blit(img, img_rect)
-    
-    def Test_Map(screen, hex_map, selected_hex, HEX_SIZE_Board, HEX_COLOR, SELECTED_COLOR, BORDER_COLOR):
-    
-        '''Draws the hexagonal map on the screen.
-
-        Args:
-            screen (Surface): The Pygame screen surface to draw on.
-            hex_map (HexMap): The hex map containing hex data.
-            selected_hex (tuple): The coordinates of the selected hexagon.
-            HEX_SIZE_Board (int): The size of the hexagons.
-            HEX_COLOR (tuple): The color of the hexagons.
-            SELECTED_COLOR (tuple): The color of the selected hexagon.
-            BORDER_COLOR (tuple): The color of the hexagon borders.'''
-    
-        for q in range(-10  , 10):
-            for r in range(-10, 10):
-                x, y = hex_to_pixel(q, r, HEX_SIZE_Board,screen_width,screen_height)
-                x+=hex_map.x
-                y+=hex_map.y
-                fill_color = HEX_COLOR
-
-                if (q, r) == selected_hex:
-                    fill_color = SELECTED_COLOR
-
-                draw_hexagon(screen, x, y, fill_color, BORDER_COLOR, HEX_SIZE_Board)
-    
-    def change_map_position(event, dragging, last_mouse_pos, hive):
-        """
-        Handle camera movement by dragging the map with the mouse, updating the hive's position.
-        
-        Args:
-            event: The current pygame event.
-            dragging: Boolean indicating if the map is being dragged.
-            last_mouse_pos: Tuple of the last recorded mouse position.
-            hive: The hive object, with x and y properties for position.
-        
-        Returns:
-            Updated dragging state and last mouse position.
-        """
-        # if hex_map.x < 50 or hex_map.y < 50:
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 3:  # Right mouse button starts dragging
-                dragging = True
-                last_mouse_pos = pygame.mouse.get_pos()
-        elif event.type == pygame.MOUSEBUTTONUP:
-            if event.button == 3:  # Right mouse button stops dragging
-                dragging = False
-        elif event.type == pygame.MOUSEMOTION:
-            if dragging:
-                current_mouse_pos = pygame.mouse.get_pos()
-                dx = current_mouse_pos[0] - last_mouse_pos[0]
-                dy = current_mouse_pos[1] - last_mouse_pos[1]
-                # Update the hive's position
-                #if hive.x+dx >100  :
-                    #hive.x = hive.x
-                #else:
-                hive.x += dx
-                hive.y += dy
-                last_mouse_pos = current_mouse_pos
-
-        return dragging, last_mouse_pos
-        # else:
-        #     hex_map.x = 0
-        #     hex_map.y =0
-        #     return False , last_mouse_pos
-
     #Initial Values
     selected_hex = (0, 0)
     preselected_hex = selected_hex #the previous value of selected_hex
@@ -239,15 +97,9 @@ def Human_VS_Human(screen):
     while running:
         screen.blit(background, (0, 0))
         #Draw hexagons
-        #Test_Map(screen,hex_map,selected_hex,HEX_SIZE_Board,HEX_COLOR,SELECTED_COLOR,BORDER_COLOR)
+        #Test_Map(screen,hex_map,selected_hex,HEX_SIZE_Board,HEX_COLOR,SELECTED_COLOR,BORDER_COLOR,screen_width,screen_height)
         
-        if(white_player_lost and black_player_lost):
-            print("Draw Match")
-        elif(black_player_lost):
-            print("White Won")
-            #display WHITE winner won and stop game
-        elif(white_player_lost):
-            print("Black Won")
+        check_game_result(white_player_lost,black_player_lost)
 
 
         # Main event loop
@@ -411,7 +263,7 @@ def Human_VS_Human(screen):
                                     print(f"outcast :{hex_map.OutCasts}")
                                     # print(f"Hex_Map :{hex_map.map}")
                                 draw_flag=False
-                                hex_number = general_get_hex_number(preselected_hex[0],preselected_hex[1])
+                                hex_number = general_get_hex_number(preselected_hex[0],preselected_hex[1],positions_black,positions_white,screen_width,screen_height)
                                 
                                 #print(preselected_hex)
                                 #print(f"the hex number is : {hex_number,hex_map.Turn}")
@@ -471,27 +323,25 @@ def Human_VS_Human(screen):
                 event, dragging, last_mouse_pos,hex_map
             )
         
-        
-        if(draw_flag):
-            #print("555")
-            #print("Available Positions:", list)
-            for hamada in list: 
-                x,y = hex_to_pixel( hamada[0],hamada[1],HEX_SIZE_Board,screen_width,screen_height)
-                x+=hex_map.x
-                y+=hex_map.y
-                draw_border(screen,x,y, BORDER_COLOR_2, HEX_SIZE_Board)
+        if draw_flag:
+            # Iterate through the list of positions
+            for position in list: 
+                x, y = hex_to_pixel(position[0], position[1], HEX_SIZE_Board, screen_width, screen_height)
+                x += hex_map.x
+                y += hex_map.y
+                draw_border(screen, x, y, BORDER_COLOR_2, HEX_SIZE_Board)
 
         
-        draw_player(Human1_Name, Human2_Name,screen)
+        
         #print(pixel_to_hex(768,432,HEX_SIZE_Board))
         #print(f"{positions_white}")
         # if(hex_map.Turn == "W"):
         #     draw_hexagons(positions_white, WHITE_PLAYER, BORDER_COLOR)
         #     draw_hexagons(positions_black, BLACK_PLAYER, BORDER_COLOR) 
         # else:
-        
-        draw_hexagons(positions_black, BLACK_PLAYER, BORDER_COLOR) 
-        draw_hexagons(positions_white, WHITE_PLAYER, BORDER_COLOR)
+        draw_player(Human1_Name, Human2_Name,screen)
+        draw_hexagons(positions_black, BLACK_PLAYER, BORDER_COLOR,screen_width,screen_height,hex_map,screen,hex_map_on_menu) 
+        draw_hexagons(positions_white, WHITE_PLAYER, BORDER_COLOR,screen_width,screen_height,hex_map,screen,hex_map_on_menu)
 
             
         result = hex_map.get_piece(selected_hex[0],selected_hex[1])
@@ -545,176 +395,10 @@ def Human_VS_AI(screen):
         (hex_to_pixel(-19, 4  ,HEX_SIZE_Board,screen_width,screen_height)[0]  , hex_to_pixel(-19,  4 , HEX_SIZE_Board,screen_width,screen_height)[1])  , #Beetle2
         (hex_to_pixel(-17, 3  ,HEX_SIZE_Board,screen_width,screen_height)[0]  , hex_to_pixel(-17,  3 , HEX_SIZE_Board,screen_width,screen_height)[1])  , #Queen1
     ]
-    def general_get_hex_number(q, r):
-        # Mapping of hex coordinates to their respective numbers
-        hex_map = { 
-            pixel_to_hex(positions_black[0][0]  , positions_black[0][1],HEX_SIZE_Board,screen_width,screen_height)  : 0   ,
-            pixel_to_hex(positions_black[1][0]  , positions_black[1][1],HEX_SIZE_Board,screen_width,screen_height)  : 1   ,     
-            pixel_to_hex(positions_black[2][0]  , positions_black[2][1],HEX_SIZE_Board,screen_width,screen_height)  : 2   ,
-            pixel_to_hex(positions_black[3][0]  , positions_black[3][1],HEX_SIZE_Board,screen_width,screen_height)  : 3   ,
-            pixel_to_hex(positions_black[4][0]  , positions_black[4][1],HEX_SIZE_Board,screen_width,screen_height)  : 4   ,
-            pixel_to_hex(positions_black[5][0]  , positions_black[5][1],HEX_SIZE_Board,screen_width,screen_height)  : 5   ,
-            pixel_to_hex(positions_black[6][0]  , positions_black[6][1],HEX_SIZE_Board,screen_width,screen_height)  : 6   ,
-            pixel_to_hex(positions_black[7][0]  , positions_black[7][1],HEX_SIZE_Board,screen_width,screen_height)  : 7   ,
-            pixel_to_hex(positions_black[8][0]  , positions_black[8][1],HEX_SIZE_Board,screen_width,screen_height)  : 8   ,
-            pixel_to_hex(positions_black[9][0]  , positions_black[9][1],HEX_SIZE_Board,screen_width,screen_height)  : 9   ,
-            pixel_to_hex(positions_black[10][0] , positions_black[10][1],HEX_SIZE_Board,screen_width,screen_height) : 10  ,
-            pixel_to_hex(positions_white[0][0]  , positions_white[0][1],HEX_SIZE_Board,screen_width,screen_height)  : 11  ,
-            pixel_to_hex(positions_white[1][0]  , positions_white[1][1],HEX_SIZE_Board,screen_width,screen_height)  : 12  ,
-            pixel_to_hex(positions_white[2][0]  , positions_white[2][1],HEX_SIZE_Board,screen_width,screen_height)  : 13  ,
-            pixel_to_hex(positions_white[3][0]  , positions_white[3][1],HEX_SIZE_Board,screen_width,screen_height)  : 14  ,
-            pixel_to_hex(positions_white[4][0]  , positions_white[4][1],HEX_SIZE_Board,screen_width,screen_height)  : 15  ,
-            pixel_to_hex(positions_white[5][0]  , positions_white[5][1],HEX_SIZE_Board,screen_width,screen_height)  : 16  ,
-            pixel_to_hex(positions_white[6][0]  , positions_white[6][1],HEX_SIZE_Board,screen_width,screen_height)  : 17  ,
-            pixel_to_hex(positions_white[7][0]  , positions_white[7][1],HEX_SIZE_Board,screen_width,screen_height)  : 18  ,
-            pixel_to_hex(positions_white[8][0]  , positions_white[8][1],HEX_SIZE_Board,screen_width,screen_height)  : 19  ,
-            pixel_to_hex(positions_white[9][0]  , positions_white[9][1],HEX_SIZE_Board,screen_width,screen_height)  : 20  ,
-            pixel_to_hex(positions_white[10][0] , positions_white[10][1],HEX_SIZE_Board,screen_width,screen_height) : 21 
-        }       
-
-        # Return the number if the hex coordina te exists, or None otherwise    
-        return hex_map.get((q, r), None)        
-        #print(hex_to_pixel(-19, 1,HEX_SIZE_Boa rd)[0],hex_to_pixel(-19, 1,HEX_SIZE_Boa rd)[1])
-    piece_images = {        
-        "Ant": Ant,     
-        "Grasshopper": GrassHopper,     
-        "Spider": Spider,
-        "Beetle": Beetle,
-        "Queen": Queen,
-    }
-
-    pieces = {
-        "Ant": 3,
-        "Grasshopper": 3,
-        "Spider": 2,
-        "Beetle": 2,
-        "Queen": 1
-    }
-
-    def add_pieces(positions, color):
-        piece_index = 0
-        for name, count in pieces.items():
-            for i in range(1, count + 1):
-                if piece_index >= len(positions):
-                    break
-                x, y = positions[piece_index]
-                q, r = pixel_to_hex(x, y, HEX_SIZE_MENU,screen_width,screen_height)
-                img = piece_images[name]
-                hex_map_on_menu.add_piece(q, r, f"{name}{i}", color, img)
-                piece_index += 1
-
-    add_pieces(positions_white, "W")
-    add_pieces(positions_black, "B")
     
-    def draw_hexagons(positions, color1, color2):
-        for x, y in positions:
-            new_x = pixel_to_hex(x,y,HEX_SIZE_Board,screen_width,screen_height)[0]
-            new_y = pixel_to_hex(x,y,HEX_SIZE_Board,screen_width,screen_height)[1]
-            if(get_hex_number(pixel_to_hex(x,y,HEX_SIZE_Board,screen_width,screen_height)[0],pixel_to_hex(x,y,HEX_SIZE_Board,screen_width,screen_height)[1]) == None): 
-                x+=hex_map.x
-                y+=hex_map.y
-                #print(x,y)
-            #flag_to_draw = True
-            result = hex_map.get_piece(new_x,new_y)
-            if(result != None):
-                name3 , color3 , img3 = result
-                if(color3 == "W"):
-                    color1 = WHITE_PLAYER
-                else:
-                    color1 = BLACK_PLAYER
-            # for outcast in hex_map.OutCasts:
-            #     if(outcast[0][0] == new_x and outcast[0][1] == new_y):
-            #         if(outcast[1][1]=='B'):
-                        
-            #             draw_hexagon(screen, x, y, color1, color2,HEX_SIZE_MENU)
-            #             flag_to_draw = False
-            #             break
-            #         elif(outcast[1][1]=='W'):
-            #             draw_hexagon(screen, x, y, color1, color2,HEX_SIZE_MENU)
-            #             flag_to_draw =False
-            #             break
-            #if(flag_to_draw == True):
-            draw_hexagon(screen, x, y, color1, color2, HEX_SIZE_MENU) 
-            q1, r1 = pixel_to_hex(x-hex_map.x, y-hex_map.y, HEX_SIZE_MENU,screen_width,screen_height)#Right q and r
-            q, r = pixel_to_hex(x, y, HEX_SIZE_MENU,screen_width,screen_height)#Right q and r
-            piece1 = hex_map_on_menu.get_piece(q, r)
-            piece2 = hex_map.get_piece(q1,r1)
-            if piece1:
-                name, color, img = piece1
-                if img:
-                    img_rect = img.get_rect(center=(x, y))
-                    screen.blit(img, img_rect)
-            if piece2:
-                name, color, img = piece2
-                if img:
-                    img_rect = img.get_rect(center=(x, y))
-                    screen.blit(img, img_rect)
+    add_pieces(positions_white, "W",piece_images,pieces,screen_width,screen_height,hex_map_on_menu)
+    add_pieces(positions_black, "B",piece_images,pieces,screen_width,screen_height,hex_map_on_menu)
     
-    def Test_Map(screen, hex_map, selected_hex, HEX_SIZE_Board, HEX_COLOR, SELECTED_COLOR, BORDER_COLOR):
-    
-        '''Draws the hexagonal map on the screen.
-
-        Args:
-            screen (Surface): The Pygame screen surface to draw on.
-            hex_map (HexMap): The hex map containing hex data.
-            selected_hex (tuple): The coordinates of the selected hexagon.
-            HEX_SIZE_Board (int): The size of the hexagons.
-            HEX_COLOR (tuple): The color of the hexagons.
-            SELECTED_COLOR (tuple): The color of the selected hexagon.
-            BORDER_COLOR (tuple): The color of the hexagon borders.'''
-    
-        for q in range(-10  , 10):
-            for r in range(-10, 10):
-                x, y = hex_to_pixel(q, r, HEX_SIZE_Board,screen_width,screen_height)
-                x+=hex_map.x
-                y+=hex_map.y
-                fill_color = HEX_COLOR
-
-                if (q, r) == selected_hex:
-                    fill_color = SELECTED_COLOR
-
-                draw_hexagon(screen, x, y, fill_color, BORDER_COLOR, HEX_SIZE_Board)
-    
-    def change_map_position(event, dragging, last_mouse_pos, hive):
-        """
-        Handle camera movement by dragging the map with the mouse, updating the hive's position.
-        
-        Args:
-            event: The current pygame event.
-            dragging: Boolean indicating if the map is being dragged.
-            last_mouse_pos: Tuple of the last recorded mouse position.
-            hive: The hive object, with x and y properties for position.
-        
-        Returns:
-            Updated dragging state and last mouse position.
-        """
-        # if hex_map.x < 50 or hex_map.y < 50:
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 3:  # Right mouse button starts dragging
-                dragging = True
-                last_mouse_pos = pygame.mouse.get_pos()
-        elif event.type == pygame.MOUSEBUTTONUP:
-            if event.button == 3:  # Right mouse button stops dragging
-                dragging = False
-        elif event.type == pygame.MOUSEMOTION:
-            if dragging:
-                current_mouse_pos = pygame.mouse.get_pos()
-                dx = current_mouse_pos[0] - last_mouse_pos[0]
-                dy = current_mouse_pos[1] - last_mouse_pos[1]
-                # Update the hive's position
-                #if hive.x+dx >100  :
-                    #hive.x = hive.x
-                #else:
-                hive.x += dx
-                hive.y += dy
-                last_mouse_pos = current_mouse_pos
-
-        return dragging, last_mouse_pos
-        # else:
-        #     hex_map.x = 0
-        #     hex_map.y =0
-        #     return False , last_mouse_pos
-
     #Initial Values
     selected_hex = (0, 0)
     preselected_hex = selected_hex #the previous value of selected_hex
@@ -733,16 +417,26 @@ def Human_VS_AI(screen):
     while running:
         screen.blit(background, (0, 0))
         #Draw hexagons
-        #Test_Map(screen,hex_map,selected_hex,HEX_SIZE_Board,HEX_COLOR,SELECTED_COLOR,BORDER_COLOR)
+        #Test_Map(screen,hex_map,selected_hex,HEX_SIZE_Board,HEX_COLOR,SELECTED_COLOR,BORDER_COLOR,screen_width,screen_height)
         
-        if(white_player_lost and black_player_lost):
-            print("Draw Match")
-        elif(black_player_lost):
-            print("White Won")
-            #display WHITE winner won and stop game
-        elif(white_player_lost):
-            print("Black Won")
+        check_game_result(white_player_lost,black_player_lost)
+        if(hex_map.Turn == AI_Color):
+            from Heuristics import GameOver
+            listturn=["B","W"]
+            listturncnt = 0
+            condlistturn=not GameOver(hex_map)
+            while (condlistturn):
+                descition, Current_q , Current_r , next_q , next_r , name3 , color3 , img3= nextMove(hex_map,hex_map_on_menu,1,listturn[listturncnt%2])
+                if descition == "add" :
+                    hex_map.add_piece(next_q,next_r,name3,color3,img3)
+                elif descition == "move":
+                    hex_map.move_piece(Current_q,Current_r,next_q,next_r)
+                listturncnt=listturncnt+1
+                condlistturn=not GameOver(hex_map)
 
+            draw_flag = True
+            preselected_hex = Current_q,Current_r
+            selected_hex = next_q , next_r
 
         # Main event loop
         for event in pygame.event.get():
@@ -878,24 +572,6 @@ def Human_VS_AI(screen):
 
                                 else:
                                     draw_flag = False
-                    elif(hex_map.Turn == AI_Color):
-                        from Heuristics import GameOver
-                        listturn=["B","W"]
-                        listturncnt = 0
-                        condlistturn=not GameOver(hex_map)
-                        while (condlistturn):
-                            descition, Current_q , Current_r , next_q , next_r , name3 , color3 , img3= nextMove(hex_map,hex_map_on_menu,2,listturn[listturncnt%2])
-                            if descition == "add" :
-                                hex_map.add_piece(next_q,next_r,name3,color3,img3)
-                                hex_map_on_menu.remove_piece(Current_q,Current_r )
-                            elif descition == "move":
-                                hex_map.move_piece(Current_q,Current_r,next_q,next_r)
-                            listturncnt=listturncnt+1
-                            condlistturn=not GameOver(hex_map)
-
-                        draw_flag = True
-                        preselected_hex = Current_q,Current_r
-                        selected_hex = next_q , next_r
                             
 
                    ###################################################Draw#############################             
@@ -930,7 +606,7 @@ def Human_VS_AI(screen):
                                     print(f"outcast :{hex_map.OutCasts}")
                                     # print(f"Hex_Map :{hex_map.map}")
                                 draw_flag=False
-                                hex_number = general_get_hex_number(preselected_hex[0],preselected_hex[1])
+                                hex_number = general_get_hex_number(preselected_hex[0],preselected_hex[1],positions_black,positions_white,screen_width,screen_height)
                                 
                                 #print(preselected_hex)
                                 #print(f"the hex number is : {hex_number,hex_map.Turn}")
@@ -990,27 +666,25 @@ def Human_VS_AI(screen):
                 event, dragging, last_mouse_pos,hex_map
             )
         
-        
-        if(draw_flag):
-            #print("555")
-            #print("Available Positions:", list)
-            for hamada in list: 
-                x,y = hex_to_pixel( hamada[0],hamada[1],HEX_SIZE_Board,screen_width,screen_height)
-                x+=hex_map.x
-                y+=hex_map.y
-                draw_border(screen,x,y, BORDER_COLOR_2, HEX_SIZE_Board)
+        if draw_flag:
+            # Iterate through the list of positions
+            for position in list: 
+                x, y = hex_to_pixel(position[0], position[1], HEX_SIZE_Board, screen_width, screen_height)
+                x += hex_map.x
+                y += hex_map.y
+                draw_border(screen, x, y, BORDER_COLOR_2, HEX_SIZE_Board)
 
         
-        draw_player(Human1_Name, AI_Name,screen)
+        
         #print(pixel_to_hex(768,432,HEX_SIZE_Board))
         #print(f"{positions_white}")
         # if(hex_map.Turn == "W"):
         #     draw_hexagons(positions_white, WHITE_PLAYER, BORDER_COLOR)
         #     draw_hexagons(positions_black, BLACK_PLAYER, BORDER_COLOR) 
         # else:
-        
-        draw_hexagons(positions_black, BLACK_PLAYER, BORDER_COLOR) 
-        draw_hexagons(positions_white, WHITE_PLAYER, BORDER_COLOR)
+        draw_player(Human1_Name, AI_Name,screen)
+        draw_hexagons(positions_black, BLACK_PLAYER, BORDER_COLOR,screen_width,screen_height,hex_map,screen,hex_map_on_menu) 
+        draw_hexagons(positions_white, WHITE_PLAYER, BORDER_COLOR,screen_width,screen_height,hex_map,screen,hex_map_on_menu)
 
             
         result = hex_map.get_piece(selected_hex[0],selected_hex[1])

@@ -429,14 +429,16 @@ def Human_VS_AI(screen):
             if(move_add == "move"):
                 if (name1 == "Beetle"):
                     #print(1010101)
-                    hex_map.move_beetle(preselected_hex[0],preselected_hex[1],selected_hex[0],selected_hex[1])
+                    #hex_map.move_beetle(preselected_hex[0],preselected_hex[1],selected_hex[0],selected_hex[1])
+                    continue
                 else:
-                    # hex_map.add_piece(selected_hex[0],selected_hex[1],name1,color1,img1)
-                    # hex_map.remove_piece(preselected_hex[0],preselected_hex[1])
-                    hex_map.move_piece(preselected_hex[0],preselected_hex[1],selected_hex[0],selected_hex[1])
+                    hex_map.add_piece(selected_hex[0],selected_hex[1],name1,color1,img1)
+                    hex_map.remove_piece(preselected_hex[0],preselected_hex[1])
+                    #hex_map.move_piece(preselected_hex[0],preselected_hex[1],selected_hex[0],selected_hex[1])
             elif(move_add == "add"):
                 hex_map.add_piece(selected_hex[0],selected_hex[1],name1,color1,img1)
                 hex_map_on_menu.remove_piece(preselected_hex[0],preselected_hex[1])
+            hex_number = general_get_hex_number(preselected_hex[0],preselected_hex[1],positions_black,positions_white,screen_width,screen_height)
             h2p_x,h2p_y = hex_to_pixel(*selected_hex,HEX_SIZE_Board,screen_width,screen_height)
             if(hex_map.Turn == "W" and (hex_number>10 and hex_number<22)):
                 positions_white[hex_number-11]=h2p_x,h2p_y

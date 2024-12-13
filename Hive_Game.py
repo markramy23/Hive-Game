@@ -1,5 +1,5 @@
 import pygame
-from Windows import mainwindow
+from Windows import mainwindow 
 
 def main():
     global screen_width, screen_height

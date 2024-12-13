@@ -3,12 +3,12 @@ from Hex_map import HexMap
 from Utilities import *
 from GUI import *
 from Available_positions import *
-from Windows import render_menu_window
+from Windows import render_menu_window , Win_Lose_window
 from Heuristics import nextMove, get_picec_type, piece_type_match, nextMove_alpha_beta
 
 #constants
-Human1_Name ="Ahmed Gamal"
-Human2_Name = "Deatrex"
+Human1_Name ="Player 1"
+Human2_Name = "Player 2"
 AI_Name = "AI"
 Human1_Color = "W"
 Human2_Color = "B"
@@ -31,14 +31,22 @@ pieces = {
     "Queen": 1
 }
 
-def check_game_result(white_player_lost, black_player_lost):
-    if white_player_lost and black_player_lost:
-        print("Draw Match")
+def check_game_result(screen,color_1,color_2,player_1,player_2,white_player_lost, black_player_lost,calledfrom):
+    if white_player_lost and black_player_lost:    
+        Win_Lose_window(screen,"No One",Match_result="Draw match",Called_from= calledfrom)
     elif black_player_lost:
-        print("White Won")
+        if(color_1 == "W"):
+            winner_name = player_1
+        elif(color_2 == "W"):
+            winner_name = player_2
+        Win_Lose_window(screen,winner_name,Match_result="White Won",Called_from= calledfrom)
         # Display WHITE winner and stop the game
     elif white_player_lost:
-        print("Black Won")
+        if(color_1 == "B"):
+            winner_name = player_1
+        elif(color_2 == "B"):
+            winner_name = player_2
+        Win_Lose_window(screen,winner_name,Match_result="Black Won",Called_from= calledfrom)
 
 def Human_VS_Human(screen):
     # Hex map objects
@@ -95,12 +103,13 @@ def Human_VS_Human(screen):
     # flag_winner = 0 
     white_player_lost = False
     black_player_lost = False
+    winner_name ="Hamada"
     while running:
         screen.blit(background, (0, 0))
         #Draw hexagons
         #Test_Map(screen,hex_map,selected_hex,HEX_SIZE_Board,HEX_COLOR,SELECTED_COLOR,BORDER_COLOR,screen_width,screen_height)
         
-        check_game_result(white_player_lost,black_player_lost)
+        check_game_result(screen,Human1_Color,Human2_Color,Human1_Name,Human2_Name,white_player_lost,black_player_lost,"Human_VS_Human")
 
 
         # Main event loop
@@ -292,6 +301,7 @@ def Human_VS_Human(screen):
                                     black_player_lost = hex_map.did_Player_Lose(black_queen_q, black_queen_r) 
                                 if(hex_map.queen_placed["W"] and (not white_queen_breakhive) ):
                                     white_player_lost = hex_map.did_Player_Lose(white_queen_q, white_queen_r)
+                                   
                                 if(hex_map.queen_placed["B"] and (not black_queen_breakhive) ):
                                     black_player_lost = hex_map.did_Player_Lose(black_queen_q, black_queen_r)
                                 # 1 for white win,
@@ -420,10 +430,10 @@ def Human_VS_AI(screen):
         #Draw hexagons
         #Test_Map(screen,hex_map,selected_hex,HEX_SIZE_Board,HEX_COLOR,SELECTED_COLOR,BORDER_COLOR,screen_width,screen_height)
         
-        check_game_result(white_player_lost,black_player_lost)
+        check_game_result(screen,Human1_Color,AI2_Color,Human1_Name,AI_Name,white_player_lost,black_player_lost,"Human_VS_AI")
         if(hex_map.Turn == AI2_Color):
             # move_add,current_q,current_r,next_q,next_r,name1,color1,img1 = nextMove(hex_map,hex_map_on_menu,2,AI2_Color)
-            move_add,current_q,current_r,next_q,next_r,name1,color1,img1 = nextMove_alpha_beta(hex_map,hex_map_on_menu,3,AI2_Color)
+            move_add,current_q,current_r,next_q,next_r,name1,color1,img1 = nextMove_alpha_beta(hex_map,hex_map_on_menu,2,AI2_Color)
 
             preselected_hex = (current_q,current_r)
             selected_hex = (next_q,next_r)
@@ -645,13 +655,13 @@ def Human_VS_AI(screen):
                                     
                                     white_queen_breakhive = does_removal_break_hive(hex_map.map,(white_queen_q,white_queen_r))
                                     black_queen_breakhive = does_removal_break_hive(hex_map.map,(black_queen_q,black_queen_r))
-                                    if(hex_map.queen_placed["W"] and hex_map.queen_placed["B"] and (not white_queen_breakhive) and (not black_queen_breakhive)):
-                                        white_player_lost = hex_map.did_Player_Lose(white_queen_q, white_queen_r)
-                                        black_player_lost = hex_map.did_Player_Lose(black_queen_q, black_queen_r) 
-                                    if(hex_map.queen_placed["W"] and (not white_queen_breakhive) ):
-                                        white_player_lost = hex_map.did_Player_Lose(white_queen_q, white_queen_r)
-                                    if(hex_map.queen_placed["B"] and (not black_queen_breakhive) ):
-                                        black_player_lost = hex_map.did_Player_Lose(black_queen_q, black_queen_r)
+                                if(hex_map.queen_placed["W"] and hex_map.queen_placed["B"] and (not white_queen_breakhive) and (not black_queen_breakhive)):
+                                    white_player_lost = hex_map.did_Player_Lose(white_queen_q, white_queen_r)
+                                    black_player_lost = hex_map.did_Player_Lose(black_queen_q, black_queen_r) 
+                                if(hex_map.queen_placed["W"] and (not white_queen_breakhive) ):
+                                    white_player_lost = hex_map.did_Player_Lose(white_queen_q, white_queen_r)
+                                if(hex_map.queen_placed["B"] and (not black_queen_breakhive) ):
+                                    black_player_lost = hex_map.did_Player_Lose(black_queen_q, black_queen_r)
                                     # 1 for white win,
                                     # 2 for black win 
                                     # 3 for Draw
@@ -778,7 +788,7 @@ def AI_VS_AI(screen):
         #Draw hexagons
         #Test_Map(screen,hex_map,selected_hex,HEX_SIZE_Board,HEX_COLOR,SELECTED_COLOR,BORDER_COLOR,screen_width,screen_height)
         
-        check_game_result(white_player_lost,black_player_lost)
+        check_game_result(screen,AI1_Color,AI2_Color,AI_Name,AI_Name,white_player_lost,black_player_lost,"AI_VS_AI")
         if(hex_map.Turn == AI2_Color):
             from Heuristics import GameOver
             listturn=["B","W"]

@@ -28,7 +28,10 @@ def FreePieces(hex_map: HexMap, color):
     cnt = 0
     for (key, value) in list(hex_map.map.items()): #for every piece in the hex_map
         if color == value[1]: #if the color of the piece is the same as the player
-            if len(Pieces_Available_Positions[value[0][:-1]](hex_map, key[0], key[1])) > 0: #if the piece has available positions
+            if value[0][:-1] =="Spider" or value[0][:-1] == "Ant" :
+                if len(Available_Positions_Queen(hex_map, key[0], key[1])) > 0:
+                    cnt += 1
+            elif len(Pieces_Available_Positions[value[0][:-1]](hex_map, key[0], key[1])) > 0: #if the piece has available positions
                 cnt += 1    #increment the count
 
     return cnt
@@ -188,7 +191,7 @@ def minimax_alpha_beta(hex_map: HexMap, depth, maximizingPlayer, root_player,act
 
     moves = generateMoves(hex_map, active_player, hex_map_on_menu)
     # if(depth == 1):
-        # moves = sort_moves(hex_map, hex_map_on_menu, moves, root_player,maximizingPlayer)
+    #     moves = sort_moves(hex_map, hex_map_on_menu, moves, root_player,maximizingPlayer)
     if maximizingPlayer:
         bestValue = alpha  # Start with alpha for maximizing player
     else:

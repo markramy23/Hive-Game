@@ -157,11 +157,11 @@ def AmazingGrassHopper(hex_map, q, r, dq, dr):
     for child in children:
         if child[0] == (q + dq) and child[1] == (r + dr):
             return AmazingGrassHopper(hex_map, (q + dq), (r + dr), dq, dr)
-        else:
-            return ((q + dq), (r + dr))
-
+        # else:
+        #     return ((q + dq), (r + dr))
+    return ((q + dq), (r + dr))
 '''GrassHopper available positions'''
-def AvailablePositions_GrassHopper(hex_map, q, r):
+def AvailablePositions_GrassHopper(hex_map:HexMap, q, r):
     #check if the queen is placed or not so that the piece can be moved
     if not can_be_moved(hex_map, q, r):
         return []
@@ -169,7 +169,6 @@ def AvailablePositions_GrassHopper(hex_map, q, r):
     result = []
     for child in children:
         result.append(AmazingGrassHopper(hex_map, child[0], child[1], child[0] - q, child[1] - r))
-
     return result
 
 '''Beetle available positions'''

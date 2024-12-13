@@ -4,7 +4,7 @@ from Utilities import *
 from GUI import *
 from Available_positions import *
 from Windows import render_menu_window
-from Heuristics import nextMove
+from Heuristics import nextMove, get_picec_type, piece_type_match, nextMove_alpha_beta
 
 #constants
 Human1_Name ="Ahmed Gamal"
@@ -422,19 +422,21 @@ def Human_VS_AI(screen):
         
         check_game_result(white_player_lost,black_player_lost)
         if(hex_map.Turn == AI2_Color):
-            move_add,current_q,current_r,next_q,next_r,name1,color1,img1 = nextMove(hex_map,hex_map_on_menu,1,AI2_Color)
+            # move_add,current_q,current_r,next_q,next_r,name1,color1,img1 = nextMove(hex_map,hex_map_on_menu,2,AI2_Color)
+            move_add,current_q,current_r,next_q,next_r,name1,color1,img1 = nextMove_alpha_beta(hex_map,hex_map_on_menu,3,AI2_Color)
+
             preselected_hex = (current_q,current_r)
             selected_hex = (next_q,next_r)
             # Result contains tuples of ("move" or "add",Current q , Current r , next q , next r , name, color, img )
             if(move_add == "move"):
-                if (name1 == "Beetle"):
+                if piece_type_match(name1,"Beetle"):
                     #print(1010101)
-                    #hex_map.move_beetle(preselected_hex[0],preselected_hex[1],selected_hex[0],selected_hex[1])
-                    continue
+                    hex_map.move_beetle(preselected_hex[0],preselected_hex[1],selected_hex[0],selected_hex[1])
+                    # continue
                 else:
-                    hex_map.add_piece(selected_hex[0],selected_hex[1],name1,color1,img1)
-                    hex_map.remove_piece(preselected_hex[0],preselected_hex[1])
-                    #hex_map.move_piece(preselected_hex[0],preselected_hex[1],selected_hex[0],selected_hex[1])
+                    # hex_map.add_piece(selected_hex[0],selected_hex[1],name1,color1,img1)
+                    # hex_map.remove_piece(preselected_hex[0],preselected_hex[1])
+                    hex_map.move_piece(preselected_hex[0],preselected_hex[1],selected_hex[0],selected_hex[1])
             elif(move_add == "add"):
                 hex_map.add_piece(selected_hex[0],selected_hex[1],name1,color1,img1)
                 hex_map_on_menu.remove_piece(preselected_hex[0],preselected_hex[1])

@@ -53,7 +53,7 @@ class HexMap:
                 self.Turn = "B"  # Switch turn to the opposite color
 
             # Update queen placed status
-            if name == "Queen":
+            if name[:-1] == "Queen":
                 self.queen_placed[color] = False
 
             return name, color, Img  # Return the removed piece details

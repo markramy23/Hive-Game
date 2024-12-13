@@ -150,3 +150,15 @@ def general_get_hex_number(q, r,positions_black,positions_white,screen_width,scr
     # Return the number if the hex coordina te exists, or None otherwise    
     return hex_map.get((q, r), None)        
     #print(hex_to_pixel(-19, 1,HEX_SIZE_Boa rd)[0],hex_to_pixel(-19, 1,HEX_SIZE_Boa rd)[1])
+
+# def reset_game():
+#     from GUI import HEX_SIZE_Board
+#     """
+#     Resets the game state to start a new game.
+#     This function should reset variables such as board state, turn trackers, etc.
+#     """
+#     global game_board, current_turn, scores
+#     game_board = [[None for _ in range(HEX_SIZE_Board)] for _ in range(HEX_SIZE_Board)]  # Example for a grid-based game
+#     current_turn = "white"  # Reset to the initial player
+#     scores = {"white": 0, "black": 0}  # Example scores reset
+#     # Add any other game-specific variables here

@@ -423,7 +423,7 @@ def Human_VS_AI(screen):
         check_game_result(white_player_lost,black_player_lost)
         if(hex_map.Turn == AI2_Color):
             # move_add,current_q,current_r,next_q,next_r,name1,color1,img1 = nextMove(hex_map,hex_map_on_menu,2,AI2_Color)
-            move_add,current_q,current_r,next_q,next_r,name1,color1,img1 = nextMove_alpha_beta(hex_map,hex_map_on_menu,3,AI2_Color)
+            move_add,current_q,current_r,next_q,next_r,name1,color1,img1 = nextMove_alpha_beta(hex_map,hex_map_on_menu,2,AI2_Color)
 
             preselected_hex = (current_q,current_r)
             selected_hex = (next_q,next_r)

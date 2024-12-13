@@ -181,13 +181,14 @@ def minimax(hex_map: HexMap, depth, maximizingPlayer, player, hex_map_on_menu: H
         return bestValue
 
 
-def minimax_alpha_beta(hex_map: HexMap, depth, maximizingPlayer, player, alpha, beta, hex_map_on_menu: HexMap):
+def minimax_alpha_beta(hex_map: HexMap, depth, maximizingPlayer, root_player,active_player, alpha, beta, hex_map_on_menu: HexMap):
     # Base case: if max depth is reached or game is over, calculate the heuristic value for the player
     if GameOver(hex_map) or depth == 0:
-        return calculateValue(hex_map, player)
+        return calculateValue(hex_map, root_player)
 
-    moves = generateMoves(hex_map, player, hex_map_on_menu)
-    # moves = sort_moves(hex_map, hex_map_on_menu, moves, player)
+    moves = generateMoves(hex_map, active_player, hex_map_on_menu)
+    # if(depth == 1):
+        # moves = sort_moves(hex_map, hex_map_on_menu, moves, root_player,maximizingPlayer)
     if maximizingPlayer:
         bestValue = alpha  # Start with alpha for maximizing player
     else:
@@ -197,7 +198,7 @@ def minimax_alpha_beta(hex_map: HexMap, depth, maximizingPlayer, player, alpha, 
         applyMove(hex_map,hex_map_on_menu, move)  # Apply the move
         '''#################################Debugging####################################'''
         # where_is_my_queen(hex_map)
-        value = minimax_alpha_beta(hex_map, depth - 1, not maximizingPlayer, get_next_player(player), alpha, beta,
+        value = minimax_alpha_beta(hex_map, depth - 1, not maximizingPlayer,root_player, get_next_player(active_player), alpha, beta,
                                    hex_map_on_menu)  # Recursive call
         '''#################################Debugging####################################'''
         # where_is_my_queen(hex_map)
@@ -295,7 +296,7 @@ def nextMove(hex_map, hex_map_on_menu: HexMap, depth, player):
 def nextMove_alpha_beta(hex_map, hex_map_on_menu: HexMap, depth, player):
     moves = generateMoves(hex_map, player, hex_map_on_menu)
     # print("moves", moves)
-    # moves = sort_moves(hex_map, hex_map_on_menu, moves, player)
+    # moves = sort_moves(hex_map, hex_map_on_menu, moves, player,True)
     # print("sorted moves", moves)
     bestValue = INTMIN
     bestMove = []
@@ -311,7 +312,7 @@ def nextMove_alpha_beta(hex_map, hex_map_on_menu: HexMap, depth, player):
         # where_is_my_queen(hex_map)
 
 
-        value = minimax_alpha_beta(hex_map, depth - 1, False, get_next_player(player), alpha, beta, hex_map_on_menu)
+        value = minimax_alpha_beta(hex_map, depth - 1, False,player, get_next_player(player), alpha, beta, hex_map_on_menu)
         if (value > bestValue or value == bestValue and random.choice([True, False])):
             bestValue = value
             bestMove = move
@@ -355,15 +356,16 @@ def where_is_my_queen(hex_map:HexMap):
     if not flag:
         print("Queen not found")
 
-def sort_moves(hex_map, hex_map_on_menu, moves, player):
+def sort_moves(hex_map, hex_map_on_menu, moves,root_player,maximizingPlayer):
     # Sort the moves based on the value of the board after applying the move
     sorted_moves = []
     for move in moves:
         applyMove(hex_map, hex_map_on_menu, move)
-        value = CalculateBoardValue(hex_map, player)
+        value = CalculateBoardValue(hex_map, root_player)
         sorted_moves.append((move, value))
         undoMove(hex_map, hex_map_on_menu, move)
+    print("Maximizing Player?: ",maximizingPlayer)
     print(sorted_moves)
-    sorted_moves.sort(key=lambda x: x[1], reverse=True)
+    sorted_moves.sort(key=lambda x: x[1], reverse=maximizingPlayer)
     print(sorted_moves)
     return [move[0] for move in sorted_moves]

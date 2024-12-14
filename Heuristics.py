@@ -5,6 +5,7 @@ import random
 import re
 import pdb
 import rules
+
 ''' Dictionary for the available positions for each piece '''
 Pieces_Available_Positions = {
     "Queen": Available_Positions_Queen,
@@ -35,6 +36,84 @@ def FreePieces(hex_map: HexMap, color):
                 cnt += 1    #increment the count
 
     return cnt
+
+# import multiprocessing
+# from typing import Dict, Tuple
+# from concurrent.futures import ProcessPoolExecutor, as_completed
+#
+#
+# def process_piece(hex_map: Dict, piece_key: Tuple, piece_value: Tuple, color: str) -> bool:
+#     """
+#     Process a single piece to check if it has available positions.
+#
+#     :param hex_map: The hex map dictionary
+#     :param piece_key: The key of the piece in the map
+#     :param piece_value: The value (piece details) associated with the key
+#     :param color: The color to check against
+#     :return: True if the piece has available positions, False otherwise
+#     """
+#     # If the piece color matches the player color
+#     if color == piece_value[1]:
+#         piece_type = piece_value[0][:-1]  # Remove potential suffix like '1', '2' etc.
+#
+#         # Special handling for Spider and Ant pieces
+#         if piece_type in ["Spider", "Ant"]:
+#             available_positions = Available_Positions_Queen(hex_map, piece_key[0], piece_key[1])
+#             return len(available_positions) > 0
+#
+#         # For other piece types
+#         available_positions = Pieces_Available_Positions[piece_type](hex_map, piece_key[0], piece_key[1])
+#         return len(available_positions) > 0
+#
+#     return False
+#
+#
+# def FreePieces(hex_map: HexMap, color: str) -> int:
+#     """
+#     Count free pieces in parallel with thread-safe counting.
+#
+#     :param hex_map: The hex map to process
+#     :param color: The color of pieces to check
+#     :return: Number of free pieces
+#     """
+#     # Use a thread-safe counter
+#     manager = multiprocessing.Manager()
+#     cnt = manager.Value('i', 0)
+#
+#     # Use a lock to ensure mutual exclusion when updating the counter
+#     lock = manager.Lock()
+#
+#     def update_counter(is_free_piece):
+#         """Increment counter in a thread-safe manner."""
+#         if is_free_piece:
+#             with lock:
+#                 cnt.value += 1
+#
+#     # Use ProcessPoolExecutor for parallel processing
+#     piece_keys =list(hex_map.map.keys())
+#     piece_values = [value[:-1] for value in hex_map.map.values()]
+#     with ProcessPoolExecutor() as executor:
+#         # Submit all pieces for processing
+#         futures = [
+#             executor.submit(
+#                 process_piece,
+#                 hex_map,
+#                 piece_key,
+#                 piece_value,
+#                 color
+#             ) for piece_key , piece_value in zip(piece_keys,  piece_values)
+#         ]
+#
+#         # Process results as they complete
+#         for future in as_completed(futures):
+#             update_counter(future.result())
+#
+#     return cnt.value
+
+
+# Note: Assumes these functions exist in the current scope
+# Available_Positions_Queen()
+# Pieces_Available_Positions dictionary
 
 '''
 Check if the Queen is surrounded by the opponent's pieces
@@ -69,8 +148,8 @@ return: the value of the board
 def CalculateBoardValue(hex_map: HexMap, ActivePlayer):
     whiteQueen = 0
     blackQueen = 0
-    blackWon = isQueenSurrounded("B", hex_map) #check if the black Queen is surrounded
-    whiteWon = isQueenSurrounded("W", hex_map) #check if the white Queen is surrounded
+    blackWon = isQueenSurrounded("W", hex_map) #check if the black Queen is surrounded
+    whiteWon = isQueenSurrounded("B", hex_map) #check if the white Queen is surrounded
     #if both Queens are surrounded (Draw) treat it as lose so the ai shouldn't choose this move as the best move
     if blackWon == True and whiteWon == True:
         #if the active player is white return -ve infinity
@@ -317,6 +396,34 @@ def nextMove_alpha_beta(hex_map, hex_map_on_menu: HexMap, depth, player):
 
         value = minimax_alpha_beta(hex_map, depth - 1, False,player, get_next_player(player), alpha, beta, hex_map_on_menu)
         if (value > bestValue or value == bestValue and random.choice([True, False])):
+            bestValue = value
+            bestMove = move
+
+        '''#################################Debugging####################################'''
+        # where_is_my_queen(hex_map)
+        undoMove(hex_map, hex_map_on_menu, move)
+    return bestMove
+def nextMove_alpha_beta_loser(hex_map, hex_map_on_menu: HexMap, depth, player):
+    moves = generateMoves(hex_map, player, hex_map_on_menu)
+    # print("moves", moves)
+    # moves = sort_moves(hex_map, hex_map_on_menu, moves, player,True)
+    # print("sorted moves", moves)
+    bestValue = INTMAX
+    bestMove = []
+    alpha = INTMIN
+    beta = INTMAX
+    for move in moves:
+        if move[5] == "Beetle1" and move[6] == "W":
+            print("ostor ya rb")
+        applyMove(hex_map, hex_map_on_menu, move)
+
+
+        '''#################################Debugging####################################'''
+        # where_is_my_queen(hex_map)
+
+
+        value = minimax_alpha_beta(hex_map, depth - 1, True,player, get_next_player(player), alpha, beta, hex_map_on_menu)
+        if (value < bestValue or value == bestValue and random.choice([True, False])):
             bestValue = value
             bestMove = move
 

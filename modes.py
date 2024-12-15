@@ -14,6 +14,7 @@ Human1_Color = "W"
 Human2_Color = "B"
 AI1_Color ="W"
 AI2_Color = "B"
+turn_start_time = 0
 
 piece_images = {        
     "Ant": Ant,     
@@ -104,7 +105,7 @@ def Enter_Piece_From_Menu(result_menu, draw_flag, hex_map_on_menu, preselected_h
 
     return draw_flag, preselected_hex, list_positions
 
-def AI_Movement(hex_map, hex_map_on_menu, positions_black, positions_white, screen_width, screen_height, HEX_SIZE_Board, AI_Color,depth):
+def AI_Movement(hex_map, hex_map_on_menu, positions_black, positions_white, screen_width, screen_height, HEX_SIZE_Board, AI_Color,depth, turn_start_time, turn_duration):
     """
     Handles the AI movement logic.
 
@@ -201,6 +202,12 @@ def Player_Turn(screen, font, hex_map, screen_width, player_background):
     else:
         Turn_Text = font.render("Unknown Player Turn", True, BLACK)
     screen.blit(Turn_Text, (screen_width // 2 - 90, 15))
+
+def Remaining_Turn_Time(turn_start_time,turn_duration):
+    elapsed_time = pygame.time.get_ticks() - turn_start_time
+    remaining_time = max(0, turn_duration - elapsed_time)
+    print(f"Time remaining: {remaining_time} ms")
+    return remaining_time
 
 def Human_VS_Human(screen):
     # Hex map objects
@@ -549,6 +556,9 @@ def Human_VS_AI(screen,depth):
     hex_number = 0
     white_player_lost = False
     black_player_lost = False
+    turn_duration = 20000 #time for easy-medium
+    if(depth == 3):
+        turn_duration = 30000
     while running:
         screen.blit(background, (0, 0))
         # Draw hexagons
@@ -556,7 +566,8 @@ def Human_VS_AI(screen,depth):
 
         check_game_result(screen,Human1_Color,AI2_Color,Human1_Name,AI_Name,white_player_lost,black_player_lost,"Human_VS_AI")
         if (hex_map.Turn == AI2_Color):
-            AI_Movement(hex_map, hex_map_on_menu, positions_black, positions_white, screen_width, screen_height, HEX_SIZE_Board, AI2_Color,depth)
+            turn_start_time = pygame.time.get_ticks()
+            AI_Movement(hex_map, hex_map_on_menu, positions_black, positions_white, screen_width, screen_height, HEX_SIZE_Board, AI2_Color,depth, turn_start_time, turn_duration)
 
         else:
             # Main event loop
@@ -872,6 +883,12 @@ def AI_VS_AI(screen,depth1,depth2):
     # hex_number = 0  
     white_player_lost = False
     black_player_lost = False
+    turn_duration_player1 = 20000
+    turn_duration_player2 = 20000
+    if(depth1 == 3):
+        turn_duration_player1 = 30000
+    if(depth2 == 3):
+        turn_duration_player2 = 30000
     while running:
         screen.blit(background, (0, 0))
         #Draw hexagons
@@ -879,10 +896,12 @@ def AI_VS_AI(screen,depth1,depth2):
         
         check_game_result(screen,AI1_Color,AI2_Color,AI_Name,AI_Name,white_player_lost,black_player_lost,"AI_VS_AI")
         if(hex_map.Turn == AI1_Color):
-            AI_Movement(hex_map, hex_map_on_menu, positions_black, positions_white, screen_width, screen_height, HEX_SIZE_Board, AI1_Color,depth1)
+            turn_start_time = pygame.time.get_ticks()
+            AI_Movement(hex_map, hex_map_on_menu, positions_black, positions_white, screen_width, screen_height, HEX_SIZE_Board, AI1_Color,depth1,turn_start_time,turn_duration_player1)
 
         elif(hex_map.Turn == AI2_Color):
-            AI_Movement(hex_map, hex_map_on_menu, positions_black, positions_white, screen_width, screen_height, HEX_SIZE_Board, AI2_Color,depth2)
+            turn_start_time = pygame.time.get_ticks()
+            AI_Movement(hex_map, hex_map_on_menu, positions_black, positions_white, screen_width, screen_height, HEX_SIZE_Board, AI2_Color,depth2,turn_start_time,turn_duration_player2)
 
         #Player Win Check
         white_player_lost , black_player_lost =player_win_check(hex_map, positions_black, positions_white, screen_width, screen_height, HEX_SIZE_MENU)

@@ -27,6 +27,7 @@ background = pygame.image.load("./images/bg2.jpg")
 HomePage = pygame.image.load("./images/Home.png")
 #Player background
 player_background = pygame.image.load("./images/Player_background.png")
+score_background = pygame.image.load("./images/background.png")
 
 #icons
 blackIcon = pygame.image.load("./images/BlackIcon.png")

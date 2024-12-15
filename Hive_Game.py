@@ -16,3 +16,8 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+    #1-score
+    #2-updates
+    #3-time
+    #4-if there are no available moves skip

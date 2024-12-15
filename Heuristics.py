@@ -581,7 +581,6 @@ def CalculateBoardValue(hex_map: HexMap, ActivePlayer):
 #         remaining_time = Remaining_Turn_Time(turn_start_time,turn_duration)
 #     return result
 
-
 def calculate_score(hex_map:HexMap,player,positions_white,positions_black):
     piece_scores = {
         "Queen": 9,
@@ -604,4 +603,4 @@ def calculate_score(hex_map:HexMap,player,positions_white,positions_black):
             if value[0][:-1] == "Queen" and value[1] == "W":
                 empty_cells = len(hex_map.get_Empty_neighbors(key[0], key[1]))
 
-    return score-empty_cells
+    return score-(empty_cells*2)

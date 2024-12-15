@@ -212,7 +212,7 @@ def Player_Turn(screen, font, hex_map, screen_width, player_background):
         Turn_Text = font.render("Unknown Player Turn", True, BLACK)
     screen.blit(Turn_Text, (screen_width // 2 - 90, 15))
 
-def PLayer_Score(screen, font, hex_map, screen_width, player_background):
+def PLayer_Score(screen, font, hex_map, screen_width, player_background,positions_white,positions_black):
     """
     Displays the current player's turn on the screen.
 
@@ -223,7 +223,7 @@ def PLayer_Score(screen, font, hex_map, screen_width, player_background):
         screen_width: The width of the screen.
         player_background: The background image for the player turn display.
     """
-    from Heuristics import calculateValue
+    from Heuristics import calculate_score
     global score_Black,score_White   
     # if Player_Color == "W":
     score_White = calculate_score(hex_map,"W")
@@ -507,8 +507,8 @@ def Human_VS_Human(screen):
         draw_hexagons(positions_black, BLACK_PLAYER, BORDER_COLOR,screen_width,screen_height,hex_map,screen,hex_map_on_menu) 
         draw_hexagons(positions_white, WHITE_PLAYER, BORDER_COLOR,screen_width,screen_height,hex_map,screen,hex_map_on_menu)
         Player_Turn(screen, font, hex_map, screen_width, player_background)
-        PLayer_Score(screen, font, hex_map, screen_width, player_background)
-        PLayer_Score(screen, font, hex_map, screen_width, player_background)
+        PLayer_Score(screen, font, hex_map, screen_width, player_background,positions_white,positions_black)
+        PLayer_Score(screen, font, hex_map, screen_width, player_background,positions_white,positions_black)
 
 
             
@@ -859,8 +859,8 @@ def Human_VS_AI(screen,depth):
         draw_hexagons(positions_white, WHITE_PLAYER, BORDER_COLOR, screen_width, screen_height, hex_map, screen,
                       hex_map_on_menu)
         Player_Turn(screen, font, hex_map, screen_width, player_background) 
-        PLayer_Score(screen, font, hex_map, screen_width, player_background)
-        PLayer_Score(screen, font, hex_map, screen_width, player_background)         
+        PLayer_Score(screen, font, hex_map, screen_width, player_background,positions_white,positions_black)
+        PLayer_Score(screen, font, hex_map, screen_width, player_background,positions_white,positions_black)         
 
         result = hex_map.get_piece(selected_hex[0], selected_hex[1])
         if (result != None):
@@ -979,8 +979,8 @@ def AI_VS_AI(screen,depth1,depth2):
         draw_hexagons(positions_black, BLACK_PLAYER, BORDER_COLOR,screen_width,screen_height,hex_map,screen,hex_map_on_menu) 
         draw_hexagons(positions_white, WHITE_PLAYER, BORDER_COLOR,screen_width,screen_height,hex_map,screen,hex_map_on_menu)
         Player_Turn(screen, font, hex_map, screen_width, player_background)
-        PLayer_Score(screen, font, hex_map, screen_width, player_background)
-        PLayer_Score(screen, font, hex_map, screen_width, player_background)
+        PLayer_Score(screen, font, hex_map, screen_width, player_background,positions_white,positions_black)
+        PLayer_Score(screen, font, hex_map, screen_width, player_background,positions_white,positions_black)
 
 
             

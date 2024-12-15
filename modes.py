@@ -104,7 +104,7 @@ def Enter_Piece_From_Menu(result_menu, draw_flag, hex_map_on_menu, preselected_h
 
     return draw_flag, preselected_hex, list_positions
 
-def AI_Movement(hex_map, hex_map_on_menu, positions_black, positions_white, screen_width, screen_height, HEX_SIZE_Board, AI_Color,depth):
+def AI_Movement(hex_map, hex_map_on_menu, positions_black, positions_white, screen_width, screen_height, HEX_SIZE_Board, AI_Color,depth, turn_start_time, turn_duration):
     """
     Handles the AI movement logic.
 

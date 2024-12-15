@@ -152,14 +152,27 @@ def AvailablePositions_SoldierAnt(hex_map, q, r):
     return
 
 ''' GrassHopper movement '''
+# def AmazingGrassHopper(hex_map, q, r, dq, dr):
+#     children = hex_map.get_neighbors(q, r)
+#     for child in children:
+#         if child[0] == (q + dq) and child[1] == (r + dr):
+#             return AmazingGrassHopper(hex_map, (q + dq), (r + dr), dq, dr)
+#         # else:
+#         #     return ((q + dq), (r + dr))
+#     return ((q + dq), (r + dr))
 def AmazingGrassHopper(hex_map, q, r, dq, dr):
     children = hex_map.get_neighbors(q, r)
+    flag=1
+    for (key ,value) in hex_map.map.items():
+        if key[0]==(q+dq) and key[1]==(r+dr):
+            flag=0
+    if flag==1 :
+        return ((q + dq), (r + dr))
+
     for child in children:
         if child[0] == (q + dq) and child[1] == (r + dr):
             return AmazingGrassHopper(hex_map, (q + dq), (r + dr), dq, dr)
-        # else:
-        #     return ((q + dq), (r + dr))
-    return ((q + dq), (r + dr))
+
 '''GrassHopper available positions'''
 def AvailablePositions_GrassHopper(hex_map:HexMap, q, r):
     #check if the queen is placed or not so that the piece can be moved

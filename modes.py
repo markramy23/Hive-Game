@@ -122,19 +122,13 @@ def AI_Movement(hex_map, hex_map_on_menu, positions_black, positions_white, scre
     Returns:
         None
     """
+    hex_number =None
     result = nextMove_alpha_beta(hex_map, hex_map_on_menu,depth, AI_Color)
-    if result :
+    if result:
         move_add, current_q, current_r, next_q, next_r, name1, color1, img1 = result
+
         preselected_hex = (current_q, current_r)
         selected_hex = (next_q, next_r)
-        if move_add == "move":
-            if piece_type_match(name1, "Beetle"):
-                hex_map.move_beetle(preselected_hex[0], preselected_hex[1], selected_hex[0], selected_hex[1])
-            else:
-                hex_map.move_piece(preselected_hex[0], preselected_hex[1], selected_hex[0], selected_hex[1])
-        elif move_add == "add":
-            hex_map.add_piece(selected_hex[0], selected_hex[1], name1, color1, img1)
-            hex_map_on_menu.remove_piece(preselected_hex[0], preselected_hex[1])
 
         if move_add == "move":
             if piece_type_match(name1, "Beetle"):
@@ -147,16 +141,22 @@ def AI_Movement(hex_map, hex_map_on_menu, positions_black, positions_white, scre
 
         hex_number = general_get_hex_number(preselected_hex[0], preselected_hex[1], positions_black, positions_white, screen_width, screen_height)
         h2p_x, h2p_y = hex_to_pixel(*selected_hex, HEX_SIZE_Board, screen_width, screen_height)
-        if hex_number:
-            if hex_map.Turn == "W" and 10 < hex_number < 22:
-                positions_white[hex_number - 11] = (h2p_x, h2p_y)
-                hex_map.Turn = "B"
-            elif hex_map.Turn == "B" and 10 < hex_number < 22 and name1 == "Beetle":
-                positions_black[hex_number - 11] = (h2p_x, h2p_y)
-                hex_map.Turn = "W"
-            elif hex_map.Turn == "B" and -1 < hex_number < 11:
-                positions_black[hex_number] = (h2p_x, h2p_y)
-                hex_map.Turn = "W"
+    if hex_number:
+        if hex_map.Turn == "W" and 10 < hex_number < 22:
+            positions_white[hex_number - 11] = (h2p_x, h2p_y)
+            hex_map.Turn = "B"
+        elif hex_map.Turn == "B" and 10 < hex_number < 22 and name1 == "Beetle":
+            positions_black[hex_number - 11] = (h2p_x, h2p_y)
+            hex_map.Turn = "W"
+        elif hex_map.Turn == "B" and -1 < hex_number < 11:
+            positions_black[hex_number] = (h2p_x, h2p_y)
+            hex_map.Turn = "W"
+    elif not hex_number:
+        if hex_map.Turn == "W":
+            hex_map.Turn = "B"
+        elif hex_map.Turn == "B":
+            hex_map.Turn = "W"
+
 
 def player_win_check(hex_map, positions_black, positions_white, screen_width, screen_height, HEX_SIZE_MENU):
     """
@@ -223,12 +223,12 @@ def PLayer_Score(screen, font, hex_map, screen_width, player_background):
         screen_width: The width of the screen.
         player_background: The background image for the player turn display.
     """
-    from Heuristics import calculateValue
+    from Heuristics import calculate_score
     global score_Black,score_White   
     # if Player_Color == "W":
-    score_White = calculateValue(hex_map,"W") 
+    score_White = calculate_score(hex_map,"W") 
     # elif Player_Color == "B":
-    score_Black = calculateValue(hex_map,"B")
+    score_Black = calculate_score(hex_map,"B")
     screen.blit(player_background, (screen_width - 510, -200))
     screen.blit(player_background, (260, -200))
     try:

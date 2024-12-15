@@ -121,12 +121,30 @@ def display_avail(list, screen,screen_width,screen_height):
         draw_hexagon(screen, x, y, (255, 0, 255), BORDER_COLOR)
 
 def draw_button(surface, text, rect, font_size=40, color=BUTTON_COLOR, hover_color=BUTTON_HOVER_COLOR):
+    """
+    Draws a button on the surface and checks if it is hovered or clicked.
+
+    Args:
+        surface: The surface to draw on.
+        text: The text to display on the button.
+        rect: The rectangle defining the button's position and size.
+        font_size: The font size of the text.
+        color: The normal button color.
+        hover_color: The button color when hovered.
+
+    Returns:
+        A tuple (is_hovered, is_clicked) where both are booleans.
+    """
     mouse_pos = pygame.mouse.get_pos()
+    mouse_buttons = pygame.mouse.get_pressed()
     is_hovered = rect.collidepoint(mouse_pos)
+    is_clicked = is_hovered and mouse_buttons[0]
+
     button_color = hover_color if is_hovered else color
     pygame.draw.rect(surface, button_color, rect, border_radius=10)
     draw_text_centered(surface, text, rect.centerx, rect.centery, font_size, TEXT_COLOR)
-    return is_hovered
+
+    return is_hovered, is_clicked
 
 def draw_hexagons(positions, color1, color2,screen_width,screen_height,hex_map,screen,hex_map_on_menu):
     for x, y in positions:

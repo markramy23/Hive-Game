@@ -9,7 +9,7 @@ from Heuristics import nextMove, get_picec_type, piece_type_match, nextMove_alph
 #constants
 Human1_Name ="Player 1"
 Human2_Name = "Player 2"
-AI_Name = "AI"
+AI_Name = "Computer"
 Human1_Color = "W"
 Human2_Color = "B"
 AI1_Color ="W"
@@ -103,6 +103,104 @@ def Enter_Piece_From_Menu(result_menu, draw_flag, hex_map_on_menu, preselected_h
         preselected_hex = selected_hex
 
     return draw_flag, preselected_hex, list_positions
+
+def AI_Movement(hex_map, hex_map_on_menu, positions_black, positions_white, screen_width, screen_height, HEX_SIZE_Board, AI_Color,depth):
+    """
+    Handles the AI movement logic.
+
+    Args:
+        hex_map: The hexagonal map object managing game logic.
+        hex_map_on_menu: The menu representation of hex map pieces.
+        positions_black: List of black piece positions.
+        positions_white: List of white piece positions.
+        screen_width: The width of the game screen.
+        screen_height: The height of the game screen.
+        HEX_SIZE_Board: The size of the hexagonal cells on the board.
+        AI_Color: The color of the AI pieces ("W" for white, "B" for black).
+
+    Returns:
+        None
+    """
+    move_add, current_q, current_r, next_q, next_r, name1, color1, img1 = nextMove_alpha_beta(hex_map, hex_map_on_menu,depth, AI_Color)
+
+    preselected_hex = (current_q, current_r)
+    selected_hex = (next_q, next_r)
+
+    if move_add == "move":
+        if piece_type_match(name1, "Beetle"):
+            hex_map.move_beetle(preselected_hex[0], preselected_hex[1], selected_hex[0], selected_hex[1])
+        else:
+            hex_map.move_piece(preselected_hex[0], preselected_hex[1], selected_hex[0], selected_hex[1])
+    elif move_add == "add":
+        hex_map.add_piece(selected_hex[0], selected_hex[1], name1, color1, img1)
+        hex_map_on_menu.remove_piece(preselected_hex[0], preselected_hex[1])
+
+    hex_number = general_get_hex_number(preselected_hex[0], preselected_hex[1], positions_black, positions_white, screen_width, screen_height)
+    h2p_x, h2p_y = hex_to_pixel(*selected_hex, HEX_SIZE_Board, screen_width, screen_height)
+
+    if hex_map.Turn == "W" and 10 < hex_number < 22:
+        positions_white[hex_number - 11] = (h2p_x, h2p_y)
+        hex_map.Turn = "B"
+    elif hex_map.Turn == "B" and 10 < hex_number < 22 and name1 == "Beetle":
+        positions_black[hex_number - 11] = (h2p_x, h2p_y)
+        hex_map.Turn = "W"
+    elif hex_map.Turn == "B" and -1 < hex_number < 11:
+        positions_black[hex_number] = (h2p_x, h2p_y)
+        hex_map.Turn = "W"
+
+def player_win_check(hex_map, positions_black, positions_white, screen_width, screen_height, HEX_SIZE_MENU):
+    """
+    Checks if a player has won the game by evaluating queen piece states.
+
+    Args:
+        hex_map: The hexagonal map object managing game logic.
+        positions_black: List of black piece positions.
+        positions_white: List of white piece positions.
+        screen_width: The width of the game screen.
+        screen_height: The height of the game screen.
+        HEX_SIZE_MENU: The size of the hexagonal cells on the menu.
+
+    Returns:
+        A tuple (white_player_lost, black_player_lost) indicating if each player has lost.
+    """
+    white_queen_q, white_queen_r = pixel_to_hex(positions_white[10][0], positions_white[10][1], HEX_SIZE_MENU, screen_width, screen_height)
+    black_queen_q, black_queen_r = pixel_to_hex(positions_black[10][0], positions_black[10][1], HEX_SIZE_MENU, screen_width, screen_height)
+
+    white_queen_breakhive = does_removal_break_hive(hex_map.map, (white_queen_q, white_queen_r))
+    black_queen_breakhive = does_removal_break_hive(hex_map.map, (black_queen_q, black_queen_r))
+
+    white_player_lost = False
+    black_player_lost = False
+
+    if hex_map.queen_placed["W"] and hex_map.queen_placed["B"] and not white_queen_breakhive and not black_queen_breakhive:
+        white_player_lost = hex_map.did_Player_Lose(white_queen_q, white_queen_r)
+        black_player_lost = hex_map.did_Player_Lose(black_queen_q, black_queen_r)
+    if hex_map.queen_placed["W"] and not white_queen_breakhive:
+        white_player_lost = hex_map.did_Player_Lose(white_queen_q, white_queen_r)
+    if hex_map.queen_placed["B"] and not black_queen_breakhive:
+        black_player_lost = hex_map.did_Player_Lose(black_queen_q, black_queen_r)
+
+    return white_player_lost, black_player_lost
+
+def Player_Turn(screen, font, hex_map, screen_width, player_background):
+    """
+    Displays the current player's turn on the screen.
+
+    Args:
+        screen: The screen surface to draw on.
+        font: The font used for rendering text.
+        hex_map: The main hexagonal map containing the current turn.
+        screen_width: The width of the screen.
+        player_background: The background image for the player turn display.
+    """
+    screen.blit(player_background, (screen_width // 2 - 125, -200))
+    if hex_map.Turn == "W":
+        Turn_Text = font.render("White Player Turn", True, BLACK)
+    elif hex_map.Turn == "B":
+        Turn_Text = font.render("Black Player Turn", True, BLACK)
+    else:
+        Turn_Text = font.render("Unknown Player Turn", True, BLACK)
+    screen.blit(Turn_Text, (screen_width // 2 - 90, 15))
 
 def Human_VS_Human(screen):
     # Hex map objects
@@ -331,29 +429,9 @@ def Human_VS_Human(screen):
                                     positions_black[hex_number]=h2p_x,h2p_y
                                     hex_map.Turn = "W"
                                 
-                                #Player Win Check
-                                white_queen_q,white_queen_r = pixel_to_hex(positions_white[10][0],positions_white[10][1],HEX_SIZE_MENU,screen_width,screen_height)
-                                black_queen_q,black_queen_r = pixel_to_hex(positions_black[10][0],positions_black[10][1],HEX_SIZE_MENU,screen_width,screen_height)
-                                
-                                white_queen_breakhive = does_removal_break_hive(hex_map.map,(white_queen_q,white_queen_r))
-                                black_queen_breakhive = does_removal_break_hive(hex_map.map,(black_queen_q,black_queen_r))
-                                if(hex_map.queen_placed["W"] and hex_map.queen_placed["B"] and (not white_queen_breakhive) and (not black_queen_breakhive)):
-                                    white_player_lost = hex_map.did_Player_Lose(white_queen_q, white_queen_r)
-                                    black_player_lost = hex_map.did_Player_Lose(black_queen_q, black_queen_r) 
-                                if(hex_map.queen_placed["W"] and (not white_queen_breakhive) ):
-                                    white_player_lost = hex_map.did_Player_Lose(white_queen_q, white_queen_r)
-                                   
-                                if(hex_map.queen_placed["B"] and (not black_queen_breakhive) ):
-                                    black_player_lost = hex_map.did_Player_Lose(black_queen_q, black_queen_r)
-                                # 1 for white win,
-                                # 2 for black win 
-                                # 3 for Draw
-                                # if ( (not white_queen_breakhive) and (not black_queen_breakhive) and (hex_map.queen_placed["W"]) and (hex_map.queen_placed["B"]) and white_player_lost and black_player_lost):
-                                #     flag_winner = 3
-                                # elif ( (not white_queen_breakhive) and (hex_map.queen_placed["W"]) and white_player_lost ):
-                                #     flag_winner = 2
-                                # elif ( (not black_queen_breakhive) and (hex_map.queen_placed["B"]) and black_player_lost ):
-                                #     flag_winner = 1
+                                # Player Win Check
+                                white_player_lost , black_player_lost =player_win_check(hex_map, positions_black, positions_white, screen_width, screen_height, HEX_SIZE_MENU)
+
 
                                 break
                             #Deselecting
@@ -378,17 +456,11 @@ def Human_VS_Human(screen):
         if draw_flag:
             draw_Available_positions(screen, hex_map, list, HEX_SIZE_Board, screen_width, screen_height, BORDER_COLOR_2)
 
-        
-        
-        #print(pixel_to_hex(768,432,HEX_SIZE_Board))
-        #print(f"{positions_white}")
-        # if(hex_map.Turn == "W"):
-        #     draw_hexagons(positions_white, WHITE_PLAYER, BORDER_COLOR)
-        #     draw_hexagons(positions_black, BLACK_PLAYER, BORDER_COLOR) 
-        # else:
         draw_player(Human1_Name, Human2_Name,screen)
         draw_hexagons(positions_black, BLACK_PLAYER, BORDER_COLOR,screen_width,screen_height,hex_map,screen,hex_map_on_menu) 
         draw_hexagons(positions_white, WHITE_PLAYER, BORDER_COLOR,screen_width,screen_height,hex_map,screen,hex_map_on_menu)
+        Player_Turn(screen, font, hex_map, screen_width, player_background)
+
 
             
         result = hex_map.get_piece(selected_hex[0],selected_hex[1])
@@ -405,8 +477,7 @@ def Human_VS_Human(screen):
         pygame.display.flip()
         clock.tick(30)
 
-
-def Human_VS_AI(screen):
+def Human_VS_AI(screen,depth):
     # Hex map objects
     hex_map_on_menu = HexMap()
     hex_map = HexMap()  # Hex_map_on_board
@@ -476,11 +547,6 @@ def Human_VS_AI(screen):
     last_mouse_pos = (0, 0)
     draw_flag = False
     hex_number = 0
-
-    # 1 for white win,
-    # 2 for black win
-    # 3 for Draw
-    # flag_winner = 0
     white_player_lost = False
     black_player_lost = False
     while running:
@@ -488,42 +554,9 @@ def Human_VS_AI(screen):
         # Draw hexagons
         # Test_Map(screen,hex_map,selected_hex,HEX_SIZE_Board,HEX_COLOR,SELECTED_COLOR,BORDER_COLOR,screen_width,screen_height)
 
-        check_game_result(screen, Human1_Color, AI2_Color, Human1_Name, AI_Name, white_player_lost, black_player_lost,
-                          "Human_VS_AI")
+        check_game_result(screen,Human1_Color,AI2_Color,Human1_Name,AI_Name,white_player_lost,black_player_lost,"Human_VS_AI")
         if (hex_map.Turn == AI2_Color):
-            # move_add,current_q,current_r,next_q,next_r,name1,color1,img1 = nextMove(hex_map,hex_map_on_menu,2,AI2_Color)
-            move_add, current_q, current_r, next_q, next_r, name1, color1, img1 = nextMove_alpha_beta(hex_map,
-                                                                                                      hex_map_on_menu,
-                                                                                                      3, AI2_Color)
-
-            preselected_hex = (current_q, current_r)
-            selected_hex = (next_q, next_r)
-            # Result contains tuples of ("move" or "add",Current q , Current r , next q , next r , name, color, img )
-            if (move_add == "move"):
-                if piece_type_match(name1, "Beetle"):
-                    # print(1010101)
-                    hex_map.move_beetle(preselected_hex[0], preselected_hex[1], selected_hex[0], selected_hex[1])
-                    # continue
-                else:
-                    # hex_map.add_piece(selected_hex[0],selected_hex[1],name1,color1,img1)
-                    # hex_map.remove_piece(preselected_hex[0],preselected_hex[1])
-                    hex_map.move_piece(preselected_hex[0], preselected_hex[1], selected_hex[0], selected_hex[1])
-            elif (move_add == "add"):
-                hex_map.add_piece(selected_hex[0], selected_hex[1], name1, color1, img1)
-                hex_map_on_menu.remove_piece(preselected_hex[0], preselected_hex[1])
-            hex_number = general_get_hex_number(preselected_hex[0], preselected_hex[1], positions_black,
-                                                positions_white, screen_width, screen_height)
-            h2p_x, h2p_y = hex_to_pixel(*selected_hex, HEX_SIZE_Board, screen_width, screen_height)
-            if (hex_map.Turn == "W" and (hex_number > 10 and hex_number < 22)):
-                positions_white[hex_number - 11] = h2p_x, h2p_y
-                hex_map.Turn = "B"
-            elif (hex_map.Turn == "B" and (hex_number > 10 and hex_number < 22) and name1 == "Beetle"):
-                positions_black[hex_number - 11] = h2p_x, h2p_y
-                hex_map.Turn = "W"
-            elif (hex_map.Turn == "B" and (hex_number > -1 and hex_number < 11)):
-                positions_black[hex_number] = h2p_x, h2p_y
-                hex_map.Turn = "W"
-
+            AI_Movement(hex_map, hex_map_on_menu, positions_black, positions_white, screen_width, screen_height, HEX_SIZE_Board, AI2_Color,depth)
 
         else:
             # Main event loop
@@ -565,10 +598,7 @@ def Human_VS_AI(screen):
                         ########################## Code to enter the piece from menu to board ###################################
                         if (hex_map.Turn == Human1_Color):
                             if (result_menu != None):  # to ensure that the currect selected piece is on menu
-                                draw_flag, preselected_hex, list = Enter_Piece_From_Menu(result_menu, draw_flag,
-                                                                                         hex_map_on_menu,
-                                                                                         preselected_hex, selected_hex,
-                                                                                         hex_map)
+                                draw_flag, preselected_hex, list = Enter_Piece_From_Menu(result_menu, draw_flag, hex_map_on_menu, preselected_hex, selected_hex, hex_map)
                             ########################## Code to enter the piece from board to board ###################################
                             elif (result_board != None):
                                 name_on_board, color_on_board, img_on_board = result_board
@@ -751,27 +781,10 @@ def Human_VS_AI(screen):
                 dragging, last_mouse_pos = change_map_position(
                     event, dragging, last_mouse_pos, hex_map
                 )
+        
+        # Player Win Check
+        white_player_lost , black_player_lost =player_win_check(hex_map, positions_black, positions_white, screen_width, screen_height, HEX_SIZE_MENU)
 
-                # Player Win Check
-        white_queen_q, white_queen_r = pixel_to_hex(positions_white[10][0],
-                                                    positions_white[10][1], HEX_SIZE_MENU,
-                                                    screen_width, screen_height)
-        black_queen_q, black_queen_r = pixel_to_hex(positions_black[10][0],
-                                                    positions_black[10][1], HEX_SIZE_MENU,
-                                                    screen_width, screen_height)
-
-        white_queen_breakhive = does_removal_break_hive(hex_map.map,
-                                                        (white_queen_q, white_queen_r))
-        black_queen_breakhive = does_removal_break_hive(hex_map.map,
-                                                        (black_queen_q, black_queen_r))
-        if (hex_map.queen_placed["W"] and hex_map.queen_placed["B"] and (
-                not white_queen_breakhive) and (not black_queen_breakhive)):
-            white_player_lost = hex_map.did_Player_Lose(white_queen_q, white_queen_r)
-            black_player_lost = hex_map.did_Player_Lose(black_queen_q, black_queen_r)
-        if (hex_map.queen_placed["W"] and (not white_queen_breakhive)):
-            white_player_lost = hex_map.did_Player_Lose(white_queen_q, white_queen_r)
-        if (hex_map.queen_placed["B"] and (not black_queen_breakhive)):
-            black_player_lost = hex_map.did_Player_Lose(black_queen_q, black_queen_r)
 
         if draw_flag:
             # Iterate through the list of positions
@@ -792,6 +805,7 @@ def Human_VS_AI(screen):
                       hex_map_on_menu)
         draw_hexagons(positions_white, WHITE_PLAYER, BORDER_COLOR, screen_width, screen_height, hex_map, screen,
                       hex_map_on_menu)
+        Player_Turn(screen, font, hex_map, screen_width, player_background)           
 
         result = hex_map.get_piece(selected_hex[0], selected_hex[1])
         if (result != None):
@@ -807,7 +821,7 @@ def Human_VS_AI(screen):
         pygame.display.flip()
         clock.tick(30)
 
-def AI_VS_AI(screen):
+def AI_VS_AI(screen,depth1,depth2):
     # Hex map objects
     hex_map_on_menu = HexMap()
     hex_map = HexMap()  # Hex_map_on_board
@@ -815,6 +829,7 @@ def AI_VS_AI(screen):
     screen_width, screen_height = display_info.current_w, display_info.current_h
     pygame.display.set_caption("Hive Game")
     clock = pygame.time.Clock()
+
     # Define positions for the white and black pieces in pixels
     positions_white = [
         (hex_to_pixel(19, -18,HEX_SIZE_Board,screen_width,screen_height)[0] , hex_to_pixel(19, -18,HEX_SIZE_Board,screen_width,screen_height)[1]) , #ANT1
@@ -830,7 +845,6 @@ def AI_VS_AI(screen):
         (hex_to_pixel(17, -14,HEX_SIZE_Board,screen_width,screen_height)[0] , hex_to_pixel(17, -14,HEX_SIZE_Board,screen_width,screen_height)[1]) , #Queen1
     ]
     
-
     positions_black = [
         (hex_to_pixel(-19, 1  ,HEX_SIZE_Board,screen_width,screen_height)[0]  , hex_to_pixel(-19,  1 , HEX_SIZE_Board,screen_width,screen_height)[1])  , #ANT1
         (hex_to_pixel(-17, 0  ,HEX_SIZE_Board,screen_width,screen_height)[0]  , hex_to_pixel(-17,  0 , HEX_SIZE_Board,screen_width,screen_height)[1])  , #ANT2
@@ -849,18 +863,13 @@ def AI_VS_AI(screen):
     add_pieces(positions_black, "B",piece_images,pieces,screen_width,screen_height,hex_map_on_menu)
     
     #Initial Values
-    selected_hex = (0, 0)
-    preselected_hex = selected_hex #the previous value of selected_hex
+    #selected_hex = (0, 0)
+    #preselected_hex = selected_hex #the previous value of selected_hex
     running = True
     dragging = False
     last_mouse_pos = (0, 0)
-    draw_flag = False
-    hex_number = 0 
-
-    # 1 for white win,
-    # 2 for black win 
-    # 3 for Draw
-    # flag_winner = 0 
+    # draw_flag = False
+    # hex_number = 0  
     white_player_lost = False
     black_player_lost = False
     while running:
@@ -870,67 +879,13 @@ def AI_VS_AI(screen):
         
         check_game_result(screen,AI1_Color,AI2_Color,AI_Name,AI_Name,white_player_lost,black_player_lost,"AI_VS_AI")
         if(hex_map.Turn == AI1_Color):
-            # move_add,current_q,current_r,next_q,next_r,name1,color1,img1 = nextMove(hex_map,hex_map_on_menu,3,AI2_Color)
-            move_add,current_q,current_r,next_q,next_r,name1,color1,img1 = nextMove_alpha_beta(hex_map,hex_map_on_menu,2,AI1_Color)
+            AI_Movement(hex_map, hex_map_on_menu, positions_black, positions_white, screen_width, screen_height, HEX_SIZE_Board, AI1_Color,depth1)
 
-            preselected_hex = (current_q,current_r)
-            selected_hex = (next_q,next_r)
-            # Result contains tuples of ("move" or "add",Current q , Current r , next q , next r , name, color, img )
-            if(move_add == "move"):
-                if piece_type_match(name1,"Beetle"):
-                    #print(1010101)
-                    hex_map.move_beetle(preselected_hex[0],preselected_hex[1],selected_hex[0],selected_hex[1])
-                    # continue
-                else:
-                    # hex_map.add_piece(selected_hex[0],selected_hex[1],name1,color1,img1)
-                    # hex_map.remove_piece(preselected_hex[0],preselected_hex[1])
-                    hex_map.move_piece(preselected_hex[0],preselected_hex[1],selected_hex[0],selected_hex[1])
-            elif(move_add == "add"):
-                hex_map.add_piece(selected_hex[0],selected_hex[1],name1,color1,img1)
-                hex_map_on_menu.remove_piece(preselected_hex[0],preselected_hex[1])
-            hex_number = general_get_hex_number(preselected_hex[0],preselected_hex[1],positions_black,positions_white,screen_width,screen_height)
-            h2p_x,h2p_y = hex_to_pixel(*selected_hex,HEX_SIZE_Board,screen_width,screen_height)
-            if(hex_map.Turn == "W" and (hex_number>10 and hex_number<22)):
-                positions_white[hex_number-11]=h2p_x,h2p_y
-                hex_map.Turn = "B"
-            elif(hex_map.Turn == "B" and (hex_number>10 and hex_number<22) and name1 == "Beetle"):
-                positions_black[hex_number-11]=h2p_x,h2p_y
-                hex_map.Turn = "W"
-            elif(hex_map.Turn == "B" and (hex_number>-1 and hex_number<11)):
-                positions_black[hex_number]=h2p_x,h2p_y
-                hex_map.Turn = "W"
         elif(hex_map.Turn == AI2_Color):
-            # move_add,current_q,current_r,next_q,next_r,name1,color1,img1 = nextMove(hex_map,hex_map_on_menu,3,AI2_Color)
-            result = nextMove_alpha_beta(hex_map,hex_map_on_menu,1,AI2_Color)
-            if result:
-                move_add, current_q, current_r, next_q, next_r, name1, color1, img1 = result
+            AI_Movement(hex_map, hex_map_on_menu, positions_black, positions_white, screen_width, screen_height, HEX_SIZE_Board, AI2_Color,depth2)
 
-            preselected_hex = (current_q,current_r)
-            selected_hex = (next_q,next_r)
-            # Result contains tuples of ("move" or "add",Current q , Current r , next q , next r , name, color, img )
-            if(move_add == "move"):
-                if piece_type_match(name1,"Beetle"):
-                    #print(1010101)
-                    hex_map.move_beetle(preselected_hex[0],preselected_hex[1],selected_hex[0],selected_hex[1])
-                    # continue
-                else:
-                    # hex_map.add_piece(selected_hex[0],selected_hex[1],name1,color1,img1)
-                    # hex_map.remove_piece(preselected_hex[0],preselected_hex[1])
-                    hex_map.move_piece(preselected_hex[0],preselected_hex[1],selected_hex[0],selected_hex[1])
-            elif(move_add == "add"):
-                hex_map.add_piece(selected_hex[0],selected_hex[1],name1,color1,img1)
-                hex_map_on_menu.remove_piece(preselected_hex[0],preselected_hex[1])
-            hex_number = general_get_hex_number(preselected_hex[0],preselected_hex[1],positions_black,positions_white,screen_width,screen_height)
-            h2p_x,h2p_y = hex_to_pixel(*selected_hex,HEX_SIZE_Board,screen_width,screen_height)
-            if(hex_map.Turn == "W" and (hex_number>10 and hex_number<22)):
-                positions_white[hex_number-11]=h2p_x,h2p_y
-                hex_map.Turn = "B"
-            elif(hex_map.Turn == "B" and (hex_number>10 and hex_number<22) and name1 == "Beetle"):
-                positions_black[hex_number-11]=h2p_x,h2p_y
-                hex_map.Turn = "W"
-            elif(hex_map.Turn == "B" and (hex_number>-1 and hex_number<11)):
-                positions_black[hex_number]=h2p_x,h2p_y
-                hex_map.Turn = "W"
+        #Player Win Check
+        white_player_lost , black_player_lost =player_win_check(hex_map, positions_black, positions_white, screen_width, screen_height, HEX_SIZE_MENU)
 
         # Main event loop
         for event in pygame.event.get():
@@ -960,6 +915,8 @@ def AI_VS_AI(screen):
         draw_player(AI_Name, AI_Name,screen)
         draw_hexagons(positions_black, BLACK_PLAYER, BORDER_COLOR,screen_width,screen_height,hex_map,screen,hex_map_on_menu) 
         draw_hexagons(positions_white, WHITE_PLAYER, BORDER_COLOR,screen_width,screen_height,hex_map,screen,hex_map_on_menu)
+        Player_Turn(screen, font, hex_map, screen_width, player_background)
+
             
         pygame.display.flip()
         clock.tick(30)

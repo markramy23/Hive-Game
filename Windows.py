@@ -41,22 +41,22 @@ def mainwindow(screen):
         screen.blit(HomePage, (0, 0))
         #draw_text_centered(screen, "Hive Game", screen_width // 2, 250, font_size=60)
         #screen.blit(Logo, (screen_width // 2 -152, 30))
-        human_hovered        = draw_button( screen , "Human vs Human", human_button       )
-        ai_hovered           = draw_button( screen , "Human vs AI"   , ai_button          )
-        ai_vs_ai_hovered     = draw_button( screen , "AI vs AI"      , ai_vs_ai_button    )
-        Change_names_hovered = draw_button( screen ,"Change Names"   , Change_names_Button)
-        Quit_hovered         = draw_button( screen ,"Exit Game"      , Quit_Button        )
+        human_hovered,is_clicked        = draw_button( screen , "Human vs Human"       , human_button        )
+        ai_hovered,is_clicked           = draw_button( screen , "Human vs Computer"    , ai_button           )
+        ai_vs_ai_hovered,is_clicked     = draw_button( screen , "Computer vs Computer" , ai_vs_ai_button     )
+        Change_names_hovered,is_clicked = draw_button( screen , "Change Names"         , Change_names_Button )
+        Quit_hovered,is_clicked         = draw_button( screen , "Exit Game"            , Quit_Button         )
 
-        for event in pygame.event.get():
+        for event in  pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if human_hovered:
                     Human_VS_Human(screen)
                 elif ai_hovered:
-                    Human_VS_AI(screen)
+                    Difficulty_Human_vs_AI(screen)
                 elif ai_vs_ai_hovered:
-                    AI_VS_AI(screen)
+                    Difficulty_AI_vs_AI(screen)
                 elif Change_names_hovered:
                     change_names_window(screen)
                 elif Quit_hovered:
@@ -95,9 +95,9 @@ def render_menu_window(parent_screen):
 
         # Draw buttons
         draw_text_centered(parent_screen,"Hive Game", screen_width // 2, 230, font_size=60)
-        Continue_hovered = draw_button(parent_screen, "Continue", Continue_button)
-        Main_Menu_hovered = draw_button(parent_screen, "Go to Main Menu", Main_Menu_button)
-        Exit_Game_hovered = draw_button(parent_screen, "Exit Game", Exit_Game_button)
+        Continue_hovered,is_clicked = draw_button(parent_screen, "Continue", Continue_button)
+        Main_Menu_hovered,is_clicked = draw_button(parent_screen, "Go to Main Menu", Main_Menu_button)
+        Exit_Game_hovered,is_clicked = draw_button(parent_screen, "Exit Game", Exit_Game_button)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -155,9 +155,9 @@ def Win_Lose_window(parent_screen,winner_name,Match_result,Called_from):
         # Draw buttons
         draw_text_centered(parent_screen, "End of Game: " + winner_name + " Wins", screen_width // 2, 30, font_size=30,color=(0,0,0))
         
-        Main_Menu_hovered = draw_button( parent_screen , "Go to Main Menu", Main_Menu_button,font_size=25 )
-        play_again_hovered  = draw_button( parent_screen , "Play again"     , play_again_button,font_size=25  )
-        Exit_Game_hovered = draw_button( parent_screen , "Exit Game"      , Exit_Game_button,font_size=25 )
+        Main_Menu_hovered,is_clicked = draw_button( parent_screen , "Go to Main Menu", Main_Menu_button,font_size=25 )
+        play_again_hovered,is_clicked  = draw_button( parent_screen , "Play again"     , play_again_button,font_size=25  )
+        Exit_Game_hovered,is_clicked = draw_button( parent_screen , "Exit Game"      , Exit_Game_button,font_size=25 )
 
         draw_text_centered(parent_screen, Match_result, screen_width // 2, screen_height // 2, font_size=50,color=(250,250,250))
 
@@ -312,3 +312,113 @@ def change_names_window(screen):
         # Update the display
         pygame.display.flip()
 
+def Difficulty_Human_vs_AI(screen):
+    from modes import  Human_VS_AI 
+    global screen_width, screen_height
+    pygame.init()
+    # Set up a maximized window with minimize, maximize, and close icons
+    display_info = pygame.display.Info()
+    screen_width, screen_height = display_info.current_w, display_info.current_h
+    screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
+
+    pygame.display.set_caption("Hive Game")
+    clock = pygame.time.Clock()
+
+    Easy_button   = pygame.Rect(screen_width // 2 - 200, 300, 400, 80)
+    Medium_button = pygame.Rect(screen_width // 2 - 200, 400, 400, 80)
+    Hard_button   = pygame.Rect(screen_width // 2 - 200, 500, 400, 80)
+    Quit_Button   = pygame.Rect(screen_width // 2 - 200, 600, 400, 80)
+
+    running = True
+    while running:
+        screen.fill((170, 170, 170))
+        screen.blit(HomePage, (0, 0))
+        #draw_text_centered(screen, "Hive Game", screen_width // 2, 250, font_size=60)
+        #screen.blit(Logo, (screen_width // 2 -152, 30))
+        Easy_hovered,is_clicked   = draw_button( screen , "Easy"      , Easy_button   )
+        Medium_hovered,is_clicked = draw_button( screen , "Medium"    , Medium_button )
+        Hard_hovered,is_clicked   = draw_button( screen , "HARD"      , Hard_button   )
+        Quit_hovered,is_clicked   = draw_button( screen , "Exit Game" , Quit_Button   )
+        for event in  pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if Easy_hovered:
+                    Human_VS_AI(screen,2)
+                elif Medium_hovered:
+                    Human_VS_AI(screen,3)
+                elif Hard_hovered:
+                    Human_VS_AI(screen,4)
+                elif Quit_hovered:
+                    running =False
+                    pygame.quit()
+
+        pygame.display.flip()
+        clock.tick(30)
+
+def Difficulty_AI_vs_AI(screen):
+    from modes import AI_VS_AI
+    global screen_width, screen_height
+    pygame.init()
+    # Set up a maximized window with minimize, maximize, and close icons
+    display_info = pygame.display.Info()
+    screen_width, screen_height = display_info.current_w, display_info.current_h
+    screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
+
+    pygame.display.set_caption("Hive Game")
+    clock = pygame.time.Clock()
+
+    # Define buttons
+    Easy_button1 = pygame.Rect(screen_width // 2 - 425, 300, 400, 80)
+    Medium_button1 = pygame.Rect(screen_width // 2 - 425, 400, 400, 80)
+    Hard_button1 = pygame.Rect(screen_width // 2 - 425, 500, 400, 80)
+    Easy_button2 = pygame.Rect(screen_width // 2 + 25, 300, 400, 80)
+    Medium_button2 = pygame.Rect(screen_width // 2 + 25, 400, 400, 80)
+    Hard_button2 = pygame.Rect(screen_width // 2 + 25, 500, 400, 80)
+    Quit_Button = pygame.Rect(screen_width // 2 - 200, 600, 400, 80)
+
+    selected_white_difficulty = None
+    selected_black_difficulty = None
+    running = True
+
+    while running:
+        screen.fill((170, 170, 170))
+        screen.blit(HomePage, (0, 0))
+        draw_text_centered(screen, "White Computer", screen_width // 2 - 225, 250, font_size=60)
+        draw_text_centered(screen, "Black Computer", screen_width // 2 + 225, 250, font_size=60)
+
+        # Draw buttons
+        Easy_hovered1, Easy_clicked1 = draw_button(screen, "Easy", Easy_button1)
+        Medium_hovered1, Medium_clicked1 = draw_button(screen, "Medium", Medium_button1)
+        Hard_hovered1, Hard_clicked1 = draw_button(screen, "HARD", Hard_button1)
+        Easy_hovered2, Easy_clicked2 = draw_button(screen, "Easy", Easy_button2)
+        Medium_hovered2, Medium_clicked2 = draw_button(screen, "Medium", Medium_button2)
+        Hard_hovered2, Hard_clicked2 = draw_button(screen, "HARD", Hard_button2)
+        Quit_hovered, Quit_clicked = draw_button(screen, "Exit Game", Quit_Button)
+
+        # Handle events
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if Easy_hovered1:
+                    selected_white_difficulty = 2
+                elif Medium_hovered1:
+                    selected_white_difficulty = 3
+                elif Hard_hovered1:
+                    selected_white_difficulty = 4
+
+                if Easy_hovered2:
+                    selected_black_difficulty = 2
+                elif Medium_hovered2:
+                    selected_black_difficulty = 3
+                elif Hard_hovered2:
+                    selected_black_difficulty = 4
+                elif Quit_hovered:
+                    running = False
+                    pygame.quit()
+        if selected_white_difficulty and selected_black_difficulty:
+            AI_VS_AI(screen, selected_white_difficulty, selected_black_difficulty)
+
+        pygame.display.flip()
+        clock.tick(30)

@@ -344,11 +344,11 @@ def Difficulty_Human_vs_AI(screen):
                 running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if Easy_hovered:
-                    Human_VS_AI(screen,2)
+                    Human_VS_AI(screen,1)
                 elif Medium_hovered:
-                    Human_VS_AI(screen,3)
+                    Human_VS_AI(screen,2)
                 elif Hard_hovered:
-                    Human_VS_AI(screen,4)
+                    Human_VS_AI(screen,3)
                 elif Quit_hovered:
                     running =False
                     pygame.quit()
@@ -402,18 +402,18 @@ def Difficulty_AI_vs_AI(screen):
                 running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if Easy_hovered1:
-                    selected_white_difficulty = 2
+                    selected_white_difficulty = 1
                 elif Medium_hovered1:
-                    selected_white_difficulty = 3
+                    selected_white_difficulty = 2
                 elif Hard_hovered1:
-                    selected_white_difficulty = 4
+                    selected_white_difficulty = 3
 
                 if Easy_hovered2:
-                    selected_black_difficulty = 2
+                    selected_black_difficulty = 1
                 elif Medium_hovered2:
-                    selected_black_difficulty = 3
+                    selected_black_difficulty = 2
                 elif Hard_hovered2:
-                    selected_black_difficulty = 4
+                    selected_black_difficulty = 3
                 elif Quit_hovered:
                     running = False
                     pygame.quit()

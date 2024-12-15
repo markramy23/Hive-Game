@@ -121,10 +121,11 @@ def AI_Movement(hex_map, hex_map_on_menu, positions_black, positions_white, scre
     Returns:
         None
     """
-    move_add, current_q, current_r, next_q, next_r, name1, color1, img1 = nextMove_alpha_beta(hex_map, hex_map_on_menu,depth, AI_Color)
-
-    preselected_hex = (current_q, current_r)
-    selected_hex = (next_q, next_r)
+    result = nextMove_alpha_beta(hex_map, hex_map_on_menu,depth, AI_Color)
+    if result :
+        move_add, current_q, current_r, next_q, next_r, name1, color1, img1 = result
+        preselected_hex = (current_q, current_r)
+        selected_hex = (next_q, next_r)
 
     if move_add == "move":
         if piece_type_match(name1, "Beetle"):

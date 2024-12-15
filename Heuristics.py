@@ -571,17 +571,19 @@ def CalculateBoardValue(hex_map: HexMap, ActivePlayer):
             numberOfWhiteFreePieces - numberOfBlackFreePieces) + 1 * (ScoresOfWhitePieces - ScoresOfBlackPieces)
 
 
-# def next_move_iterative_deepening(hex_map, hex_map_on_menu, turn_start_time,turn_duration, player):
-#     depth = 2
-#     result = nextMove_alpha_beta(hex_map, hex_map_on_menu, depth, player)
-#     remaining_time = Remaining_Turn_Time(turn_start_time,turn_duration)
-#     while remaining_time > 0:
-#         depth += 1
-#         result = nextMove_alpha_beta(hex_map, hex_map_on_menu, depth, player)
-#         remaining_time = Remaining_Turn_Time(turn_start_time,turn_duration)
-#     return result
+def next_move_iterative_deepening(hex_map, hex_map_on_menu, turn_start_time,turn_duration, player):
+    from modes import Remaining_Turn_Time
 
-def calculate_score(hex_map:HexMap,player,positions_white,positions_black):
+    depth = 2
+    result = nextMove_alpha_beta(hex_map, hex_map_on_menu, depth, player)
+    remaining_time = Remaining_Turn_Time(turn_start_time,turn_duration)
+    while remaining_time > 0:
+        depth += 1
+        result = nextMove_alpha_beta(hex_map, hex_map_on_menu, depth, player)
+        remaining_time = Remaining_Turn_Time(turn_start_time,turn_duration)
+    return result
+
+def calculate_score(hex_map:HexMap,player):
     piece_scores = {
         "Queen": 9,
         "Ant": 4,

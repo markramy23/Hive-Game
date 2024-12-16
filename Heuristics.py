@@ -127,15 +127,21 @@ return: True if the Queen is surrounded by the opponent's pieces, False otherwis
 '''
 
 
-def isQueenSurrounded(color, hex_map):
+def isQueenSurrounded(color, hex_map: HexMap):
     for (key, value) in hex_map.map.items():  # for every piece in the hex_map
-        if piece_type_match(value[0], "Queen") and color == value[
-            1]:  # if the piece is a Queen and has the same color as the player
+        if piece_type_match(value[0], "Queen") and color == value[1]:  # if the piece is a Queen and has the same color as the player
             # if value[0] == "Queen" and color == value[1]: #if the piece is a Queen and has the same color as the player
             if len(hex_map.get_neighbors(key[0], key[1])) == 6:  # if the Queen has 6 neighbors (surrounded) return True
                 return True
             else:
                 return False
+    for key,value in hex_map.OutCasts:
+        if value[0][:-1] == "Queen" and color == value[1]:
+            if len(hex_map.get_neighbors(key[0],key[1])) == 6:  # if the Queen has 6 neighbors (surrounded) return True
+                    return True
+            else:
+                    return False
+
 
 
 ''' 

@@ -571,10 +571,8 @@ def CalculateBoardValue(hex_map: HexMap, ActivePlayer):
             numberOfWhiteFreePieces - numberOfBlackFreePieces) + 1 * (ScoresOfWhitePieces - ScoresOfBlackPieces)
 
 
-# def next_move_iterative_deepening(hex_map, hex_map_on_menu, time, player):
-#     depth = 1
-#     result = nextMove_alpha_beta(hex_map, hex_map_on_menu, depth, player)
-#     while time>0:
+def next_move_iterative_deepening(hex_map, hex_map_on_menu, turn_start_time,turn_duration, player):
+    from modes import Remaining_Turn_Time
 
 def calculate_score(hex_map:HexMap,player):
     piece_scores = {

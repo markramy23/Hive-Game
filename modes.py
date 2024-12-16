@@ -4,7 +4,8 @@ from Utilities import *
 from GUI import *
 from Available_positions import *
 from Windows import render_menu_window , Win_Lose_window
-from Heuristics import nextMove, get_picec_type, piece_type_match, nextMove_alpha_beta, nextMove_alpha_beta_loser
+from Heuristics import nextMove, get_picec_type, piece_type_match, nextMove_alpha_beta, nextMove_alpha_beta_loser, \
+    calculate_score
 
 #constants
 Human1_Name ="Player 1"

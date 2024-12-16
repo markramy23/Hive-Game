@@ -520,8 +520,8 @@ return: the value of the board
 def CalculateBoardValue(hex_map: HexMap, ActivePlayer):
     whiteQueen = 0
     blackQueen = 0
-    blackWon = isQueenSurrounded("B", hex_map)  # check if the black Queen is surrounded
-    whiteWon = isQueenSurrounded("W", hex_map)  # check if the white Queen is surrounded
+    blackWon = isQueenSurrounded("W", hex_map)  # check if the black Queen is surrounded
+    whiteWon = isQueenSurrounded("B", hex_map)  # check if the white Queen is surrounded
     # if both Queens are surrounded (Draw) treat it as lose so the ai shouldn't choose this move as the best move
     if blackWon == True and whiteWon == True:
         # if the active player is white return -ve infinity

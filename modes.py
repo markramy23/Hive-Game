@@ -251,7 +251,6 @@ def PLayer_Score(screen, font, hex_map, screen_width, player_background,position
 def Remaining_Turn_Time(turn_start_time,turn_duration):
     elapsed_time = pygame.time.get_ticks() - turn_start_time
     remaining_time = max(0, turn_duration - elapsed_time)
-    print(f"Time remaining: {remaining_time} ms")
     return remaining_time
 
 def Human_VS_Human(screen):
@@ -340,10 +339,6 @@ def Human_VS_Human(screen):
                         #get the name , color and img of the selected piece
                         result_menu = hex_map_on_menu.get_piece(selected_hex[0],selected_hex[1]) 
                         result_board = hex_map.get_piece(selected_hex[0],selected_hex[1])
-                        # print("preselected")
-                        # print(preselected_hex,hex_map.get_piece(preselected_hex[0], preselected_hex[1]))
-                        # print("selected")
-                        # print(selected_hex,hex_map.get_piece(selected_hex[0], selected_hex[1]))
                         
                         ########################## Code to enter the piece from menu to board ################################### 
                         if(result_menu != None):#to ensure that the currect selected piece is on menu
@@ -363,7 +358,6 @@ def Human_VS_Human(screen):
                             if(prevresult_on_board_to_check_beetle !=None):
                                 name_on_board_to_check_beetle,color_on_board_to_check_beetle,img_on_board_to_check_beetle = prevresult_on_board_to_check_beetle    
                                 name_on_board_to_check_beetle = name_on_board_to_check_beetle[:-1]
-                                #print(color_on_board)
                                 if(name_on_board_to_check_beetle =="Beetle"):
                                         list = AvailablePositions_Beetle(hex_map,preselected_hex[0],preselected_hex[1])
                                         for element in list: 
@@ -373,9 +367,7 @@ def Human_VS_Human(screen):
                                 draw_flag=False
                                 continue
                             name_on_board = name_on_board[:-1]
-                            #print("1010")
                             if((hex_map_on_menu.get_piece(preselected_hex[0],preselected_hex[1]) != None) and (hex_map_on_menu.get_piece(selected_hex[0],selected_hex[1]) == None)):
-                                #print("000")
                                 preselected_hex=(100,100)
                             prevresult_on_board_1click = hex_map.get_piece(preselected_hex[0],preselected_hex[1])
                             
@@ -387,21 +379,17 @@ def Human_VS_Human(screen):
                                     prev_name_board_1click = prev_name_board_1click[:-1]
                                     if(prev_name_board_1click == "Beetle"): 
                                         list = AvailablePositions_Beetle(hex_map,preselected_hex[0],preselected_hex[1])
-                                        #print(list)
                                         for element in list: 
                                                 if (selected_hex[0] == element[0] and selected_hex[1] == element[1]):
                                                     #selected_hex = preselected_hex
                                                     flag =False
-                                                    #print(555)
                                                     break
                                                 else:
                                                     flag = True 
                                     #elif(color_on_board == hex_map.Turn):
                                     else:
-                                    # print(666)
                                         preselected_hex = selected_hex  
                                 if(flag == True):
-                                # print(444)
                                     preselected_hex = selected_hex 
                                 
                                 is_beetle_stacked = False
@@ -440,17 +428,13 @@ def Human_VS_Human(screen):
                                     draw_flag = False
                                         
                         if (draw_flag):
-                            #print("222")  
                             for element in list:
                                 #check 2 left clicking 
-                            # print(element)
                                 result = hex_map.get_piece(selected_hex[0],selected_hex[1])
                                 if (selected_hex[0] == element[0] and selected_hex[1] == element[1]):
-                                    #print(preselected_hex)
                                     prevresult_on_menu = hex_map_on_menu.get_piece(preselected_hex[0],preselected_hex[1])
                                     prevresult_on_board = hex_map.get_piece(preselected_hex[0],preselected_hex[1])
                                     if(prevresult_on_menu != None):#Check if the prev selected on menu 
-                                        #print("444")
                                         name , color , img = prevresult_on_menu
                                         hex_map.add_piece(selected_hex[0],selected_hex[1],name,color,img)
                                         hex_map_on_menu.remove_piece(preselected_hex[0],preselected_hex[1])
@@ -460,22 +444,16 @@ def Human_VS_Human(screen):
                                         for outcost in hex_map.OutCasts:
                                             if(outcost[0] == preselected_hex):
                                                 flag =False
-                                            # print(777)
                                         if (name1 == "Beetle" and flag == False):
-                                        # print(111)
                                             hex_map.move_beetle(preselected_hex[0],preselected_hex[1],selected_hex[0],selected_hex[1])
                                             #hex_number = general_get_hex_number(preselected_hex[0],preselected_hex[1],positions_black,positions_white,screen_width,screen_height)
 
                                         else:
                                             hex_map.add_piece(selected_hex[0],selected_hex[1],name,color,img)
                                             hex_map.remove_piece(preselected_hex[0],preselected_hex[1]) 
-                                        #print(f"outcast :{hex_map.OutCasts}")
-                                        # print(f"Hex_Map :{hex_map.map}")
                                     draw_flag=False
                                     hex_number = general_get_hex_number(preselected_hex[0],preselected_hex[1],positions_black,positions_white,screen_width,screen_height)
                                     
-                                    #print(preselected_hex)
-                                    #print(f"the hex number is : {hex_number,hex_map.Turn}")
                                     preselected_hex= (100,100)
 
                                     h2p_x,h2p_y = hex_to_pixel(*selected_hex,HEX_SIZE_Board,screen_width,screen_height)
@@ -504,7 +482,6 @@ def Human_VS_Human(screen):
                                     # for element1 in list:
                                     #     if (selected_hex[0] == element[0] and selected_hex[1] == element[1]):
 
-                                    #print("444")
                                     draw_flag = False
                                     # preselected_hex = (0,0)
                                     continue
@@ -521,8 +498,7 @@ def Human_VS_Human(screen):
             draw_Available_positions(screen, hex_map, list, HEX_SIZE_Board, screen_width, screen_height, BORDER_COLOR_2)
 
         draw_player(Human1_Name, Human2_Name,screen)
-        # print(positions_white)
-        # print(positions_black)
+
         draw_hexagons(positions_black, BLACK_PLAYER, BORDER_COLOR,screen_width,screen_height,hex_map,screen,hex_map_on_menu) 
         draw_hexagons(positions_white, WHITE_PLAYER, BORDER_COLOR,screen_width,screen_height,hex_map,screen,hex_map_on_menu)
         Player_Turn(screen, font, hex_map, screen_width, player_background)
@@ -617,19 +593,28 @@ def Human_VS_AI(screen,depth):
     hex_number = 0
     white_player_lost = False
     black_player_lost = False
-    turn_duration = 20000 #time for easy-medium
+    turn_duration = 5000 #turn time for easy-medium mode
     if(depth == 3):
-        turn_duration = 30000
+        turn_duration = 30000 #turn time for harde mode
+    turn_start_time = pygame.time.get_ticks()  # Track the start time of the current turn
     while running:
         screen.blit(background, (0, 0))
         # Draw hexagons
         # Test_Map(screen,hex_map,selected_hex,HEX_SIZE_Board,HEX_COLOR,SELECTED_COLOR,BORDER_COLOR,screen_width,screen_height)
 
         check_game_result(screen,Human1_Color,AI2_Color,Human1_Name,AI_Name,white_player_lost,black_player_lost,"Human_VS_AI",depth,0)
-        if (hex_map.Turn == AI2_Color):
-            turn_start_time = pygame.time.get_ticks()
-            AI_Movement(hex_map, hex_map_on_menu, positions_black, positions_white, screen_width, screen_height, HEX_SIZE_Board, AI2_Color,depth, turn_start_time, turn_duration)
+                # Get the current time and calculate elapsed time
+        current_time = pygame.time.get_ticks()
+        elapsed_time = current_time - turn_start_time
 
+        # Execute AI movement logic for the current turn
+        if hex_map.Turn == AI2_Color:
+            if elapsed_time >= turn_duration:
+                AI_Movement(hex_map, hex_map_on_menu, positions_black, positions_white, screen_width, screen_height, HEX_SIZE_Board, AI2_Color, depth, turn_start_time, turn_duration)
+                turn_start_time = current_time
+        # if (hex_map.Turn == AI2_Color):
+        #     turn_start_time = pygame.time.get_ticks()
+        #     AI_Movement(hex_map, hex_map_on_menu, positions_black, positions_white, screen_width, screen_height, HEX_SIZE_Board, AI2_Color,depth, turn_start_time, turn_duration)
         else:
             # Main event loop
             for event in pygame.event.get():
@@ -643,11 +628,9 @@ def Human_VS_AI(screen,depth):
                         if (mouse_x <= 250 and mouse_y <= 250) or (mouse_x >= screen_width - 250 and mouse_y <= 250):
                             selected_hex = pixel_to_hex(mouse_x - hex_map_on_menu.x, mouse_y - hex_map_on_menu.y,
                                                         HEX_SIZE_Board, screen_width, screen_height)
-                            # print(f"Selected Hex: {selected_hex},{hex_map_on_menu.get_piece(selected_hex[0], selected_hex[1])}")
                         else:
                             selected_hex = pixel_to_hex(mouse_x - hex_map.x, mouse_y - hex_map.y, HEX_SIZE_Board,
                                                         screen_width, screen_height)
-                            # print(f"Selected Hex: {selected_hex},{hex_map.get_piece(selected_hex[0], selected_hex[1])}")
 
                         # Determine the values of list based on the state
 
@@ -662,10 +645,6 @@ def Human_VS_AI(screen,depth):
                         # get the name and color and img of the selected piece
                         result_menu = hex_map_on_menu.get_piece(selected_hex[0], selected_hex[1])
                         result_board = hex_map.get_piece(selected_hex[0], selected_hex[1])
-                        # print("preselected")
-                        # print(preselected_hex,hex_map.get_piece(preselected_hex[0], preselected_hex[1]))
-                        # print("selected")
-                        # print(selected_hex,hex_map.get_piece(selected_hex[0], selected_hex[1]))
 
                         ########################## Code to enter the piece from menu to board ###################################
                         if (hex_map.Turn == Human1_Color):
@@ -681,7 +660,6 @@ def Human_VS_AI(screen,depth):
                                 if (prevresult_on_board_to_check_beetle != None):
                                     name_on_board_to_check_beetle, color_on_board_to_check_beetle, img_on_board_to_check_beetle = prevresult_on_board_to_check_beetle
                                     name_on_board_to_check_beetle = name_on_board_to_check_beetle[:-1]
-                                    # print(color_on_board)
                                     if (name_on_board_to_check_beetle == "Beetle"):
                                         list = AvailablePositions_Beetle(hex_map, preselected_hex[0],
                                                                          preselected_hex[1])
@@ -692,10 +670,8 @@ def Human_VS_AI(screen,depth):
                                     draw_flag = False
                                     continue
                                 name_on_board = name_on_board[:-1]
-                                # print("1010")
                                 if ((hex_map_on_menu.get_piece(preselected_hex[0], preselected_hex[1]) != None) and (
                                         hex_map_on_menu.get_piece(selected_hex[0], selected_hex[1]) == None)):
-                                    # print("000")
                                     preselected_hex = (100, 100)
                                 prevresult_on_board_1click = hex_map.get_piece(preselected_hex[0], preselected_hex[1])
 
@@ -708,20 +684,16 @@ def Human_VS_AI(screen,depth):
                                         if (prev_name_board_1click == "Beetle"):
                                             list = AvailablePositions_Beetle(hex_map, preselected_hex[0],
                                                                              preselected_hex[1])
-                                            #  print(list)
                                             for element in list:
                                                 if (selected_hex[0] == element[0] and selected_hex[1] == element[1]):
                                                     # selected_hex = preselected_hex
                                                     flag = False
-                                                    # print(555)
                                                     break
                                                 else:
                                                     flag = True
                                         else:
-                                            # print(666)
                                             preselected_hex = selected_hex
                                     if (flag == True):
-                                        # print(444)
                                         preselected_hex = selected_hex
 
                                     is_beetle_stacked = False
@@ -769,18 +741,15 @@ def Human_VS_AI(screen,depth):
 
                         ###################################################Draw#############################
                         if (draw_flag):
-                            # print("222")
                             for element in list:
                                 # check 2 left clicking
                                 print(element)
                                 result = hex_map.get_piece(selected_hex[0], selected_hex[1])
                                 if (selected_hex[0] == element[0] and selected_hex[1] == element[1]):
-                                    # print(preselected_hex)
                                     prevresult_on_menu = hex_map_on_menu.get_piece(preselected_hex[0],
                                                                                    preselected_hex[1])
                                     prevresult_on_board = hex_map.get_piece(preselected_hex[0], preselected_hex[1])
                                     if (prevresult_on_menu != None):  # Check if the prev selected on menu
-                                        # print("444")
                                         name, color, img = prevresult_on_menu
                                         hex_map.add_piece(selected_hex[0], selected_hex[1], name, color, img)
                                         hex_map_on_menu.remove_piece(preselected_hex[0], preselected_hex[1])
@@ -790,23 +759,16 @@ def Human_VS_AI(screen,depth):
                                         for outcost in hex_map.OutCasts:
                                             if (outcost[0] == preselected_hex):
                                                 flag = False
-                                            # print(777)
                                         if (name1 == "Beetle" and flag == False):
-                                            # print(111)
                                             hex_map.move_beetle(preselected_hex[0], preselected_hex[1], selected_hex[0],
                                                                 selected_hex[1])
                                         else:
                                             hex_map.add_piece(selected_hex[0], selected_hex[1], name, color, img)
                                             hex_map.remove_piece(preselected_hex[0], preselected_hex[1])
-                                            #  print(f"outcast :{hex_map.OutCasts}")
-                                        # print(f"Hex_Map :{hex_map.map}")
                                     draw_flag = False
                                     hex_number = general_get_hex_number(preselected_hex[0], preselected_hex[1],
                                                                         positions_black, positions_white, screen_width,
                                                                         screen_height)
-
-                                    # print(preselected_hex)
-                                    # print(f"the hex number is : {hex_number,hex_map.Turn}")
                                     preselected_hex = [100, 100]
 
                                     h2p_x, h2p_y = hex_to_pixel(*selected_hex, HEX_SIZE_Board, screen_width,
@@ -821,29 +783,13 @@ def Human_VS_AI(screen,depth):
                                     elif (hex_map.Turn == "B" and (hex_number > -1 and hex_number < 11)):
                                         positions_black[hex_number] = h2p_x, h2p_y
                                         hex_map.Turn = "W"
-
-                                    # 1 for white win,
-                                    # 2 for black win
-                                    # 3 for Draw
-                                    # if ( (not white_queen_breakhive) and (not black_queen_breakhive) and (hex_map.queen_placed["W"]) and (hex_map.queen_placed["B"]) and white_player_lost and black_player_lost):
-                                    #     flag_winner = 3
-                                    # elif ( (not white_queen_breakhive) and (hex_map.queen_placed["W"]) and white_player_lost ):
-                                    #     flag_winner = 2
-                                    # elif ( (not black_queen_breakhive) and (hex_map.queen_placed["B"]) and black_player_lost ):
-                                    #     flag_winner = 1
-
                                     break
-                                # Deselecting
 
+                                # Deselecting
                                 elif (((hex_map_on_menu.get_piece(selected_hex[0], selected_hex[1]) == None) and (
                                         result == None)) and (
                                               selected_hex[0] != element[0] and selected_hex[1] != element[1])):
-                                    # for element1 in list:
-                                    #     if (selected_hex[0] == element[0] and selected_hex[1] == element[1]):
-
-                                    # print("444")
                                     draw_flag = False
-                                    # preselected_hex = (0,0)
                                     continue
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:  # Check for the Esc key
@@ -853,7 +799,7 @@ def Human_VS_AI(screen,depth):
                 dragging, last_mouse_pos = change_map_position(
                     event, dragging, last_mouse_pos, hex_map
                 )
-        
+            turn_start_time = pygame.time.get_ticks()
         # Player Win Check
         white_player_lost , black_player_lost =player_win_check(hex_map, positions_black, positions_white, screen_width, screen_height, HEX_SIZE_MENU)
 
@@ -866,8 +812,6 @@ def Human_VS_AI(screen,depth):
                 y += hex_map.y
                 draw_border(screen, x, y, BORDER_COLOR_2, HEX_SIZE_Board)
 
-        # print(pixel_to_hex(768,432,HEX_SIZE_Board))
-        # print(f"{positions_white}")
         # if(hex_map.Turn == "W"):
         #     draw_hexagons(positions_white, WHITE_PLAYER, BORDER_COLOR)
         #     draw_hexagons(positions_black, BLACK_PLAYER, BORDER_COLOR)
@@ -895,7 +839,12 @@ def Human_VS_AI(screen,depth):
         pygame.display.flip()
         clock.tick(30)
 
-def AI_VS_AI(screen,depth1,depth2):
+
+def AI_VS_AI(screen, depth1, depth2):
+    # Initialization and setup...
+    running = True
+    turn_start_time = pygame.time.get_ticks()  # Track the start time of the current turn
+
     # Hex map objects
     hex_map_on_menu = HexMap()
     hex_map = HexMap()  # Hex_map_on_board
@@ -946,62 +895,48 @@ def AI_VS_AI(screen,depth1,depth2):
     # hex_number = 0  
     white_player_lost = False
     black_player_lost = False
-    turn_duration_player1 = 20000
-    turn_duration_player2 = 20000
+    turn_duration_player1 = 10000
+    turn_duration_player2 = 10000
     if(depth1 == 3):
         turn_duration_player1 = 30000
     if(depth2 == 3):
         turn_duration_player2 = 30000
     while running:
         screen.blit(background, (0, 0))
-        #Draw hexagons
-        #Test_Map(screen,hex_map,selected_hex,HEX_SIZE_Board,HEX_COLOR,SELECTED_COLOR,BORDER_COLOR,screen_width,screen_height)
-        
-        check_game_result(screen,AI1_Color,AI2_Color,AI_Name,AI_Name,white_player_lost,black_player_lost,"AI_VS_AI",depth1,depth2)
-        if(hex_map.Turn == AI1_Color):
-            turn_start_time = pygame.time.get_ticks()
-            AI_Movement(hex_map, hex_map_on_menu, positions_black, positions_white, screen_width, screen_height, HEX_SIZE_Board, AI1_Color,depth1,turn_start_time,turn_duration_player1)
 
-        elif(hex_map.Turn == AI2_Color):
-            turn_start_time = pygame.time.get_ticks()
-            AI_Movement(hex_map, hex_map_on_menu, positions_black, positions_white, screen_width, screen_height, HEX_SIZE_Board, AI2_Color,depth2,turn_start_time,turn_duration_player2)
+        # Check game result
+        check_game_result(screen, AI1_Color, AI2_Color, AI_Name, AI_Name, white_player_lost, black_player_lost, "AI_VS_AI", depth1, depth2)
 
-        #Player Win Check
-        white_player_lost , black_player_lost =player_win_check(hex_map, positions_black, positions_white, screen_width, screen_height, HEX_SIZE_MENU)
+        # Get the current time and calculate elapsed time
+        current_time = pygame.time.get_ticks()
+        elapsed_time = current_time - turn_start_time
+
+        # Execute AI movement logic for the current turn
+        if hex_map.Turn == AI1_Color:
+            if elapsed_time >= turn_duration_player1:
+                AI_Movement(hex_map, hex_map_on_menu, positions_black, positions_white, screen_width, screen_height, HEX_SIZE_Board, AI1_Color, depth1, turn_start_time, turn_duration_player1)
+                turn_start_time = current_time
+        elif hex_map.Turn == AI2_Color:
+            if elapsed_time >= turn_duration_player2:
+                AI_Movement(hex_map, hex_map_on_menu, positions_black, positions_white, screen_width, screen_height, HEX_SIZE_Board, AI2_Color, depth2, turn_start_time, turn_duration_player2)
+                turn_start_time = current_time
 
         # Main event loop
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:  # Left mouse button
-                    mouse_x, mouse_y = pygame.mouse.get_pos()
-                    
-                    #to chech if the mouse click in the board range or menu range
-                    if (mouse_x <=250 and mouse_y<=250) or (mouse_x >=screen_width-250 and mouse_y<=250):
-                        selected_hex = pixel_to_hex(mouse_x - hex_map_on_menu.x, mouse_y - hex_map_on_menu.y, HEX_SIZE_Board,screen_width,screen_height)
-                        # print(f"Selected Hex: {selected_hex},{hex_map_on_menu.get_piece(selected_hex[0], selected_hex[1])}")
-                    else:
-                        selected_hex = pixel_to_hex(mouse_x - hex_map.x, mouse_y - hex_map.y, HEX_SIZE_Board,screen_width,screen_height)
-                        # print(f"Selected Hex: {selected_hex},{hex_map.get_piece(selected_hex[0], selected_hex[1])}")
-
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:  # Check for the Esc key
                     render_menu_window(screen)
-                            
-            # Call the change_map_position function to the map on board(hex_map)
-            dragging, last_mouse_pos = change_map_position(
-                event, dragging, last_mouse_pos,hex_map
-            )
-        
-        draw_player(AI_Name, AI_Name,screen)
-        draw_hexagons(positions_black, BLACK_PLAYER, BORDER_COLOR,screen_width,screen_height,hex_map,screen,hex_map_on_menu) 
-        draw_hexagons(positions_white, WHITE_PLAYER, BORDER_COLOR,screen_width,screen_height,hex_map,screen,hex_map_on_menu)
+
+            dragging, last_mouse_pos = change_map_position(event, dragging, last_mouse_pos, hex_map)
+
+        # Update screen
+        draw_player(AI_Name, AI_Name, screen)
+        draw_hexagons(positions_black, BLACK_PLAYER, BORDER_COLOR, screen_width, screen_height, hex_map, screen, hex_map_on_menu)
+        draw_hexagons(positions_white, WHITE_PLAYER, BORDER_COLOR, screen_width, screen_height, hex_map, screen, hex_map_on_menu)
         Player_Turn(screen, font, hex_map, screen_width, player_background)
-        PLayer_Score(screen, font, hex_map, screen_width, player_background,positions_white,positions_black)
-        PLayer_Score(screen, font, hex_map, screen_width, player_background,positions_white,positions_black)
+        PLayer_Score(screen, font, hex_map, screen_width, player_background, positions_white, positions_black)
 
-
-            
         pygame.display.flip()
         clock.tick(30)

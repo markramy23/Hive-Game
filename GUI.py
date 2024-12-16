@@ -2,7 +2,7 @@
 from Utilities import  *
 import pygame
 import math
-
+from Hex_map import HexMap
 pygame.init()
 
 font = pygame.font.Font('freesansbold.ttf', 20)
@@ -147,38 +147,24 @@ def draw_button(surface, text, rect, font_size=40, color=BUTTON_COLOR, hover_col
 
     return is_hovered, is_clicked
 
-def draw_hexagons(positions, color1, color2,screen_width,screen_height,hex_map,screen,hex_map_on_menu):
-    for x, y in positions:
-        new_x = pixel_to_hex(x,y,HEX_SIZE_Board,screen_width,screen_height)[0]
-        new_y = pixel_to_hex(x,y,HEX_SIZE_Board,screen_width,screen_height)[1]
-        if(get_hex_number(pixel_to_hex(x,y,HEX_SIZE_Board,screen_width,screen_height)[0],pixel_to_hex(x,y,HEX_SIZE_Board,screen_width,screen_height)[1]) == None): 
-            x+=hex_map.x
-            y+=hex_map.y
-            #print(x,y)
-        #flag_to_draw = True
-        result = hex_map.get_piece(new_x,new_y)
-        if(result != None):
-            name3 , color3 , img3 = result
-            if(color3 == "W"):
-                color1 = WHITE_PLAYER
-            else:
-                color1 = BLACK_PLAYER
+def draw_hexagons(positions, color1, color2,screen_width,screen_height,hex_map:HexMap,screen,hex_map_on_menu:HexMap):
+    for key,value in hex_map.map.items():
+        x,y=hex_to_pixel(key[0],key[1],HEX_SIZE_MENU,screen_width,screen_height)
+        img_rect = value[2].get_rect(center=(x+hex_map.x, y+hex_map.y))
+        if(value[1]=="W"):
+            draw_hexagon(screen, x+hex_map.x, y+hex_map.y, WHITE_PLAYER, color2, HEX_SIZE_MENU) 
+        else:
+            draw_hexagon(screen, x+hex_map.x, y+hex_map.y, BLACK_PLAYER, color2, HEX_SIZE_MENU)
+        screen.blit(value[2],img_rect)
 
-        draw_hexagon(screen, x, y, color1, color2, HEX_SIZE_MENU) 
-        q1, r1 = pixel_to_hex(x-hex_map.x, y-hex_map.y, HEX_SIZE_MENU,screen_width,screen_height)#Right q and r
-        q, r = pixel_to_hex(x, y, HEX_SIZE_MENU,screen_width,screen_height)#Right q and r
-        piece1 = hex_map_on_menu.get_piece(q, r)
-        piece2 = hex_map.get_piece(q1,r1)
-        if piece1:
-            name, color, img = piece1
-            if img:
-                img_rect = img.get_rect(center=(x, y))
-                screen.blit(img, img_rect)
-        if piece2:
-            name, color, img = piece2
-            if img:
-                img_rect = img.get_rect(center=(x, y))
-                screen.blit(img, img_rect)
+    for key,value in hex_map_on_menu.map.items():
+        x,y=hex_to_pixel(key[0],key[1],HEX_SIZE_MENU,screen_width,screen_height)
+        img_rect = value[2].get_rect(center=(x+hex_map_on_menu.x, y+hex_map_on_menu.y))
+        if(value[1]=="W"):
+            draw_hexagon(screen, x+hex_map_on_menu.x, y+hex_map_on_menu.y, WHITE_PLAYER, color2, HEX_SIZE_MENU) 
+        else:
+            draw_hexagon(screen, x+hex_map_on_menu.x, y+hex_map_on_menu.y, BLACK_PLAYER, color2, HEX_SIZE_MENU)
+        screen.blit(value[2],img_rect)
     
 def Test_Map(screen, hex_map, selected_hex, HEX_SIZE_Board, HEX_COLOR, SELECTED_COLOR, BORDER_COLOR,screen_width,screen_height):
 

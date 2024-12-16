@@ -576,7 +576,7 @@ def CalculateBoardValue(hex_map: HexMap, ActivePlayer):
 #     result = nextMove_alpha_beta(hex_map, hex_map_on_menu, depth, player)
 #     while time>0:
 
-def calculate_score(hex_map:HexMap,player,positions_white,positions_black):
+def calculate_score(hex_map:HexMap,player):
     piece_scores = {
         "Queen": 9,
         "Ant": 4,
@@ -587,11 +587,11 @@ def calculate_score(hex_map:HexMap,player,positions_white,positions_black):
     score = 0
     empty_cells = 0
     for key,value in hex_map.map.items():
-        if value[1] == player:
+        if value[1] == player:#COLOR
             score += piece_scores[value[0][:-1]]
     if(player == "W" and hex_map.queen_placed["B"]):
         for key,value in hex_map.map.items():
-            if value[0][:-1] == "Queen" and value[1]=="B":
+            if value[0][:-1] == "Queen" and value[1]=="B":#NAME
                 empty_cells = len(hex_map.get_Empty_neighbors(key[0],key[1]))
     elif(player == "B" and hex_map.queen_placed["W"]):
         for key, value in hex_map.map.items():

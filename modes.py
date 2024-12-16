@@ -89,7 +89,7 @@ def Enter_Piece_From_Menu(result_menu, draw_flag, hex_map_on_menu, preselected_h
         Updated draw_flag, preselected_hex, and list of available positions.
     """
     name_on_menu, color_on_menu, img_on_menu = result_menu
-
+    list_positions = []
     if not draw_flag or (result_menu is not None and hex_map_on_menu.get_piece(preselected_hex[0], preselected_hex[1]) is not None):
         result = hex_map_on_menu.get_piece(selected_hex[0], selected_hex[1])
 
@@ -158,7 +158,7 @@ def AI_Movement(hex_map, hex_map_on_menu, positions_black, positions_white, scre
             hex_map.Turn = "W"
 
 
-def player_win_check(hex_map, positions_black, positions_white, screen_width, screen_height, HEX_SIZE_MENU):
+def player_win_check(hex_map:HexMap, positions_black, positions_white, screen_width, screen_height, HEX_SIZE_MENU):
     """
     Checks if a player has won the game by evaluating queen piece states.
 
@@ -175,9 +175,13 @@ def player_win_check(hex_map, positions_black, positions_white, screen_width, sc
     """
     white_queen_q, white_queen_r = pixel_to_hex(positions_white[10][0], positions_white[10][1], HEX_SIZE_MENU, screen_width, screen_height)
     black_queen_q, black_queen_r = pixel_to_hex(positions_black[10][0], positions_black[10][1], HEX_SIZE_MENU, screen_width, screen_height)
-
+    for key,value in hex_map.map.items():
+        if value[0][:-1] == "Queen"and value[1]=="W":
+            white_queen_q, white_queen_r = key[0],key[1]       
+        elif value[0][:-1] == "Queen"and value[1]=="B":
+            black_queen_q, black_queen_r = key[0],key[1]
     white_queen_breakhive = does_removal_break_hive(hex_map.map, (white_queen_q, white_queen_r))
-    black_queen_breakhive = does_removal_break_hive(hex_map.map, (black_queen_q, black_queen_r))
+    black_queen_breakhive = does_removal_break_hive(hex_map.map, (black_queen_q, black_queen_r))        
 
     white_player_lost = False
     black_player_lost = False
@@ -226,9 +230,9 @@ def PLayer_Score(screen, font, hex_map, screen_width, player_background,position
     from Heuristics import calculate_score
     global score_Black,score_White   
     # if Player_Color == "W":
-    score_White = calculate_score(hex_map,"W",positions_white,positions_black) 
+    score_White = calculate_score(hex_map,"W") 
     # elif Player_Color == "B":
-    score_Black = calculate_score(hex_map,"B",positions_white,positions_black)
+    score_Black = calculate_score(hex_map,"B")
     screen.blit(player_background, (screen_width - 510, -200))
     screen.blit(player_background, (260, -200))
     try:
@@ -299,211 +303,225 @@ def Human_VS_Human(screen):
     hex_number = 0  
     white_player_lost = False
     black_player_lost = False
-
+    current_Turn = "W"
     while running:
         screen.blit(background, (0, 0))
         #Draw hexagons
         #Test_Map(screen,hex_map,selected_hex,HEX_SIZE_Board,HEX_COLOR,SELECTED_COLOR,BORDER_COLOR,screen_width,screen_height)
         
         check_game_result(screen,Human1_Color,Human2_Color,Human1_Name,Human2_Name,white_player_lost,black_player_lost,"Human_VS_Human",0,0)
-
-
+        if(hex_map.Turn == current_Turn):
         # Main event loop
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:  # Left mouse button
-                    mouse_x, mouse_y = pygame.mouse.get_pos()
-                    
-                    #to chech if the mouse click in the board range or menu range
-                    if (mouse_x <=250 and mouse_y<=250) or (mouse_x >=screen_width-250 and mouse_y<=250):
-                        selected_hex = pixel_to_hex(mouse_x - hex_map_on_menu.x, mouse_y - hex_map_on_menu.y, HEX_SIZE_Board,screen_width,screen_height)
-                        # print(f"Selected Hex: {selected_hex},{hex_map_on_menu.get_piece(selected_hex[0], selected_hex[1])}")
-                    else:
-                        selected_hex = pixel_to_hex(mouse_x - hex_map.x, mouse_y - hex_map.y, HEX_SIZE_Board,screen_width,screen_height)
-                        # print(f"Selected Hex: {selected_hex},{hex_map.get_piece(selected_hex[0], selected_hex[1])}")
-                    
-                    #Determine the values of list based on the state    
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:  # Left mouse button
+                        mouse_x, mouse_y = pygame.mouse.get_pos()
                         
-                    #check first click    
-                    new_mouse_x,new_mouse_y=hex_to_pixel(selected_hex[0],selected_hex[1],HEX_SIZE_Board,screen_width,screen_height)
-                    
-                    if(((new_mouse_x>screen_width-250 and new_mouse_y<250) and hex_map.Turn == 'B') or
-                        ((new_mouse_x<250 and new_mouse_y<250) and hex_map.Turn == 'W')):
-                        draw_flag = False
-                        continue
-                    #get the name , color and img of the selected piece
-                    result_menu = hex_map_on_menu.get_piece(selected_hex[0],selected_hex[1]) 
-                    result_board = hex_map.get_piece(selected_hex[0],selected_hex[1])
-                    # print("preselected")
-                    # print(preselected_hex,hex_map.get_piece(preselected_hex[0], preselected_hex[1]))
-                    # print("selected")
-                    # print(selected_hex,hex_map.get_piece(selected_hex[0], selected_hex[1]))
-                    
-                    ########################## Code to enter the piece from menu to board ################################### 
-                    if(result_menu != None):#to ensure that the currect selected piece is on menu
-                        draw_flag, preselected_hex, list = Enter_Piece_From_Menu(result_menu, draw_flag, hex_map_on_menu, preselected_hex, selected_hex, hex_map)
-                    ########################## Code to enter the piece from board to board ################################### 
-                    elif(result_board != None):
-                        name_on_board,color_on_board,img_on_board = result_board
-                        name_on_board=name_on_board[:-1]
-                        flag_deselcet_or_not = True
-                        prevresult_on_board_to_check_beetle = hex_map.get_piece(preselected_hex[0], preselected_hex[1])
-                        if(prevresult_on_board_to_check_beetle !=None):
-                            name_on_board_to_check_beetle,color_on_board_to_check_beetle,img_on_board_to_check_beetle = prevresult_on_board_to_check_beetle    
-                            name_on_board_to_check_beetle = name_on_board_to_check_beetle[:-1]
-                            #print(color_on_board)
-                            if(name_on_board_to_check_beetle =="Beetle"):
-                                    list = AvailablePositions_Beetle(hex_map,preselected_hex[0],preselected_hex[1])
-                                    for element in list: 
-                                                if (selected_hex[0] == element[0] and selected_hex[1] == element[1]):
-                                                    flag_deselcet_or_not =False
-                        elif(color_on_board != hex_map.Turn and flag_deselcet_or_not == True):    
-                            draw_flag=False
+                        #to chech if the mouse click in the board range or menu range
+                        if (mouse_x <=250 and mouse_y<=250) or (mouse_x >=screen_width-250 and mouse_y<=250):
+                            selected_hex = pixel_to_hex(mouse_x - hex_map_on_menu.x, mouse_y - hex_map_on_menu.y, HEX_SIZE_Board,screen_width,screen_height)
+                            print(f"Selected Hex: {selected_hex},{hex_map_on_menu.get_piece(selected_hex[0], selected_hex[1])}")
+                        else:
+                            selected_hex = pixel_to_hex(mouse_x - hex_map.x, mouse_y - hex_map.y, HEX_SIZE_Board,screen_width,screen_height)
+                            print(f"Selected Hex: {selected_hex},{hex_map.get_piece(selected_hex[0], selected_hex[1])}")
+                        
+                        #Determine the values of list based on the state    
+                            
+                        #check first click    
+                        new_mouse_x,new_mouse_y=hex_to_pixel(selected_hex[0],selected_hex[1],HEX_SIZE_Board,screen_width,screen_height)
+                        
+                        if(((new_mouse_x>screen_width-250 and new_mouse_y<250) and hex_map.Turn == 'B') or
+                            ((new_mouse_x<250 and new_mouse_y<250) and hex_map.Turn == 'W')):
+                            draw_flag = False
                             continue
-                        name_on_board = name_on_board[:-1]
-                        #print("1010")
-                        if((hex_map_on_menu.get_piece(preselected_hex[0],preselected_hex[1]) != None) and (hex_map_on_menu.get_piece(selected_hex[0],selected_hex[1]) == None)):
-                            #print("000")
-                            preselected_hex=(100,100)
-                        prevresult_on_board_1click = hex_map.get_piece(preselected_hex[0],preselected_hex[1])
+                        #get the name , color and img of the selected piece
+                        result_menu = hex_map_on_menu.get_piece(selected_hex[0],selected_hex[1]) 
+                        result_board = hex_map.get_piece(selected_hex[0],selected_hex[1])
+                        # print("preselected")
+                        # print(preselected_hex,hex_map.get_piece(preselected_hex[0], preselected_hex[1]))
+                        # print("selected")
+                        # print(selected_hex,hex_map.get_piece(selected_hex[0], selected_hex[1]))
                         
-                        if(not draw_flag or result_board != None): 
-                            draw_flag = True
-                            flag = True
-                            if (prevresult_on_board_1click != None):
-                                prev_name_board_1click , prev_color_board_1click , prev_img_board_1click = prevresult_on_board_1click 
-                                prev_name_board_1click = prev_name_board_1click[:-1]
-                                if(prev_name_board_1click == "Beetle"): 
-                                    list = AvailablePositions_Beetle(hex_map,preselected_hex[0],preselected_hex[1])
-                                    #print(list)
-                                    for element in list: 
-                                            if (selected_hex[0] == element[0] and selected_hex[1] == element[1]):
-                                                #selected_hex = preselected_hex
-                                                flag =False
-                                                #print(555)
-                                                break
-                                            else:
-                                                flag = True 
-                                else:
-                                   # print(666)
-                                    preselected_hex = selected_hex  
-                            if(flag == True):
-                               # print(444)
-                                preselected_hex = selected_hex 
-                            
-                            is_beetle_stacked = False
-                            prevresult_on_board_1click = hex_map.get_piece(preselected_hex[0],preselected_hex[1])
-                            if (prevresult_on_board_1click != None):
-                                prev_name_board_1click , prev_color_board_1click , prev_img_board_1click = prevresult_on_board_1click 
-                                prev_name_board_1click = prev_name_board_1click[:-1]
-                            if(does_removal_break_hive(hex_map.map,preselected_hex) and prev_name_board_1click == "Beetle"):
-                                for outcast in hex_map.OutCasts:
-                                    if(outcast[0]==preselected_hex):
-                                        is_beetle_stacked = True
-                                        break
-                                    else:
-                                        is_beetle_stacked = False
-
-                            if(not does_removal_break_hive(hex_map.map,preselected_hex) or is_beetle_stacked ):
-                                name_on_board_3 ,color_on_board_3 ,img_on_board_3 = hex_map.get_piece(preselected_hex[0],preselected_hex[1])
-                                name_on_board_3 = name_on_board_3[:-1]
-                                if name_on_board_3 == "Queen":
-                                    list = Available_Positions_Queen(hex_map, preselected_hex[0], preselected_hex[1])
-
-                                elif name_on_board_3 == "Ant":
-                                    list = AvailablePositions_Ant(hex_map, preselected_hex[0], preselected_hex[1])
-
-                                elif name_on_board_3 == "Grasshopper":
-                                    list = AvailablePositions_GrassHopper(hex_map, preselected_hex[0],
-                                                                          preselected_hex[1])
-
-                                elif name_on_board_3 == "Spider":
-                                    list = Available_Positions_Spider(hex_map, preselected_hex[0], preselected_hex[1])
-
-                                elif name_on_board_3 == "Beetle":
-                                    list = AvailablePositions_Beetle(hex_map, preselected_hex[0], preselected_hex[1])
-
-                            else:
+                        ########################## Code to enter the piece from menu to board ################################### 
+                        if(result_menu != None):#to ensure that the currect selected piece is on menu
+                            draw_flag, preselected_hex, list = Enter_Piece_From_Menu(result_menu, draw_flag, hex_map_on_menu, preselected_hex, selected_hex, hex_map)
+                            if(hex_map.get_piece(preselected_hex[0],preselected_hex[1]) and hex_map_on_menu.get_piece(selected_hex[0],selected_hex[1])):
                                 draw_flag = False
-                                    
-                    if (draw_flag):
-                        #print("222")  
-                        for element in list:
-                            #check 2 left clicking 
-                           # print(element)
-                            result = hex_map.get_piece(selected_hex[0],selected_hex[1])
-                            if (selected_hex[0] == element[0] and selected_hex[1] == element[1]):
-                                #print(preselected_hex)
-                                prevresult_on_menu = hex_map_on_menu.get_piece(preselected_hex[0],preselected_hex[1])
-                                prevresult_on_board = hex_map.get_piece(preselected_hex[0],preselected_hex[1])
-                                if(prevresult_on_menu != None):#Check if the prev selected on menu 
-                                    #print("444")
-                                    name , color , img = prevresult_on_menu
-                                    hex_map.add_piece(selected_hex[0],selected_hex[1],name,color,img)
-                                    hex_map_on_menu.remove_piece(preselected_hex[0],preselected_hex[1])
-                                if(prevresult_on_board != None):#Check if the prev selected on board 
-                                    name , color , img = prevresult_on_board
-                                    name1 = name[:-1]
-                                    for outcost in hex_map.OutCasts:
-                                        if(outcost[0] == preselected_hex):
-                                            flag =False
-                                           # print(777)
-                                    if (name1 == "Beetle" and flag == False):
-                                       # print(111)
-                                        hex_map.move_beetle(preselected_hex[0],preselected_hex[1],selected_hex[0],selected_hex[1])
-                                    else:
-                                        hex_map.add_piece(selected_hex[0],selected_hex[1],name,color,img)
-                                        hex_map.remove_piece(preselected_hex[0],preselected_hex[1]) 
-                                    #print(f"outcast :{hex_map.OutCasts}")
-                                    # print(f"Hex_Map :{hex_map.map}")
-                                draw_flag=False
-                                hex_number = general_get_hex_number(preselected_hex[0],preselected_hex[1],positions_black,positions_white,screen_width,screen_height)
-                                
-                                #print(preselected_hex)
-                                #print(f"the hex number is : {hex_number,hex_map.Turn}")
-                                preselected_hex= (100,100)
-
-                                h2p_x,h2p_y = hex_to_pixel(*selected_hex,HEX_SIZE_Board,screen_width,screen_height)
-                                if(hex_map.Turn == "W" and (hex_number>10 and hex_number<22)):
-                                    positions_white[hex_number-11]=h2p_x,h2p_y
-                                    hex_map.Turn = "B"
-                                elif(hex_map.Turn == "B" and (hex_number>10 and hex_number<22) and name1 == "Beetle"):
-                                    positions_black[hex_number-11]=h2p_x,h2p_y
-                                    hex_map.Turn = "W"
-                                elif(hex_map.Turn == "B" and (hex_number>-1 and hex_number<11)):
-                                    positions_black[hex_number]=h2p_x,h2p_y
-                                    hex_map.Turn = "W"
-                                
-                                # Player Win Check
-                                white_player_lost , black_player_lost =player_win_check(hex_map, positions_black, positions_white, screen_width, screen_height, HEX_SIZE_MENU)
-
-
-                                break
-                            #Deselecting
-
-                            elif(((hex_map_on_menu.get_piece(selected_hex[0],selected_hex[1]) == None) and (result == None)) and (selected_hex[0] != element[0] and selected_hex[1] != element[1])):
-                                # for element1 in list:
-                                #     if (selected_hex[0] == element[0] and selected_hex[1] == element[1]):
-
-                                #print("444")
-                                draw_flag = False
-                                # preselected_hex = (0,0)
                                 continue
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:  # Check for the Esc key
-                    render_menu_window(screen)
+                            if(hex_map_on_menu.get_piece(preselected_hex[0],preselected_hex[1]) and hex_map.get_piece(selected_hex[0],selected_hex[1])):
+                                draw_flag = False
+                                continue
+                        ########################## Code to enter the piece from board to board ################################### 
+                        elif(result_board != None):
+                            name_on_board,color_on_board,img_on_board = result_board
+                            name_on_board=name_on_board[:-1]
+                            flag_deselcet_or_not = True
+                            prevresult_on_board_to_check_beetle = hex_map.get_piece(preselected_hex[0], preselected_hex[1])
+                            if(prevresult_on_board_to_check_beetle !=None):
+                                name_on_board_to_check_beetle,color_on_board_to_check_beetle,img_on_board_to_check_beetle = prevresult_on_board_to_check_beetle    
+                                name_on_board_to_check_beetle = name_on_board_to_check_beetle[:-1]
+                                #print(color_on_board)
+                                if(name_on_board_to_check_beetle =="Beetle"):
+                                        list = AvailablePositions_Beetle(hex_map,preselected_hex[0],preselected_hex[1])
+                                        for element in list: 
+                                                    if (selected_hex[0] == element[0] and selected_hex[1] == element[1]):
+                                                        flag_deselcet_or_not =False
+                            elif(color_on_board != hex_map.Turn and flag_deselcet_or_not == True):    
+                                draw_flag=False
+                                continue
+                            name_on_board = name_on_board[:-1]
+                            #print("1010")
+                            if((hex_map_on_menu.get_piece(preselected_hex[0],preselected_hex[1]) != None) and (hex_map_on_menu.get_piece(selected_hex[0],selected_hex[1]) == None)):
+                                #print("000")
+                                preselected_hex=(100,100)
+                            prevresult_on_board_1click = hex_map.get_piece(preselected_hex[0],preselected_hex[1])
                             
-            # Call the change_map_position function to the map on board(hex_map)
-            dragging, last_mouse_pos = change_map_position(
-                event, dragging, last_mouse_pos,hex_map
-            )
+                            if((not draw_flag or result_board != None)and hex_map.Turn == color_on_board): 
+                                draw_flag = True
+                                flag = True
+                                if (prevresult_on_board_1click != None):
+                                    prev_name_board_1click , prev_color_board_1click , prev_img_board_1click = prevresult_on_board_1click 
+                                    prev_name_board_1click = prev_name_board_1click[:-1]
+                                    if(prev_name_board_1click == "Beetle"): 
+                                        list = AvailablePositions_Beetle(hex_map,preselected_hex[0],preselected_hex[1])
+                                        #print(list)
+                                        for element in list: 
+                                                if (selected_hex[0] == element[0] and selected_hex[1] == element[1]):
+                                                    #selected_hex = preselected_hex
+                                                    flag =False
+                                                    #print(555)
+                                                    break
+                                                else:
+                                                    flag = True 
+                                    #elif(color_on_board == hex_map.Turn):
+                                    else:
+                                    # print(666)
+                                        preselected_hex = selected_hex  
+                                if(flag == True):
+                                # print(444)
+                                    preselected_hex = selected_hex 
+                                
+                                is_beetle_stacked = False
+                                prevresult_on_board_1click = hex_map.get_piece(preselected_hex[0],preselected_hex[1])
+                                if (prevresult_on_board_1click != None):
+                                    prev_name_board_1click , prev_color_board_1click , prev_img_board_1click = prevresult_on_board_1click 
+                                    prev_name_board_1click = prev_name_board_1click[:-1]
+                                if(does_removal_break_hive(hex_map.map,preselected_hex) and prev_name_board_1click == "Beetle"):
+                                    for outcast in hex_map.OutCasts:
+                                        if(outcast[0]==preselected_hex):
+                                            is_beetle_stacked = True
+                                            break
+                                        else:
+                                            is_beetle_stacked = False
+
+                                if(not does_removal_break_hive(hex_map.map,preselected_hex) or is_beetle_stacked ):
+                                    name_on_board_3 ,color_on_board_3 ,img_on_board_3 = hex_map.get_piece(preselected_hex[0],preselected_hex[1])
+                                    name_on_board_3 = name_on_board_3[:-1]
+                                    if name_on_board_3 == "Queen":
+                                        list = Available_Positions_Queen(hex_map, preselected_hex[0], preselected_hex[1])
+
+                                    elif name_on_board_3 == "Ant":
+                                        list = AvailablePositions_Ant(hex_map, preselected_hex[0], preselected_hex[1])
+
+                                    elif name_on_board_3 == "Grasshopper":
+                                        list = AvailablePositions_GrassHopper(hex_map, preselected_hex[0],
+                                                                            preselected_hex[1])
+
+                                    elif name_on_board_3 == "Spider":
+                                        list = Available_Positions_Spider(hex_map, preselected_hex[0], preselected_hex[1])
+
+                                    elif name_on_board_3 == "Beetle":
+                                        list = AvailablePositions_Beetle(hex_map, preselected_hex[0], preselected_hex[1])
+
+                                else:
+                                    draw_flag = False
+                                        
+                        if (draw_flag):
+                            #print("222")  
+                            for element in list:
+                                #check 2 left clicking 
+                            # print(element)
+                                result = hex_map.get_piece(selected_hex[0],selected_hex[1])
+                                if (selected_hex[0] == element[0] and selected_hex[1] == element[1]):
+                                    #print(preselected_hex)
+                                    prevresult_on_menu = hex_map_on_menu.get_piece(preselected_hex[0],preselected_hex[1])
+                                    prevresult_on_board = hex_map.get_piece(preselected_hex[0],preselected_hex[1])
+                                    if(prevresult_on_menu != None):#Check if the prev selected on menu 
+                                        #print("444")
+                                        name , color , img = prevresult_on_menu
+                                        hex_map.add_piece(selected_hex[0],selected_hex[1],name,color,img)
+                                        hex_map_on_menu.remove_piece(preselected_hex[0],preselected_hex[1])
+                                    if(prevresult_on_board != None):#Check if the prev selected on board 
+                                        name , color , img = prevresult_on_board
+                                        name1 = name[:-1]
+                                        for outcost in hex_map.OutCasts:
+                                            if(outcost[0] == preselected_hex):
+                                                flag =False
+                                            # print(777)
+                                        if (name1 == "Beetle" and flag == False):
+                                        # print(111)
+                                            hex_map.move_beetle(preselected_hex[0],preselected_hex[1],selected_hex[0],selected_hex[1])
+                                            #hex_number = general_get_hex_number(preselected_hex[0],preselected_hex[1],positions_black,positions_white,screen_width,screen_height)
+
+                                        else:
+                                            hex_map.add_piece(selected_hex[0],selected_hex[1],name,color,img)
+                                            hex_map.remove_piece(preselected_hex[0],preselected_hex[1]) 
+                                        #print(f"outcast :{hex_map.OutCasts}")
+                                        # print(f"Hex_Map :{hex_map.map}")
+                                    draw_flag=False
+                                    hex_number = general_get_hex_number(preselected_hex[0],preselected_hex[1],positions_black,positions_white,screen_width,screen_height)
+                                    
+                                    #print(preselected_hex)
+                                    #print(f"the hex number is : {hex_number,hex_map.Turn}")
+                                    preselected_hex= (100,100)
+
+                                    h2p_x,h2p_y = hex_to_pixel(*selected_hex,HEX_SIZE_Board,screen_width,screen_height)
+                                    if(hex_map.Turn == "W" and (hex_number>10 and hex_number<22)):
+                                        positions_white[hex_number-11]=h2p_x,h2p_y
+                                        hex_map.Turn = "B"
+                                        current_Turn = "B"
+                                        
+                                    elif(hex_map.Turn == "B" and (hex_number>10 and hex_number<22) and name1 == "Beetle"):
+                                        positions_black[hex_number-11]=h2p_x,h2p_y
+                                        hex_map.Turn = "W"
+                                        current_Turn = "W"
+                                    elif(hex_map.Turn == "B" and (hex_number>-1 and hex_number<11)):
+                                        positions_black[hex_number]=h2p_x,h2p_y
+                                        hex_map.Turn = "W"
+                                        current_Turn = "W"
+                                    
+                                    # Player Win Check
+                                    white_player_lost , black_player_lost =player_win_check(hex_map, positions_black, positions_white, screen_width, screen_height, HEX_SIZE_MENU)
+
+
+                                    break
+                                #Deselecting
+
+                                elif(((hex_map_on_menu.get_piece(selected_hex[0],selected_hex[1]) == None) and (result == None)) and (selected_hex[0] != element[0] and selected_hex[1] != element[1])):
+                                    # for element1 in list:
+                                    #     if (selected_hex[0] == element[0] and selected_hex[1] == element[1]):
+
+                                    #print("444")
+                                    draw_flag = False
+                                    # preselected_hex = (0,0)
+                                    continue
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:  # Check for the Esc key
+                        render_menu_window(screen)
+                                
+                # Call the change_map_position function to the map on board(hex_map)
+                dragging, last_mouse_pos = change_map_position(
+                    event, dragging, last_mouse_pos,hex_map
+                )
         
         if draw_flag:
             draw_Available_positions(screen, hex_map, list, HEX_SIZE_Board, screen_width, screen_height, BORDER_COLOR_2)
 
         draw_player(Human1_Name, Human2_Name,screen)
+        # print(positions_white)
+        # print(positions_black)
         draw_hexagons(positions_black, BLACK_PLAYER, BORDER_COLOR,screen_width,screen_height,hex_map,screen,hex_map_on_menu) 
         draw_hexagons(positions_white, WHITE_PLAYER, BORDER_COLOR,screen_width,screen_height,hex_map,screen,hex_map_on_menu)
         Player_Turn(screen, font, hex_map, screen_width, player_background)

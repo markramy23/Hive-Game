@@ -47,7 +47,7 @@ def does_removal_break_hive(grid, removed_piece):
         return False
     if removed_piece not in grid.keys():
         # The piece to be removed is not in the grid
-        return False
+        return True
     piece = grid[removed_piece]
     # Step 2: Temporarily remove the piece from the grid
     del grid[removed_piece]  #del the selected piece from the hex map

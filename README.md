@@ -12,7 +12,7 @@
 | Ahmed Gamal Soliman                     | 2000204 |
 | Heba Maher Abdelrahman                  | 2001400 |
 | Mostafa Hesham Mohamed                  | 2001073 |
-| hmed Mohamed Elsayed                    | 2000035 |
+| Ahmed Mohamed Elsayed                    | 2000035 |
 
 ## Project Description
 This Hive game project offers a dynamic gaming experience, supporting three distinct game modes: Human vs Human, Human vs Computer, and Computer vs Computer. Designed to challenge players of all skill levels, the AI features three difficulty settings: Easy, Medium, and Hard.

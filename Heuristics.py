@@ -579,6 +579,15 @@ def CalculateBoardValue(hex_map: HexMap, ActivePlayer):
 
 def next_move_iterative_deepening(hex_map, hex_map_on_menu, turn_start_time,turn_duration, player):
     from modes import Remaining_Turn_Time
+    depth = 2
+    best_move = None
+    while Remaining_Turn_Time(turn_start_time, turn_duration):
+        if player == "W":
+            best_move = nextMove_alpha_beta(hex_map, hex_map_on_menu, depth, player)
+        else:
+            best_move = nextMove_alpha_beta_loser(hex_map, hex_map_on_menu, depth, player)
+        depth += 1
+    return best_move
 
 def calculate_score(hex_map:HexMap,player):
     piece_scores = {

@@ -182,7 +182,7 @@ def player_win_check(hex_map:HexMap, positions_black, positions_white, screen_wi
         elif value[0][:-1] == "Queen"and value[1]=="B":
             black_queen_q, black_queen_r = key[0],key[1]
     white_queen_breakhive = does_removal_break_hive(hex_map.map, (white_queen_q, white_queen_r))
-    black_queen_breakhive = does_removal_break_hive(hex_map.map, (black_queen_q, black_queen_r))        
+    black_queen_breakhive = does_removal_break_hive(hex_map.map, (black_queen_q, black_queen_r))
 
     white_player_lost = False
     black_player_lost = False
@@ -593,9 +593,9 @@ def Human_VS_AI(screen,depth):
     hex_number = 0
     white_player_lost = False
     black_player_lost = False
-    turn_duration = 5000 #turn time for easy-medium mode
+    turn_duration = 3000 #turn time for easy-medium mode
     if(depth == 3):
-        turn_duration = 30000 #turn time for harde mode
+        turn_duration = 3000 #turn time for harde mode
     turn_start_time = pygame.time.get_ticks()  # Track the start time of the current turn
     while running:
         screen.blit(background, (0, 0))
@@ -895,12 +895,12 @@ def AI_VS_AI(screen, depth1, depth2):
     # hex_number = 0  
     white_player_lost = False
     black_player_lost = False
-    turn_duration_player1 = 10000
-    turn_duration_player2 = 10000
+    turn_duration_player1 = 1000
+    turn_duration_player2 = 1000
     if(depth1 == 3):
-        turn_duration_player1 = 30000
+        turn_duration_player1 = 15000
     if(depth2 == 3):
-        turn_duration_player2 = 30000
+        turn_duration_player2 = 15000
     while running:
         screen.blit(background, (0, 0))
 
